@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  GAME_ID: MyString
+  PIT_ID: MyString
+  BAT_ID: MyString
+  EVENT_TX: MyString
+  EVENT_CD: MyString
+
+two:
+  GAME_ID: MyString
+  PIT_ID: MyString
+  BAT_ID: MyString
+  EVENT_TX: MyString
+  EVENT_CD: MyString
