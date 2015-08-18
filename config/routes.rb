@@ -2,6 +2,7 @@ Rails.application.routes.draw do
 
 scope '/v1' do
   resources :events, except: [:new, :edit]
+  get 'games/:game_id' => 'events#show_game'
 end
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

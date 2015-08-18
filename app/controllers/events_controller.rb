@@ -14,6 +14,19 @@ class EventsController < ApplicationController
     render json: @event
   end
 
+  def show_game
+    p '*' * 50
+    p params[:game_id]
+    p '*' * 50
+
+    @game = Event.where(GAME_ID: params[:game_id])
+    p '*' * 50
+    p @game
+    p '*' * 50
+
+    render json: @game
+  end
+
   # POST /events
   # POST /events.json
   # def create
