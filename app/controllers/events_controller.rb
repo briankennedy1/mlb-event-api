@@ -41,11 +41,11 @@ class EventsController < ApplicationController
       }
 
       if event_types.has_key?(params[:event_type])
-        @batter_events = Event.where(BAT_ID: params[:bat_id], EVENT_CD: event_types[params[:event_type]])
+        @batter_events = Event.where(BAT_ID: params[:bat_id], EVENT_CD: event_types[params[:event_type]]).order(:id)
 
       elsif params[:event_type] == 'at_bats'
         # Look for events with at bat flag (AB_FL) set to true
-        @batter_events = Event.where(BAT_ID: params[:bat_id], AB_FL: 'T')
+        @batter_events = Event.where(BAT_ID: params[:bat_id], AB_FL: 'T').order(:id)
 
       elsif params[:event_type] == 'plate_appearances'
           # Plate appearances = At bats + walks + hit by pitches + sacrifice hits + sacrifice flies
@@ -60,6 +60,7 @@ class EventsController < ApplicationController
           Event.where(BAT_ID: params[:bat_id], SH_FL: 'T') +
           # Add events with sacrifice fly flag (SF_FL) set to true
           Event.where(BAT_ID: params[:bat_id], SF_FL: 'T')
+        @batter_events.sort_by! { |events| events[:id] }
 
       else
         @batter_events = {error: 'Query not found', message: 'Please check the documentation for the specific keys you can use in your GET request to search for specific events.'}
