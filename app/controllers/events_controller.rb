@@ -26,26 +26,43 @@ class EventsController < ApplicationController
   def show_batter_events
     if params[:event_type]
       event_types = {
-        # At bats
-        # hits + outs?
-        "at_bats" => [2,3,18,19,20,21,22,23],
-        "hits" => [20,21,22,23],
-        "outs" => 2,
-        "strikeouts" => 3,
-        "walks" => [14, 15],
-        "intentional_walks" => 15,
-        "hit_by_pitches" => 16,
-        "errors" => 18,
-        "fielders_choices" => 19,
-        "singles" => 20,
-        "doubles" => 21,
-        "triples" => 22,
-        "home_runs" => 23,
+        'hits' => [20,21,22,23],
+        'outs' => 2,
+        'strikeouts' => 3,
+        'walks' => [14, 15],
+        'intentional_walks' => 15,
+        'hit_by_pitches' => 16,
+        'errors' => 18,
+        'fielders_choices' => 19,
+        'singles' => 20,
+        'doubles' => 21,
+        'triples' => 22,
+        'home_runs' => 23,
       }
+
       if event_types.has_key?(params[:event_type])
         @batter_events = Event.where(BAT_ID: params[:bat_id], EVENT_CD: event_types[params[:event_type]])
+
+      elsif params[:event_type] == 'at_bats'
+        # Look for events with at bat flag (AB_FL) set to true
+        @batter_events = Event.where(BAT_ID: params[:bat_id], AB_FL: 'T')
+
+      elsif params[:event_type] == 'plate_appearances'
+          # Plate appearances = At bats + walks + hit by pitches + sacrifice hits + sacrifice flies
+        @batter_events =
+          # Look for events with at bat flag (AB_FL) set to true
+          Event.where(BAT_ID: params[:bat_id], AB_FL: 'T') +
+          # Add walks (14 are regular, 15 are intentional)
+          Event.where(BAT_ID: params[:bat_id], EVENT_CD: [14,15]) +
+          # Add hit by pitch events
+          Event.where(BAT_ID: params[:bat_id], EVENT_CD: 16) +
+          # Add events with sacrifice hit flag (SH_FL) set to true
+          Event.where(BAT_ID: params[:bat_id], SH_FL: 'T') +
+          # Add events with sacrifice fly flag (SF_FL) set to true
+          Event.where(BAT_ID: params[:bat_id], SF_FL: 'T')
+
       else
-        @batter_events = {message: "Please use one of these keys in your GET URL to search for specific events: #{event_types.keys}"}
+        @batter_events = {error: 'Query not found', message: 'Please check the documentation for the specific keys you can use in your GET request to search for specific events.'}
       end
       else
         @batter_events = Event.where(BAT_ID: params[:bat_id])
