@@ -62,6 +62,11 @@ class EventsController < ApplicationController
           Event.where(BAT_ID: params[:bat_id], SF_FL: 'T')
         @batter_events.sort_by! { |events| events[:id] }
 
+      elsif params[:event_type] == 'games'
+        # This should pull from a table of games instead of events.
+        # Right now it just returns a count of games batter appeared in.
+        @batter_events = Event.where(BAT_ID: params[:bat_id])
+        @batter_events = @batter_events.select(:GAME_ID).distinct.count
       else
         @batter_events = {error: 'Query not found', message: 'Please check the documentation for the specific keys you can use in your GET request to search for specific events.'}
       end
