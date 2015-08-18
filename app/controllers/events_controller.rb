@@ -24,22 +24,30 @@ class EventsController < ApplicationController
   end
 
   def show_batter_events
-    @batter_events = Event.where(BAT_ID: params[:bat_id])
-    render json: @batter_events
-  end
-
-  def show_batter_hits
-    if params[:hit_type]
-      hit_types = {"singles" => 1, "doubles" => 2, "triples" => 3, "homeruns" => 4}
-      if hit_types.has_key?(params[:hit_type])
-        @batter_hits = Event.where(BAT_ID: params[:bat_id], H_CD: hit_types[params[:hit_type]])
+    if params[:event_type]
+      event_types = {
+        "hits" => [20,21,22,23],
+        "outs" => 2,
+        "strikeouts" => 3,
+        "walks" => [14, 15],
+        "intentional_walks" => 15,
+        "hit_by_pitches" => 16,
+        "errors" => 18,
+        "fielders_choices" => 19,
+        "singles" => 20,
+        "doubles" => 21,
+        "triples" => 22,
+        "home_runs" => 23,
+      }
+      if event_types.has_key?(params[:event_type])
+        @batter_events = Event.where(BAT_ID: params[:bat_id], EVENT_CD: event_types[params[:event_type]])
       else
-        @batter_hits = {message: 'Please use \'singles\', \'doubles\', \'triples\' or \'homeruns\' in your URL'}
+        @batter_events = {message: "Please use one of these keys in your GET URL to search for specific events: #{event_types.keys}"}
       end
-    else
-      @batter_hits = Event.where(BAT_ID: params[:bat_id], H_CD: [1,2,3,4])
-    end
-    render json: @batter_hits
+      else
+        @batter_events = Event.where(BAT_ID: params[:bat_id])
+      end
+    render json: @batter_events
   end
 
 
