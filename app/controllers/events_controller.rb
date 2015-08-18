@@ -29,13 +29,15 @@ class EventsController < ApplicationController
   end
 
   def show_batter_hits
-    if params[:hit_type].to_i >= 1 && params[:hit_type].to_i <= 4
-      p '$' * 50
-      p params[:hit_type]
-      p '$' * 50
-      @batter_hits = Event.where(BAT_ID: params[:bat_id], H_CD: params[:hit_type])
+    if params[:hit_type]
+      hit_types = {"singles" => 1, "doubles" => 2, "triples" => 3, "homeruns" => 4}
+      if hit_types.has_key?(params[:hit_type])
+        @batter_hits = Event.where(BAT_ID: params[:bat_id], H_CD: hit_types[params[:hit_type]])
+      else
+        @batter_hits = {message: 'Please use \'singles\', \'doubles\', \'triples\' or \'homeruns\' in your URL'}
+      end
     else
-      @batter_hits = {message: 'Please use 1, 2, 3, or 4 to search for hits. 1: Singles, 2: Doubles, 3: Triples, 4: Home Runs'}
+      @batter_hits = Event.where(BAT_ID: params[:bat_id], H_CD: [1,2,3,4])
     end
     render json: @batter_hits
   end
