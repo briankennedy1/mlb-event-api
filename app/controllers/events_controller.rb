@@ -26,6 +26,9 @@ class EventsController < ApplicationController
   def show_batter_events
     if params[:event_type]
       event_types = {
+        # At bats
+        # hits + outs?
+        "at_bats" => [2,3,18,19,20,21,22,23],
         "hits" => [20,21,22,23],
         "outs" => 2,
         "strikeouts" => 3,
