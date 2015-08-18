@@ -14,16 +14,12 @@ class EventsController < ApplicationController
     render json: @event
   end
 
+  def all_games
+    render json: {message: 'Please GET to a specific GAME_ID to look up games. For example: /v1/games/ANA201404020'}
+  end
+
   def show_game
-    p '*' * 50
-    p params[:game_id]
-    p '*' * 50
-
     @game = Event.where(GAME_ID: params[:game_id])
-    p '*' * 50
-    p @game
-    p '*' * 50
-
     render json: @game
   end
 
