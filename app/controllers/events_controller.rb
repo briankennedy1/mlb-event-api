@@ -23,6 +23,24 @@ class EventsController < ApplicationController
     render json: @game
   end
 
+  def show_batter_events
+    @batter_events = Event.where(BAT_ID: params[:bat_id])
+    render json: @batter_events
+  end
+
+  def show_batter_hits
+    if params[:hit_type].to_i >= 1 && params[:hit_type].to_i <= 4
+      p '$' * 50
+      p params[:hit_type]
+      p '$' * 50
+      @batter_hits = Event.where(BAT_ID: params[:bat_id], H_CD: params[:hit_type])
+    else
+      @batter_hits = {message: 'Please use 1, 2, 3, or 4 to search for hits. 1: Singles, 2: Doubles, 3: Triples, 4: Home Runs'}
+    end
+    render json: @batter_hits
+  end
+
+
   # POST /events
   # POST /events.json
   # def create
