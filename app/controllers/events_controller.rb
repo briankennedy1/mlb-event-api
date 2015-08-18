@@ -90,12 +90,20 @@ class EventsController < ApplicationController
           Event.where(BASE2_RUN_ID: params[:bat_id], RUN2_CS_FL: 'T') +
           Event.where(BASE3_RUN_ID: params[:bat_id], RUN3_CS_FL: 'T').order(:id)
 
+      elsif params[:event_type] == 'runs'
+        @batter_events =
+          Event.where(BAT_ID: params[:bat_id], BAT_DEST_ID: [4,5,6]) +
+          Event.where(BASE1_RUN_ID: params[:bat_id], RUN1_DEST_ID: [4,5,6]) +
+          Event.where(BASE2_RUN_ID: params[:bat_id], RUN2_DEST_ID: [4,5,6]) +
+          Event.where(BASE3_RUN_ID: params[:bat_id], RUN3_DEST_ID: [4,5,6]).order(:id)
+
       else
         @batter_events = {error: 'Query not found', message: 'Please check the documentation for the specific keys you can use in your GET request to search for specific events.'}
       end
-      else
-        @batter_events = Event.where(BAT_ID: params[:bat_id])
-      end
+
+    else
+      @batter_events = Event.where(BAT_ID: params[:bat_id])
+    end
     render json: @batter_events
   end
 
