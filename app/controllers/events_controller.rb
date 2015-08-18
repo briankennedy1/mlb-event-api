@@ -67,6 +67,17 @@ class EventsController < ApplicationController
         # Right now it just returns a count of games batter appeared in.
         @batter_events = Event.where(BAT_ID: params[:bat_id])
         @batter_events = @batter_events.select(:GAME_ID).distinct.count
+
+      elsif params[:event_type] == 'rbi'
+        @batter_events = Event.where(BAT_ID: params[:bat_id], RBI_CT: [1,2,3,4]).order(:id)
+
+        # Math to test if RBI is working
+        # @rbi_count = 0
+        # @batter_events.each {|event| @rbi_count += event[:RBI_CT]}
+        # p '*' * 50
+        # p @rbi_count
+        # p '*' * 50
+
       else
         @batter_events = {error: 'Query not found', message: 'Please check the documentation for the specific keys you can use in your GET request to search for specific events.'}
       end
