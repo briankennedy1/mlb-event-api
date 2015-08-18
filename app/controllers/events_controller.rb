@@ -62,11 +62,11 @@ class EventsController < ApplicationController
           Event.where(BAT_ID: params[:bat_id], SF_FL: 'T')
         @batter_events.sort_by! { |events| events[:id] }
 
-      elsif params[:event_type] == 'games'
+      # elsif params[:event_type] == 'games'
         # This should pull from a table of games instead of events.
         # Right now it just returns a count of games batter appeared in.
-        @batter_events = Event.where(BAT_ID: params[:bat_id])
-        @batter_events = @batter_events.select(:GAME_ID).distinct.count
+        # @batter_events = Event.where(BAT_ID: params[:bat_id])
+        # @batter_events = @batter_events.select(:GAME_ID).distinct.count
 
       elsif params[:event_type] == 'rbi'
         @batter_events = Event.where(BAT_ID: params[:bat_id], RBI_CT: [1,2,3,4]).order(:id)
@@ -77,6 +77,18 @@ class EventsController < ApplicationController
         # p '*' * 50
         # p @rbi_count
         # p '*' * 50
+
+      elsif params[:event_type] == 'stolen_bases'
+        @batter_events =
+          Event.where(BASE1_RUN_ID: params[:bat_id], RUN1_SB_FL: 'T') +
+          Event.where(BASE2_RUN_ID: params[:bat_id], RUN2_SB_FL: 'T') +
+          Event.where(BASE3_RUN_ID: params[:bat_id], RUN3_SB_FL: 'T').order(:id)
+
+      elsif params[:event_type] == 'caught_stealing'
+        @batter_events =
+          Event.where(BASE1_RUN_ID: params[:bat_id], RUN1_CS_FL: 'T') +
+          Event.where(BASE2_RUN_ID: params[:bat_id], RUN2_CS_FL: 'T') +
+          Event.where(BASE3_RUN_ID: params[:bat_id], RUN3_CS_FL: 'T').order(:id)
 
       else
         @batter_events = {error: 'Query not found', message: 'Please check the documentation for the specific keys you can use in your GET request to search for specific events.'}
