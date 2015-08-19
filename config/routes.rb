@@ -4,7 +4,7 @@ scope '/v1' do
   resources :events, except: [:new, :edit]
   get 'games' => 'events#all_games'
   get 'games/:game_id' => 'events#show_game'
-  get 'batters/:bat_id' => 'events#show_batter_events'
+  get 'batting' => 'events#show_batter_events'
   get 'batters/:bat_id/:event_type' => 'events#show_batter_events'
 end
   # The priority is based upon order of creation: first created -> highest priority.
