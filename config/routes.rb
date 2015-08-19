@@ -5,6 +5,7 @@ scope '/v1' do
   get 'games' => 'events#all_games'
   get 'games/:game_id' => 'events#show_game'
   get 'batting' => 'events#show_batter_events'
+  get 'pitching' => 'events#show_pitcher_events'
 end
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
