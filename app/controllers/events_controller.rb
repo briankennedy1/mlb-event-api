@@ -1,31 +1,32 @@
 class EventsController < ApplicationController
   before_action :set_event, only: [:show, :update, :destroy]
 
-  # GET /events
-  # GET /events.json
   def index
-    @events = Event.first(100)
+    # GET to /events will show this message. Too many events to render them all.
+    # Maybe include some kind of pagination?
+    @events = Event.first(250)
     render json: @events
   end
 
-  # GET /events/1
-  # GET /events/1.json
   def show
+    # GET to /events/1 will show one specific event
     render json: @event
   end
 
   def all_games
+    # GET to /game will show this message. Too many games to render them all.
     render json: {message: 'Please use a specific GAME_ID to look up games. For example: /v1/games/ANA201404020'}
   end
 
   def show_game
+    # Specific game
     @game = Event.where(GAME_ID: params[:game_id])
     render json: @game
   end
 
   def show_batter_events
     if params[:bat_id] == nil
-      render json: {error: 'No batter specified', message: 'Please query the data with a specific batter using "bat_id". For example, a query for Mike Trout would include bat_id=troum001'}
+      render json: {error: 'Missing bat_id', message: 'Please query the data with a specific batter using bat_id. For example, a query for Mike Trout would include bat_id=troum001'}
 
     else
 
@@ -67,12 +68,6 @@ class EventsController < ApplicationController
             Event.where(BAT_ID: params[:bat_id], SF_FL: 'T')
           @batter_events.sort_by! { |events| events[:id] }
 
-        # elsif params[:event_type] == 'games'
-          # This should pull from a table of games instead of events.
-          # Right now it just returns a count of games batter appeared in.
-          # @batter_events = Event.where(BAT_ID: params[:bat_id])
-          # @batter_events = @batter_events.select(:GAME_ID).distinct.count
-
         elsif params[:event_type] == 'rbi'
           @batter_events = Event.where(BAT_ID: params[:bat_id], RBI_CT: [1,2,3,4]).order(:id)
 
@@ -113,38 +108,6 @@ class EventsController < ApplicationController
     end
   end
 
-
-  # POST /events
-  # POST /events.json
-  # def create
-  #   @event = Event.new(event_params)
-  #
-  #   if @event.save
-  #     render json: @event, status: :created, location: @event
-  #   else
-  #     render json: @event.errors, status: :unprocessable_entity
-  #   end
-  # end
-
-  # PATCH/PUT /events/1
-  # PATCH/PUT /events/1.json
-  # def update
-  #   @event = Event.find(params[:id])
-  #
-  #   if @event.update(event_params)
-  #     head :no_content
-  #   else
-  #     render json: @event.errors, status: :unprocessable_entity
-  #   end
-  # end
-
-  # DELETE /events/1
-  # DELETE /events/1.json
-  # def destroy
-  #   @event.destroy
-  #
-  #   head :no_content
-  # end
 
   private
 
