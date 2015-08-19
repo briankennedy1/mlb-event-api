@@ -29,8 +29,8 @@ class EventsController < ApplicationController
       render json: {error: 'Missing bat_id', message: 'Please query the data with a specific batter using bat_id. For example, a query for Mike Trout would include bat_id=troum001'}
 
     else
-
       if params[:event_type]
+        # Build hash of events and corresponding codes to streamline search
         event_types = {
           'hits' => [20,21,22,23],
           'outs' => 2,
@@ -46,6 +46,7 @@ class EventsController < ApplicationController
           'home_runs' => 23,
         }
 
+        # Access hash of events and corresponding codes to streamline search
         if event_types.has_key?(params[:event_type])
           @batter_events = Event.where(BAT_ID: params[:bat_id], EVENT_CD: event_types[params[:event_type]]).order(:id)
 
@@ -116,6 +117,7 @@ class EventsController < ApplicationController
     else
 
       if params[:event_type]
+        # Build hash of events and corresponding codes to streamline search
         event_types = {
           'hits' => [20,21,22,23],
           'outs' => 2,
@@ -133,8 +135,16 @@ class EventsController < ApplicationController
           'balks' => 11,
         }
 
+        # Access hash of events and corresponding codes to streamline search
         if event_types.has_key?(params[:event_type])
-          @pitcher_events = Event.where(PIT_ID: params[:pit_id], EVENT_CD: event_types[params[:event_type]]).order(:id)
+          search_options = {
+            PIT_ID: params[:pit_id],
+            EVENT_CD: event_types[params[:event_type]]
+          }
+
+          search_options[:BAT_ID] = params[:bat_id] if params[:bat_id]
+
+          @pitcher_events = event_search(search_options)
 
         elsif params[:event_type] == 'wild_pitches'
           @pitcher_events = Event.where(PIT_ID: params[:pit_id], WP_FL: 'T').order(:id)
@@ -146,7 +156,7 @@ class EventsController < ApplicationController
             Event.where(PIT_ID: params[:pit_id], RUN2_DEST_ID: 4) +
             Event.where(PIT_ID: params[:pit_id], RUN3_DEST_ID: 4).order(:id)
 
-        elsif params[:event_type] == 'runs'
+        elsif params[:event_type] == 'runs_allowed'
           @pitcher_events =
             Event.where(PIT_ID: params[:pit_id], BAT_DEST_ID: [4,5,6]) +
             Event.where(PIT_ID: params[:pit_id], RUN1_DEST_ID: [4,5,6]) +
@@ -155,6 +165,7 @@ class EventsController < ApplicationController
 
         elsif params[:event_type] == 'batters_faced'
             # Batters faces is the mirror image of plate appearances. Plate appearances = At bats + walks + hit by pitches + sacrifice hits + sacrifice flies
+
           @pitcher_events =
             # Look for events with at bat flag (AB_FL) set to true
             Event.where(PIT_ID: params[:pit_id], AB_FL: 'T') +
@@ -174,7 +185,7 @@ class EventsController < ApplicationController
         end
 
       else
-        @pitcher_events = Event.where(PIT_ID: params[:pit_id])
+        @pitcher_events = event_search(PIT_ID: params[:pit_id])
       end
       render json: @pitcher_events
     end
@@ -183,6 +194,10 @@ class EventsController < ApplicationController
 
 
   private
+
+    def event_search(options)
+      Event.where(options).order(:id)
+    end
 
     def set_event
       @event = Event.find(params[:id])
