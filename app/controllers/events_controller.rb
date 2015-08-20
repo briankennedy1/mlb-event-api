@@ -65,48 +65,47 @@ class EventsController < ApplicationController
           @batter_events = event_search(search_options)
 
         elsif params[:event_type] == 'plate_appearances'
-            # Plate appearances = At bats + walks + hit by pitches + sacrifice hits + sacrifice flies
+          # Look for events with at bat flag (AB_FL) set to true
+          search_options = {
+            BAT_ID: params[:bat_id],
+            AB_FL: 'T'
+          }
+          search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+          at_bats = event_search(search_options)
 
-            # Look for events with at bat flag (AB_FL) set to true
-            search_options = {
-              BAT_ID: params[:bat_id],
-              AB_FL: 'T'
-            }
-            search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
-            at_bats = event_search(search_options)
+          # Add walks (14 are regular, 15 are intentional)
+          search_options = {
+            BAT_ID: params[:bat_id],
+            EVENT_CD: [14,15]
+          }
+          search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+          walks = event_search(search_options)
 
-            # Add walks (14 are regular, 15 are intentional)
-            search_options = {
-              BAT_ID: params[:bat_id],
-              EVENT_CD: [14,15]
-            }
-            search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
-            walks = event_search(search_options)
+          # Add hit by pitch events
+          search_options = {
+            BAT_ID: params[:bat_id],
+            EVENT_CD: 16
+          }
+          search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+          hit_by_pitches = event_search(search_options)
 
-            # Add hit by pitch events
-            search_options = {
-              BAT_ID: params[:bat_id],
-              EVENT_CD: 16
-            }
-            search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
-            hit_by_pitches = event_search(search_options)
+          # Add events with sacrifice hit flag (SH_FL) set to true
+          search_options = {
+            BAT_ID: params[:bat_id],
+            SH_FL: 'T'
+          }
+          search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+          sacrifice_hits = event_search(search_options)
 
-            # Add events with sacrifice hit flag (SH_FL) set to true
-            search_options = {
-              BAT_ID: params[:bat_id],
-              SH_FL: 'T'
-            }
-            search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
-            sacrifice_hits = event_search(search_options)
+          # Add events with sacrifice fly flag (SF_FL) set to true
+          search_options = {
+            BAT_ID: params[:bat_id],
+            SF_FL: 'T'
+          }
+          search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+          sacrifice_flies = event_search(search_options)
 
-            # Add events with sacrifice fly flag (SF_FL) set to true
-            search_options = {
-              BAT_ID: params[:bat_id],
-              SF_FL: 'T'
-            }
-            search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
-            sacrifice_flies = event_search(search_options)
-
+          # Plate appearances = At bats + walks + hit by pitches + sacrifice hits + sacrifice flies
           @batter_events = at_bats + walks + hit_by_pitches + sacrifice_hits + sacrifice_flies
           @batter_events.sort_by! { |events| events[:id] }
 
@@ -121,12 +120,29 @@ class EventsController < ApplicationController
           # p '*' * 50
 
         elsif params[:event_type] == 'stolen_bases'
-          @batter_events =
-            event_search(BASE1_RUN_ID: params[:bat_id], RUN1_SB_FL: 'T') +
-            event_search(BASE2_RUN_ID: params[:bat_id], RUN2_SB_FL: 'T') +
-            event_search(BASE3_RUN_ID: params[:bat_id], RUN3_SB_FL: 'T')
-          @batter_events.sort_by! { |events| events[:id] }
+          search_options = {
+            BASE1_RUN_ID: params[:bat_id],
+            RUN1_SB_FL: 'T'
+          }
+          search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+          steal_second = event_search(search_options)
 
+          search_options = {
+            BASE2_RUN_ID: params[:bat_id],
+            RUN2_SB_FL: 'T'
+          }
+          search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+          steal_third = event_search(search_options)
+
+          search_options = {
+            BASE3_RUN_ID: params[:bat_id],
+            RUN3_SB_FL: 'T'
+          }
+          search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+          steal_home = event_search(search_options)
+
+          @batter_events = steal_second + steal_third + steal_home
+          @batter_events.sort_by! { |events| events[:id] }
 
         elsif params[:event_type] == 'caught_stealing'
           @batter_events =
