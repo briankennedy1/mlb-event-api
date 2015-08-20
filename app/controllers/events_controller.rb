@@ -141,42 +141,47 @@ class EventsController < ApplicationController
             PIT_ID: params[:pit_id],
             EVENT_CD: event_types[params[:event_type]]
           }
-
           search_options[:BAT_ID] = params[:bat_id] if params[:bat_id]
-
           @pitcher_events = event_search(search_options)
 
         elsif params[:event_type] == 'wild_pitches'
-          @pitcher_events = Event.where(PIT_ID: params[:pit_id], WP_FL: 'T').order(:id)
+          search_options = {
+            PIT_ID: params[:pit_id], WP_FL: 'T'
+          }
+          search_options[:BAT_ID] = params[:bat_id] if params[:bat_id]
+          @pitcher_events = event_search(search_options)
 
         elsif params[:event_type] == 'earned_runs'
           @pitcher_events =
-            Event.where(PIT_ID: params[:pit_id], BAT_DEST_ID: 4) +
-            Event.where(PIT_ID: params[:pit_id], RUN1_DEST_ID: 4) +
-            Event.where(PIT_ID: params[:pit_id], RUN2_DEST_ID: 4) +
-            Event.where(PIT_ID: params[:pit_id], RUN3_DEST_ID: 4).order(:id)
+            event_search(PIT_ID: params[:pit_id], BAT_DEST_ID: 4) +
+            event_search(PIT_ID: params[:pit_id], RUN1_DEST_ID: 4) +
+            event_search(PIT_ID: params[:pit_id], RUN2_DEST_ID: 4) +
+            event_search(PIT_ID: params[:pit_id], RUN3_DEST_ID: 4)
+          @pitcher_events.sort_by! { |events| events[:id] }
+
 
         elsif params[:event_type] == 'runs_allowed'
           @pitcher_events =
-            Event.where(PIT_ID: params[:pit_id], BAT_DEST_ID: [4,5,6]) +
-            Event.where(PIT_ID: params[:pit_id], RUN1_DEST_ID: [4,5,6]) +
-            Event.where(PIT_ID: params[:pit_id], RUN2_DEST_ID: [4,5,6]) +
-            Event.where(PIT_ID: params[:pit_id], RUN3_DEST_ID: [4,5,6]).order(:id)
+            event_search(PIT_ID: params[:pit_id], BAT_DEST_ID: [4,5,6]) +
+            event_search(PIT_ID: params[:pit_id], RUN1_DEST_ID: [4,5,6]) +
+            event_search(PIT_ID: params[:pit_id], RUN2_DEST_ID: [4,5,6]) +
+            event_search(PIT_ID: params[:pit_id], RUN3_DEST_ID: [4,5,6]).order(:id)
+          @pitcher_events.sort_by! { |events| events[:id] }
 
         elsif params[:event_type] == 'batters_faced'
             # Batters faces is the mirror image of plate appearances. Plate appearances = At bats + walks + hit by pitches + sacrifice hits + sacrifice flies
 
           @pitcher_events =
             # Look for events with at bat flag (AB_FL) set to true
-            Event.where(PIT_ID: params[:pit_id], AB_FL: 'T') +
+            event_search(PIT_ID: params[:pit_id], AB_FL: 'T') +
             # Add walks (14 are regular, 15 are intentional)
-            Event.where(PIT_ID: params[:pit_id], EVENT_CD: [14,15]) +
+            event_search(PIT_ID: params[:pit_id], EVENT_CD: [14,15]) +
             # Add hit by pitch events
-            Event.where(PIT_ID: params[:pit_id], EVENT_CD: 16) +
+            event_search(PIT_ID: params[:pit_id], EVENT_CD: 16) +
             # Add events with sacrifice hit flag (SH_FL) set to true
-            Event.where(PIT_ID: params[:pit_id], SH_FL: 'T') +
+            event_search(PIT_ID: params[:pit_id], SH_FL: 'T') +
             # Add events with sacrifice fly flag (SF_FL) set to true
-            Event.where(PIT_ID: params[:pit_id], SF_FL: 'T')
+            event_search(PIT_ID: params[:pit_id], SF_FL: 'T')
           # Sort 'em
           @pitcher_events.sort_by! { |events| events[:id] }
 
