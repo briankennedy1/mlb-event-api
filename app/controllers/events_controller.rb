@@ -20,7 +20,7 @@ class EventsController < ApplicationController
 
   def show_game
     # Specific game
-    @game = Event.where(GAME_ID: params[:game_id])
+    @game = event_search(GAME_ID: params[:game_id])
     render json: @game
   end
 
@@ -48,29 +48,39 @@ class EventsController < ApplicationController
 
         # Access hash of events and corresponding codes to streamline search
         if event_types.has_key?(params[:event_type])
-          @batter_events = Event.where(BAT_ID: params[:bat_id], EVENT_CD: event_types[params[:event_type]]).order(:id)
+          search_options = {
+            BAT_ID: params[:bat_id],
+            EVENT_CD: event_types[params[:event_type]]
+          }
+          search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+          @batter_events = event_search(search_options)
 
         elsif params[:event_type] == 'at_bats'
           # Look for events with at bat flag (AB_FL) set to true
-          @batter_events = Event.where(BAT_ID: params[:bat_id], AB_FL: 'T').order(:id)
+          search_options = {
+            BAT_ID: params[:bat_id],
+            AB_FL: 'T'
+          }
+          search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+          @batter_events = event_search(search_options)
 
         elsif params[:event_type] == 'plate_appearances'
             # Plate appearances = At bats + walks + hit by pitches + sacrifice hits + sacrifice flies
           @batter_events =
             # Look for events with at bat flag (AB_FL) set to true
-            Event.where(BAT_ID: params[:bat_id], AB_FL: 'T') +
+            event_search(BAT_ID: params[:bat_id], AB_FL: 'T') +
             # Add walks (14 are regular, 15 are intentional)
-            Event.where(BAT_ID: params[:bat_id], EVENT_CD: [14,15]) +
+            event_search(BAT_ID: params[:bat_id], EVENT_CD: [14,15]) +
             # Add hit by pitch events
-            Event.where(BAT_ID: params[:bat_id], EVENT_CD: 16) +
+            event_search(BAT_ID: params[:bat_id], EVENT_CD: 16) +
             # Add events with sacrifice hit flag (SH_FL) set to true
-            Event.where(BAT_ID: params[:bat_id], SH_FL: 'T') +
+            event_search(BAT_ID: params[:bat_id], SH_FL: 'T') +
             # Add events with sacrifice fly flag (SF_FL) set to true
-            Event.where(BAT_ID: params[:bat_id], SF_FL: 'T')
+            event_search(BAT_ID: params[:bat_id], SF_FL: 'T')
           @batter_events.sort_by! { |events| events[:id] }
 
         elsif params[:event_type] == 'rbi'
-          @batter_events = Event.where(BAT_ID: params[:bat_id], RBI_CT: [1,2,3,4]).order(:id)
+          @batter_events = event_search(BAT_ID: params[:bat_id], RBI_CT: [1,2,3,4])
 
           # Math to test if RBI is working
           # @rbi_count = 0
@@ -81,29 +91,34 @@ class EventsController < ApplicationController
 
         elsif params[:event_type] == 'stolen_bases'
           @batter_events =
-            Event.where(BASE1_RUN_ID: params[:bat_id], RUN1_SB_FL: 'T') +
-            Event.where(BASE2_RUN_ID: params[:bat_id], RUN2_SB_FL: 'T') +
-            Event.where(BASE3_RUN_ID: params[:bat_id], RUN3_SB_FL: 'T').order(:id)
+            event_search(BASE1_RUN_ID: params[:bat_id], RUN1_SB_FL: 'T') +
+            event_search(BASE2_RUN_ID: params[:bat_id], RUN2_SB_FL: 'T') +
+            event_search(BASE3_RUN_ID: params[:bat_id], RUN3_SB_FL: 'T')
+          @batter_events.sort_by! { |events| events[:id] }
+
 
         elsif params[:event_type] == 'caught_stealing'
           @batter_events =
-            Event.where(BASE1_RUN_ID: params[:bat_id], RUN1_CS_FL: 'T') +
-            Event.where(BASE2_RUN_ID: params[:bat_id], RUN2_CS_FL: 'T') +
-            Event.where(BASE3_RUN_ID: params[:bat_id], RUN3_CS_FL: 'T').order(:id)
+            event_search(BASE1_RUN_ID: params[:bat_id], RUN1_CS_FL: 'T') +
+            event_search(BASE2_RUN_ID: params[:bat_id], RUN2_CS_FL: 'T') +
+            event_search(BASE3_RUN_ID: params[:bat_id], RUN3_CS_FL: 'T')
+          @batter_events.sort_by! { |events| events[:id] }
+
 
         elsif params[:event_type] == 'runs'
           @batter_events =
-            Event.where(BAT_ID: params[:bat_id], BAT_DEST_ID: [4,5,6]) +
-            Event.where(BASE1_RUN_ID: params[:bat_id], RUN1_DEST_ID: [4,5,6]) +
-            Event.where(BASE2_RUN_ID: params[:bat_id], RUN2_DEST_ID: [4,5,6]) +
-            Event.where(BASE3_RUN_ID: params[:bat_id], RUN3_DEST_ID: [4,5,6]).order(:id)
+            event_search(BAT_ID: params[:bat_id], BAT_DEST_ID: [4,5,6]) +
+            event_search(BASE1_RUN_ID: params[:bat_id], RUN1_DEST_ID: [4,5,6]) +
+            event_search(BASE2_RUN_ID: params[:bat_id], RUN2_DEST_ID: [4,5,6]) +
+            event_search(BASE3_RUN_ID: params[:bat_id], RUN3_DEST_ID: [4,5,6])
+          @batter_events.sort_by! { |events| events[:id] }
 
         else
           @batter_events = {error: 'Query not found', message: 'Please check the documentation for the specific keys you can use in your GET request to search for specific events.'}
         end
 
       else
-        @batter_events = Event.where(BAT_ID: params[:bat_id])
+        @batter_events = event_search(BAT_ID: params[:bat_id])
       end
       render json: @batter_events
     end
