@@ -145,19 +145,60 @@ class EventsController < ApplicationController
           @batter_events.sort_by! { |events| events[:id] }
 
         elsif params[:event_type] == 'caught_stealing'
-          @batter_events =
-            event_search(BASE1_RUN_ID: params[:bat_id], RUN1_CS_FL: 'T') +
-            event_search(BASE2_RUN_ID: params[:bat_id], RUN2_CS_FL: 'T') +
-            event_search(BASE3_RUN_ID: params[:bat_id], RUN3_CS_FL: 'T')
+          search_options = {
+            BASE1_RUN_ID: params[:bat_id],
+            RUN1_CS_FL: 'T'
+          }
+          search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+          caught_at_second = event_search(search_options)
+
+          search_options = {
+            BASE2_RUN_ID: params[:bat_id],
+            RUN2_CS_FL: 'T'
+          }
+          search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+          caught_at_third = event_search(search_options)
+
+          search_options = {
+            BASE3_RUN_ID: params[:bat_id],
+            RUN3_CS_FL: 'T'
+          }
+          search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+          caught_at_home = event_search(search_options)
+
+          @batter_events = caught_at_second + caught_at_third + caught_at_home
           @batter_events.sort_by! { |events| events[:id] }
 
-
         elsif params[:event_type] == 'runs'
-          @batter_events =
-            event_search(BAT_ID: params[:bat_id], BAT_DEST_ID: [4,5,6]) +
-            event_search(BASE1_RUN_ID: params[:bat_id], RUN1_DEST_ID: [4,5,6]) +
-            event_search(BASE2_RUN_ID: params[:bat_id], RUN2_DEST_ID: [4,5,6]) +
-            event_search(BASE3_RUN_ID: params[:bat_id], RUN3_DEST_ID: [4,5,6])
+          search_options = {
+            BAT_ID: params[:bat_id],
+            BAT_DEST_ID: [4,5,6]
+          }
+          search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+          scored_batting = event_search(search_options)
+
+          search_options = {
+            BASE1_RUN_ID: params[:bat_id],
+            RUN1_DEST_ID: [4,5,6]
+          }
+          search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+          scored_from_first = event_search(search_options)
+
+          search_options = {
+            BASE2_RUN_ID: params[:bat_id],
+            RUN2_DEST_ID: [4,5,6]
+          }
+          search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+          scored_from_second = event_search(search_options)
+
+          search_options = {
+            BASE3_RUN_ID: params[:bat_id],
+            RUN3_DEST_ID: [4,5,6]
+          }
+          search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+          scored_from_third = event_search(search_options)
+
+          @batter_events = scored_batting + scored_from_first + scored_from_second + scored_from_third
           @batter_events.sort_by! { |events| events[:id] }
 
         else
@@ -170,7 +211,6 @@ class EventsController < ApplicationController
       render json: @batter_events
     end
   end
-
 
   def show_pitcher_events
     if params[:pit_id] == nil
@@ -220,7 +260,6 @@ class EventsController < ApplicationController
             event_search(PIT_ID: params[:pit_id], RUN2_DEST_ID: 4) +
             event_search(PIT_ID: params[:pit_id], RUN3_DEST_ID: 4)
           @pitcher_events.sort_by! { |events| events[:id] }
-
 
         elsif params[:event_type] == 'runs_allowed'
           @pitcher_events =
