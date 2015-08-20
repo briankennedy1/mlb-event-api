@@ -217,7 +217,6 @@ class EventsController < ApplicationController
       render json: {error: 'Missing pit_id', message: 'Please query the data with a specific pitcher using pit_id. For example, a query for Zack Greinke would include pit_id=greiz001'}
 
     else
-
       if params[:event_type]
         # Build hash of events and corresponding codes to streamline search
         event_types = {
@@ -254,11 +253,37 @@ class EventsController < ApplicationController
           @pitcher_events = event_search(search_options)
 
         elsif params[:event_type] == 'earned_runs'
-          @pitcher_events =
-            event_search(PIT_ID: params[:pit_id], BAT_DEST_ID: 4) +
-            event_search(PIT_ID: params[:pit_id], RUN1_DEST_ID: 4) +
-            event_search(PIT_ID: params[:pit_id], RUN2_DEST_ID: 4) +
-            event_search(PIT_ID: params[:pit_id], RUN3_DEST_ID: 4)
+          # This method may be problematic because it returns multiple copies of an event if more than one run was scored in that event. For example, a two-run home run would return one event for the batter scoring and the same event for the runner on first scoring.
+          # Although this is just one event, I want it to be represented multiple times, one for each person it 'belongs' to. So I actually like this approach for now.
+          search_options = {
+            PIT_ID: params[:pit_id],
+            BAT_DEST_ID: 4
+          }
+          search_options[:BAT_ID] = params[:bat_id] if params[:bat_id]
+          scored_batting = event_search(search_options)
+
+          search_options = {
+            PIT_ID: params[:pit_id],
+            RUN1_DEST_ID: 4
+          }
+          search_options[:BAT_ID] = params[:bat_id] if params[:bat_id]
+          scored_from_first = event_search(search_options)
+
+          search_options = {
+            PIT_ID: params[:pit_id],
+            RUN2_DEST_ID: 4
+          }
+          search_options[:BAT_ID] = params[:bat_id] if params[:bat_id]
+          scored_from_second = event_search(search_options)
+
+          search_options = {
+            PIT_ID: params[:pit_id],
+            RUN3_DEST_ID: 4
+          }
+          search_options[:BAT_ID] = params[:bat_id] if params[:bat_id]
+          scored_from_third = event_search(search_options)
+
+          @pitcher_events = scored_batting + scored_from_first + scored_from_second + scored_from_third
           @pitcher_events.sort_by! { |events| events[:id] }
 
         elsif params[:event_type] == 'runs_allowed'
