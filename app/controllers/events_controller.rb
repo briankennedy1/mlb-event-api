@@ -76,7 +76,7 @@ class EventsController < ApplicationController
             BAT_ID: params[:bat_id],
             AB_FL: 'T'
           }
-          
+
           # Example query: Trout at-bats against Greinke
           # /batting?bat_id=troum001&event_type=at_bats&pit_id=greiz001
           search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
@@ -84,6 +84,9 @@ class EventsController < ApplicationController
           # Example query: Trout at-bats against Oakland
           # /batting?bat_id=troum001&event_type=at_bats&opponent=OAK
           search_options[:FLD_TEAM_ID] = params[:opponent] if params[:opponent]
+
+          # Example query: Trou game-ending at-bats (not necessarily positive)
+          # /batting?bat_id=troum001&event_type=at_bats&game_ending=true
           search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
           @batter_events = event_search(search_options)
 
@@ -96,6 +99,7 @@ class EventsController < ApplicationController
             AB_FL: 'T'
           }
           search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+          search_options[:FLD_TEAM_ID] = params[:opponent] if params[:opponent]
           search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
           at_bats = event_search(search_options)
 
@@ -105,6 +109,7 @@ class EventsController < ApplicationController
             EVENT_CD: [14,15]
           }
           search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+          search_options[:FLD_TEAM_ID] = params[:opponent] if params[:opponent]
           search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
           walks = event_search(search_options)
 
@@ -114,6 +119,7 @@ class EventsController < ApplicationController
             EVENT_CD: 16
           }
           search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+          search_options[:FLD_TEAM_ID] = params[:opponent] if params[:opponent]
           search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
           hit_by_pitches = event_search(search_options)
 
@@ -123,6 +129,7 @@ class EventsController < ApplicationController
             SH_FL: 'T'
           }
           search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+          search_options[:FLD_TEAM_ID] = params[:opponent] if params[:opponent]
           search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
           sacrifice_hits = event_search(search_options)
 
@@ -132,6 +139,7 @@ class EventsController < ApplicationController
             SF_FL: 'T'
           }
           search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+          search_options[:FLD_TEAM_ID] = params[:opponent] if params[:opponent]
           search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
           sacrifice_flies = event_search(search_options)
 
@@ -145,6 +153,7 @@ class EventsController < ApplicationController
             RBI_CT: [1,2,3,4]
           }
           search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+          search_options[:FLD_TEAM_ID] = params[:opponent] if params[:opponent]
           search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
           @batter_events = event_search(search_options)
 
@@ -163,6 +172,7 @@ class EventsController < ApplicationController
             RUN1_SB_FL: 'T'
           }
           search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+          search_options[:FLD_TEAM_ID] = params[:opponent] if params[:opponent]
           steal_second = event_search(search_options)
 
           search_options = {
@@ -170,6 +180,7 @@ class EventsController < ApplicationController
             RUN2_SB_FL: 'T'
           }
           search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+          search_options[:FLD_TEAM_ID] = params[:opponent] if params[:opponent]
           steal_third = event_search(search_options)
 
           search_options = {
@@ -177,6 +188,7 @@ class EventsController < ApplicationController
             RUN3_SB_FL: 'T'
           }
           search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+          search_options[:FLD_TEAM_ID] = params[:opponent] if params[:opponent]
           search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
           steal_home = event_search(search_options)
 
@@ -190,6 +202,7 @@ class EventsController < ApplicationController
             RUN1_CS_FL: 'T'
           }
           search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+          search_options[:FLD_TEAM_ID] = params[:opponent] if params[:opponent]
           search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
           caught_at_second = event_search(search_options)
 
@@ -198,6 +211,7 @@ class EventsController < ApplicationController
             RUN2_CS_FL: 'T'
           }
           search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+          search_options[:FLD_TEAM_ID] = params[:opponent] if params[:opponent]
           search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
           caught_at_third = event_search(search_options)
 
@@ -206,6 +220,7 @@ class EventsController < ApplicationController
             RUN3_CS_FL: 'T'
           }
           search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+          search_options[:FLD_TEAM_ID] = params[:opponent] if params[:opponent]
           search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
           caught_at_home = event_search(search_options)
 
@@ -219,6 +234,7 @@ class EventsController < ApplicationController
             BAT_DEST_ID: [4,5,6]
           }
           search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+          search_options[:FLD_TEAM_ID] = params[:opponent] if params[:opponent]
           search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
           scored_batting = event_search(search_options)
 
@@ -227,6 +243,7 @@ class EventsController < ApplicationController
             RUN1_DEST_ID: [4,5,6]
           }
           search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+          search_options[:FLD_TEAM_ID] = params[:opponent] if params[:opponent]
           search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
           scored_from_first = event_search(search_options)
 
@@ -235,6 +252,7 @@ class EventsController < ApplicationController
             RUN2_DEST_ID: [4,5,6]
           }
           search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+          search_options[:FLD_TEAM_ID] = params[:opponent] if params[:opponent]
           search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
           scored_from_second = event_search(search_options)
 
@@ -243,6 +261,7 @@ class EventsController < ApplicationController
             RUN3_DEST_ID: [4,5,6]
           }
           search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+          search_options[:FLD_TEAM_ID] = params[:opponent] if params[:opponent]
           search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
           scored_from_third = event_search(search_options)
 
