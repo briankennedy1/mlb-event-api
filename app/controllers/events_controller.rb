@@ -56,7 +56,17 @@ class EventsController < ApplicationController
             BAT_ID: params[:bat_id],
             EVENT_CD: event_types[params[:event_type]]
           }
+
+          # Example query: Posey hits against Greinke
+          # /batting?bat_id=poseb001&event_type=hits&pit_id=greiz001
           search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+
+          # Example query: Posey hits against Dodgers
+          # /batting?bat_id=poseb001&event_type=hits&opponent=LAN
+          search_options[:FLD_TEAM_ID] = params[:opponent] if params[:opponent]
+
+          # Example query: Posey game-winning hits
+          # /batting?bat_id=poseb001&event_type=hits&game_ending=true
           search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
           @batter_events = event_search(search_options)
 
@@ -66,7 +76,14 @@ class EventsController < ApplicationController
             BAT_ID: params[:bat_id],
             AB_FL: 'T'
           }
+          
+          # Example query: Trout at-bats against Greinke
+          # /batting?bat_id=troum001&event_type=at_bats&pit_id=greiz001
           search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+
+          # Example query: Trout at-bats against Oakland
+          # /batting?bat_id=troum001&event_type=at_bats&opponent=OAK
+          search_options[:FLD_TEAM_ID] = params[:opponent] if params[:opponent]
           search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
           @batter_events = event_search(search_options)
 
