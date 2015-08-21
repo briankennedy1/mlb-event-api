@@ -15,7 +15,7 @@ class EventsController < ApplicationController
 
   def all_games
     # GET to /game will show this message. Too many games to render them all.
-    render json: {message: 'Please use a specific GAME_ID to look up games. For example: /v1/games/ANA201404020'}
+    render json: {message: 'Please use a specific game_id to look up games. For example: /v1/games/ANA201404020'}
   end
 
   def show_game
