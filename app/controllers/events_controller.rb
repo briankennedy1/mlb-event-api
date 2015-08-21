@@ -57,6 +57,7 @@ class EventsController < ApplicationController
             EVENT_CD: event_types[params[:event_type]]
           }
           search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+          search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
           @batter_events = event_search(search_options)
 
         # Look for events with at bat flag (AB_FL) set to true
@@ -66,6 +67,7 @@ class EventsController < ApplicationController
             AB_FL: 'T'
           }
           search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+          search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
           @batter_events = event_search(search_options)
 
         # Return events with plate appearances by specified batter.
@@ -77,6 +79,7 @@ class EventsController < ApplicationController
             AB_FL: 'T'
           }
           search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+          search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
           at_bats = event_search(search_options)
 
           # Add walks (14 are regular, 15 are intentional)
@@ -85,6 +88,7 @@ class EventsController < ApplicationController
             EVENT_CD: [14,15]
           }
           search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+          search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
           walks = event_search(search_options)
 
           # Add hit by pitch events
@@ -93,6 +97,7 @@ class EventsController < ApplicationController
             EVENT_CD: 16
           }
           search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+          search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
           hit_by_pitches = event_search(search_options)
 
           # Add events with sacrifice hit flag (SH_FL) set to true
@@ -101,6 +106,7 @@ class EventsController < ApplicationController
             SH_FL: 'T'
           }
           search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+          search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
           sacrifice_hits = event_search(search_options)
 
           # Add events with sacrifice fly flag (SF_FL) set to true
@@ -109,6 +115,7 @@ class EventsController < ApplicationController
             SF_FL: 'T'
           }
           search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+          search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
           sacrifice_flies = event_search(search_options)
 
           @batter_events = at_bats + walks + hit_by_pitches + sacrifice_hits + sacrifice_flies
@@ -116,9 +123,16 @@ class EventsController < ApplicationController
 
         # Return events with a RBI by specified batter
         elsif params[:event_type] == 'rbi'
-          @batter_events = event_search(BAT_ID: params[:bat_id], RBI_CT: [1,2,3,4])
+          search_options = {
+            BAT_ID: params[:bat_id],
+            RBI_CT: [1,2,3,4]
+          }
+          search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+          search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
+          @batter_events = event_search(search_options)
 
-          # Math to test if RBI is working
+          # Number of events returned does not equal actual RBI because you can get between 1 and 4 RBI in one event.
+          # Math to add up if RBI totals:
           # @rbi_count = 0
           # @batter_events.each {|event| @rbi_count += event[:RBI_CT]}
           # p '*' * 50
@@ -146,6 +160,7 @@ class EventsController < ApplicationController
             RUN3_SB_FL: 'T'
           }
           search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+          search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
           steal_home = event_search(search_options)
 
           @batter_events = steal_second + steal_third + steal_home
@@ -158,6 +173,7 @@ class EventsController < ApplicationController
             RUN1_CS_FL: 'T'
           }
           search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+          search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
           caught_at_second = event_search(search_options)
 
           search_options = {
@@ -165,6 +181,7 @@ class EventsController < ApplicationController
             RUN2_CS_FL: 'T'
           }
           search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+          search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
           caught_at_third = event_search(search_options)
 
           search_options = {
@@ -172,6 +189,7 @@ class EventsController < ApplicationController
             RUN3_CS_FL: 'T'
           }
           search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+          search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
           caught_at_home = event_search(search_options)
 
           @batter_events = caught_at_second + caught_at_third + caught_at_home
@@ -184,6 +202,7 @@ class EventsController < ApplicationController
             BAT_DEST_ID: [4,5,6]
           }
           search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+          search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
           scored_batting = event_search(search_options)
 
           search_options = {
@@ -191,6 +210,7 @@ class EventsController < ApplicationController
             RUN1_DEST_ID: [4,5,6]
           }
           search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+          search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
           scored_from_first = event_search(search_options)
 
           search_options = {
@@ -198,6 +218,7 @@ class EventsController < ApplicationController
             RUN2_DEST_ID: [4,5,6]
           }
           search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+          search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
           scored_from_second = event_search(search_options)
 
           search_options = {
@@ -205,6 +226,7 @@ class EventsController < ApplicationController
             RUN3_DEST_ID: [4,5,6]
           }
           search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+          search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
           scored_from_third = event_search(search_options)
 
           @batter_events = scored_batting + scored_from_first + scored_from_second + scored_from_third
@@ -256,6 +278,7 @@ class EventsController < ApplicationController
             EVENT_CD: event_types[params[:event_type]]
           }
           search_options[:BAT_ID] = params[:bat_id] if params[:bat_id]
+          search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
           @pitcher_events = event_search(search_options)
 
         # Return events where the pitcher threw wild pitches
@@ -264,6 +287,7 @@ class EventsController < ApplicationController
             PIT_ID: params[:pit_id], WP_FL: 'T'
           }
           search_options[:BAT_ID] = params[:bat_id] if params[:bat_id]
+          search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
           @pitcher_events = event_search(search_options)
 
         # Return events where the pitcher allowed earned runs
@@ -275,6 +299,7 @@ class EventsController < ApplicationController
             BAT_DEST_ID: 4
           }
           search_options[:BAT_ID] = params[:bat_id] if params[:bat_id]
+          search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
           scored_batting = event_search(search_options)
 
           search_options = {
@@ -282,6 +307,7 @@ class EventsController < ApplicationController
             RUN1_DEST_ID: 4
           }
           search_options[:BAT_ID] = params[:bat_id] if params[:bat_id]
+          search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
           scored_from_first = event_search(search_options)
 
           search_options = {
@@ -289,6 +315,7 @@ class EventsController < ApplicationController
             RUN2_DEST_ID: 4
           }
           search_options[:BAT_ID] = params[:bat_id] if params[:bat_id]
+          search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
           scored_from_second = event_search(search_options)
 
           search_options = {
@@ -296,6 +323,7 @@ class EventsController < ApplicationController
             RUN3_DEST_ID: 4
           }
           search_options[:BAT_ID] = params[:bat_id] if params[:bat_id]
+          search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
           scored_from_third = event_search(search_options)
 
           @pitcher_events = scored_batting + scored_from_first + scored_from_second + scored_from_third
@@ -308,6 +336,7 @@ class EventsController < ApplicationController
             BAT_DEST_ID: [4,5,6]
           }
           search_options[:BAT_ID] = params[:bat_id] if params[:bat_id]
+          search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
           scored_batting = event_search(search_options)
 
           search_options = {
@@ -315,6 +344,7 @@ class EventsController < ApplicationController
             RUN1_DEST_ID: [4,5,6]
           }
           search_options[:BAT_ID] = params[:bat_id] if params[:bat_id]
+          search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
           scored_from_first = event_search(search_options)
 
           search_options = {
@@ -322,6 +352,7 @@ class EventsController < ApplicationController
             RUN2_DEST_ID: [4,5,6]
           }
           search_options[:BAT_ID] = params[:bat_id] if params[:bat_id]
+          search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
           scored_from_second = event_search(search_options)
 
           search_options = {
@@ -329,6 +360,7 @@ class EventsController < ApplicationController
             RUN3_DEST_ID: [4,5,6]
           }
           search_options[:BAT_ID] = params[:bat_id] if params[:bat_id]
+          search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
           scored_from_third = event_search(search_options)
 
           @pitcher_events = scored_batting + scored_from_first + scored_from_second + scored_from_third
@@ -343,6 +375,7 @@ class EventsController < ApplicationController
             AB_FL: 'T'
           }
           search_options[:BAT_ID] = params[:bat_id] if params[:bat_id]
+          search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
           at_bats = event_search(search_options)
 
           # Add walks (14 are regular, 15 are intentional)
@@ -351,6 +384,7 @@ class EventsController < ApplicationController
             EVENT_CD: [14,15]
           }
           search_options[:BAT_ID] = params[:bat_id] if params[:bat_id]
+          search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
           walks = event_search(search_options)
 
           # Add hit by pitch events
@@ -359,6 +393,7 @@ class EventsController < ApplicationController
             EVENT_CD: 16
           }
           search_options[:BAT_ID] = params[:bat_id] if params[:bat_id]
+          search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
           hit_by_pitches = event_search(search_options)
 
           # Add events with sacrifice hit flag (SH_FL) set to true
@@ -367,6 +402,7 @@ class EventsController < ApplicationController
             SH_FL: 'T'
           }
           search_options[:BAT_ID] = params[:bat_id] if params[:bat_id]
+          search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
           sacrifice_hits = event_search(search_options)
 
           # Add events with sacrifice fly flag (SF_FL) set to true
@@ -375,6 +411,7 @@ class EventsController < ApplicationController
             SF_FL: 'T'
           }
           search_options[:BAT_ID] = params[:bat_id] if params[:bat_id]
+          search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
           sacrifice_flies = event_search(search_options)
 
           @pitcher_events = at_bats + walks + hit_by_pitches + sacrifice_hits + sacrifice_flies
