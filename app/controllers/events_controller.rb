@@ -287,15 +287,39 @@ class EventsController < ApplicationController
           @pitcher_events.sort_by! { |events| events[:id] }
 
         elsif params[:event_type] == 'runs_allowed'
-          @pitcher_events =
-            event_search(PIT_ID: params[:pit_id], BAT_DEST_ID: [4,5,6]) +
-            event_search(PIT_ID: params[:pit_id], RUN1_DEST_ID: [4,5,6]) +
-            event_search(PIT_ID: params[:pit_id], RUN2_DEST_ID: [4,5,6]) +
-            event_search(PIT_ID: params[:pit_id], RUN3_DEST_ID: [4,5,6]).order(:id)
+          search_options = {
+            PIT_ID: params[:pit_id],
+            BAT_DEST_ID: [4,5,6]
+          }
+          search_options[:BAT_ID] = params[:bat_id] if params[:bat_id]
+          scored_batting = event_search(search_options)
+
+          search_options = {
+            PIT_ID: params[:pit_id],
+            RUN1_DEST_ID: [4,5,6]
+          }
+          search_options[:BAT_ID] = params[:bat_id] if params[:bat_id]
+          scored_from_first = event_search(search_options)
+
+          search_options = {
+            PIT_ID: params[:pit_id],
+            RUN2_DEST_ID: [4,5,6]
+          }
+          search_options[:BAT_ID] = params[:bat_id] if params[:bat_id]
+          scored_from_second = event_search(search_options)
+
+          search_options = {
+            PIT_ID: params[:pit_id],
+            RUN3_DEST_ID: [4,5,6]
+          }
+          search_options[:BAT_ID] = params[:bat_id] if params[:bat_id]
+          scored_from_third = event_search(search_options)
+
+          @pitcher_events = scored_batting + scored_from_first + scored_from_second + scored_from_third
           @pitcher_events.sort_by! { |events| events[:id] }
 
         elsif params[:event_type] == 'batters_faced'
-            # Batters faces is the mirror image of plate appearances. Plate appearances = At bats + walks + hit by pitches + sacrifice hits + sacrifice flies
+
 
           @pitcher_events =
             # Look for events with at bat flag (AB_FL) set to true
