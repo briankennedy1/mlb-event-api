@@ -26,7 +26,7 @@ class EventsController < ApplicationController
     render json: @game
   end
 
-  # Return events based on a specific batter and event type.
+  # Return events based on a specific batter.
   def show_batter_events
     # Return error message if no batter is specified.
     if params[:bat_id] == nil
@@ -50,7 +50,7 @@ class EventsController < ApplicationController
           'home_runs' => 23,
         }
 
-        # Access hash of events and corresponding codes to streamline search
+        # Return events by searching hash for corresponding event code.
         if event_types.has_key?(params[:event_type])
           search_options = {
             BAT_ID: params[:bat_id],
@@ -223,13 +223,15 @@ class EventsController < ApplicationController
     end
   end
 
+  # Return events based on a specific pitcher.
   def show_pitcher_events
+    # Return error message if no pitcher is specified.
     if params[:pit_id] == nil
       render json: {error: 'Missing pit_id', message: 'Please query the data with a specific pitcher using pit_id. For example, a query for Zack Greinke would include pit_id=greiz001'}
 
     else
+      # Build hash of events and corresponding codes to streamline search
       if params[:event_type]
-        # Build hash of events and corresponding codes to streamline search
         event_types = {
           'hits' => [20,21,22,23],
           'outs' => 2,
@@ -247,7 +249,7 @@ class EventsController < ApplicationController
           'balks' => 11,
         }
 
-        # Access hash of events and corresponding codes to streamline search
+        # Return pitcher events by searching hash for corresponding event code.
         if event_types.has_key?(params[:event_type])
           search_options = {
             PIT_ID: params[:pit_id],
@@ -256,6 +258,7 @@ class EventsController < ApplicationController
           search_options[:BAT_ID] = params[:bat_id] if params[:bat_id]
           @pitcher_events = event_search(search_options)
 
+        # Return events where the pitcher threw wild pitches
         elsif params[:event_type] == 'wild_pitches'
           search_options = {
             PIT_ID: params[:pit_id], WP_FL: 'T'
@@ -263,6 +266,7 @@ class EventsController < ApplicationController
           search_options[:BAT_ID] = params[:bat_id] if params[:bat_id]
           @pitcher_events = event_search(search_options)
 
+        # Return events where the pitcher allowed earned runs
         elsif params[:event_type] == 'earned_runs'
           # This method may be problematic because it returns multiple copies of an event if more than one run was scored in that event. For example, a two-run home run would return one event for the batter scoring and the same event for the runner on first scoring.
           # Although this is just one event, I want it to be represented multiple times, one for each person it 'belongs' to. So I actually like this approach for now.
@@ -297,6 +301,7 @@ class EventsController < ApplicationController
           @pitcher_events = scored_batting + scored_from_first + scored_from_second + scored_from_third
           @pitcher_events.sort_by! { |events| events[:id] }
 
+        # Return events where the pitcher allowed runs
         elsif params[:event_type] == 'runs_allowed'
           search_options = {
             PIT_ID: params[:pit_id],
@@ -329,6 +334,8 @@ class EventsController < ApplicationController
           @pitcher_events = scored_batting + scored_from_first + scored_from_second + scored_from_third
           @pitcher_events.sort_by! { |events| events[:id] }
 
+        # Return events where pitcher faced batters.
+        # Batters faced = at bats + walks + hit by pitches + sacrifice hits + sacrifice flies.
         elsif params[:event_type] == 'batters_faced'
           # Look for events with at bat flag (AB_FL) set to true
           search_options = {
@@ -373,18 +380,18 @@ class EventsController < ApplicationController
           @pitcher_events = at_bats + walks + hit_by_pitches + sacrifice_hits + sacrifice_flies
           @pitcher_events.sort_by! { |events| events[:id] }
 
+        # Return an error message if the event was not properly specified.
         else
           @pitcher_events = {error: 'Query not found', message: 'Please check the documentation for the specific keys you can use in your GET request to search for specific events.'}
         end
 
+      # Return all events from specified pitcher.
       else
         @pitcher_events = event_search(PIT_ID: params[:pit_id])
       end
       render json: @pitcher_events
     end
   end
-
-
 
   private
 
