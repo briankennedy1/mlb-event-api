@@ -319,20 +319,47 @@ class EventsController < ApplicationController
           @pitcher_events.sort_by! { |events| events[:id] }
 
         elsif params[:event_type] == 'batters_faced'
+          # Look for events with at bat flag (AB_FL) set to true
+          search_options = {
+            PIT_ID: params[:pit_id],
+            AB_FL: 'T'
+          }
+          search_options[:BAT_ID] = params[:bat_id] if params[:bat_id]
+          at_bats = event_search(search_options)
 
+          # Add walks (14 are regular, 15 are intentional)
+          search_options = {
+            PIT_ID: params[:pit_id],
+            EVENT_CD: [14,15]
+          }
+          search_options[:BAT_ID] = params[:bat_id] if params[:bat_id]
+          walks = event_search(search_options)
 
-          @pitcher_events =
-            # Look for events with at bat flag (AB_FL) set to true
-            event_search(PIT_ID: params[:pit_id], AB_FL: 'T') +
-            # Add walks (14 are regular, 15 are intentional)
-            event_search(PIT_ID: params[:pit_id], EVENT_CD: [14,15]) +
-            # Add hit by pitch events
-            event_search(PIT_ID: params[:pit_id], EVENT_CD: 16) +
-            # Add events with sacrifice hit flag (SH_FL) set to true
-            event_search(PIT_ID: params[:pit_id], SH_FL: 'T') +
-            # Add events with sacrifice fly flag (SF_FL) set to true
-            event_search(PIT_ID: params[:pit_id], SF_FL: 'T')
-          # Sort 'em
+          # Add hit by pitch events
+          search_options = {
+            PIT_ID: params[:pit_id],
+            EVENT_CD: 16
+          }
+          search_options[:BAT_ID] = params[:bat_id] if params[:bat_id]
+          hit_by_pitches = event_search(search_options)
+
+          # Add events with sacrifice hit flag (SH_FL) set to true
+          search_options = {
+            PIT_ID: params[:pit_id],
+            SH_FL: 'T'
+          }
+          search_options[:BAT_ID] = params[:bat_id] if params[:bat_id]
+          sacrifice_hits = event_search(search_options)
+
+          # Add events with sacrifice fly flag (SF_FL) set to true
+          search_options = {
+            PIT_ID: params[:pit_id],
+            SF_FL: 'T'
+          }
+          search_options[:BAT_ID] = params[:bat_id] if params[:bat_id]
+          sacrifice_flies = event_search(search_options)
+
+          @pitcher_events = at_bats + walks + hit_by_pitches + sacrifice_hits + sacrifice_flies
           @pitcher_events.sort_by! { |events| events[:id] }
 
         else
