@@ -231,6 +231,11 @@ class EventsController < ApplicationController
         elsif params[:event_type] == 'runs'
           search_options = {
             BAT_ID: params[:bat_id],
+            # Destination code 4, 5 and 6 all mean the runner scores.
+            # 4 = runner scored
+            # 5 = runner scored, unearned
+            # 6 = runner scored, unearned to team, earned to pitcher
+            # Ref: http://chadwick.sourceforge.net/doc/cwevent.html#cwtools-cwevent-plays
             BAT_DEST_ID: [4,5,6]
           }
           search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
