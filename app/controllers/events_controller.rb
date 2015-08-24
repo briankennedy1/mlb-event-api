@@ -342,8 +342,8 @@ class EventsController < ApplicationController
           # This method may be problematic because it returns multiple copies of an event if more than one run was scored in that event. For example, a two-run home run would return one event for the batter scoring and the same event for the runner on first scoring.
           # Although this is just one event, I want it to be represented multiple times, one for each person it 'belongs' to. So I actually like this approach for now.
           search_options = {
-            PIT_ID: params[:pit_id],
-            BAT_DEST_ID: 4
+            RESP_PIT_ID: params[:pit_id],
+            BAT_DEST_ID: [4,6]
           }
           search_options[:BAT_ID] = params[:bat_id] if params[:bat_id]
           search_options[:BAT_TEAM_ID] = params[:opponent] if params[:opponent]
@@ -351,8 +351,8 @@ class EventsController < ApplicationController
           scored_batting = event_search(search_options)
 
           search_options = {
-            PIT_ID: params[:pit_id],
-            RUN1_DEST_ID: 4
+            RUN1_RESP_PIT_ID: params[:pit_id],
+            RUN1_DEST_ID: [4,6]
           }
           search_options[:BAT_ID] = params[:bat_id] if params[:bat_id]
           search_options[:BAT_TEAM_ID] = params[:opponent] if params[:opponent]
@@ -360,8 +360,8 @@ class EventsController < ApplicationController
           scored_from_first = event_search(search_options)
 
           search_options = {
-            PIT_ID: params[:pit_id],
-            RUN2_DEST_ID: 4
+            RUN2_RESP_PIT_ID: params[:pit_id],
+            RUN2_DEST_ID: [4,6]
           }
           search_options[:BAT_ID] = params[:bat_id] if params[:bat_id]
           search_options[:BAT_TEAM_ID] = params[:opponent] if params[:opponent]
@@ -369,8 +369,8 @@ class EventsController < ApplicationController
           scored_from_second = event_search(search_options)
 
           search_options = {
-            PIT_ID: params[:pit_id],
-            RUN3_DEST_ID: 4
+            RUN3_RESP_PIT_ID: params[:pit_id],
+            RUN3_DEST_ID: [4,6]
           }
           search_options[:BAT_ID] = params[:bat_id] if params[:bat_id]
           search_options[:BAT_TEAM_ID] = params[:opponent] if params[:opponent]
