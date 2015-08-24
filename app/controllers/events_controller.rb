@@ -392,7 +392,7 @@ class EventsController < ApplicationController
           scored_batting = event_search(search_options)
 
           search_options = {
-            PIT_ID: params[:pit_id],
+            RUN1_RESP_PIT_ID: params[:pit_id],
             RUN1_DEST_ID: [4,5,6]
           }
           search_options[:BAT_ID] = params[:bat_id] if params[:bat_id]
@@ -401,7 +401,7 @@ class EventsController < ApplicationController
           scored_from_first = event_search(search_options)
 
           search_options = {
-            PIT_ID: params[:pit_id],
+            RUN2_RESP_PIT_ID: params[:pit_id],
             RUN2_DEST_ID: [4,5,6]
           }
           search_options[:BAT_ID] = params[:bat_id] if params[:bat_id]
@@ -410,7 +410,7 @@ class EventsController < ApplicationController
           scored_from_second = event_search(search_options)
 
           search_options = {
-            PIT_ID: params[:pit_id],
+            RUN3_RESP_PIT_ID: params[:pit_id],
             RUN3_DEST_ID: [4,5,6]
           }
           search_options[:BAT_ID] = params[:bat_id] if params[:bat_id]
