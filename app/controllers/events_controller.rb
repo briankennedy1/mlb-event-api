@@ -56,20 +56,7 @@ class EventsController < ApplicationController
             BAT_ID: params[:bat_id],
             EVENT_CD: event_types[params[:event_type]]
           }
-
-          search_options[:year] = params[:year] if params[:year]
-
-          # Example query: Posey hits against Greinke
-          # /batting?bat_id=poseb001&event_type=hits&pit_id=greiz001
-          search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
-
-          # Example query: Posey hits against Dodgers
-          # /batting?bat_id=poseb001&event_type=hits&opponent=LAN
-          search_options[:FLD_TEAM_ID] = params[:opponent] if params[:opponent]
-
-          # Example query: Posey game-winning hits
-          # /batting?bat_id=poseb001&event_type=hits&game_ending=true
-          search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
+          batting_options(search_options)
           @batter_events = event_search(search_options)
 
         # Look for events with at bat flag (AB_FL) set to true
@@ -79,19 +66,7 @@ class EventsController < ApplicationController
             AB_FL: 'T'
           }
 
-          search_options[:year] = params[:year] if params[:year]
-
-          # Example query: Trout at-bats against Greinke
-          # /batting?bat_id=troum001&event_type=at_bats&pit_id=greiz001
-          search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
-
-          # Example query: Trout at-bats against Oakland
-          # /batting?bat_id=troum001&event_type=at_bats&opponent=OAK
-          search_options[:FLD_TEAM_ID] = params[:opponent] if params[:opponent]
-
-          # Example query: Trou game-ending at-bats (not necessarily positive)
-          # /batting?bat_id=troum001&event_type=at_bats&game_ending=true
-          search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
+          batting_options(search_options)
           @batter_events = event_search(search_options)
 
         # Return events with plate appearances by specified batter.
@@ -102,10 +77,7 @@ class EventsController < ApplicationController
             BAT_ID: params[:bat_id],
             AB_FL: 'T'
           }
-          search_options[:year] = params[:year] if params[:year]
-          search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
-          search_options[:FLD_TEAM_ID] = params[:opponent] if params[:opponent]
-          search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
+          batting_options(search_options)
           at_bats = event_search(search_options)
 
           # Add walks (14 are regular, 15 are intentional)
@@ -113,10 +85,7 @@ class EventsController < ApplicationController
             BAT_ID: params[:bat_id],
             EVENT_CD: [14,15]
           }
-          search_options[:year] = params[:year] if params[:year]
-          search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
-          search_options[:FLD_TEAM_ID] = params[:opponent] if params[:opponent]
-          search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
+          batting_options(search_options)
           walks = event_search(search_options)
 
           # Add hit by pitch events
@@ -124,10 +93,7 @@ class EventsController < ApplicationController
             BAT_ID: params[:bat_id],
             EVENT_CD: 16
           }
-          search_options[:year] = params[:year] if params[:year]
-          search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
-          search_options[:FLD_TEAM_ID] = params[:opponent] if params[:opponent]
-          search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
+          batting_options(search_options)
           hit_by_pitches = event_search(search_options)
 
           # Add events with sacrifice hit flag (SH_FL) set to true
@@ -135,10 +101,7 @@ class EventsController < ApplicationController
             BAT_ID: params[:bat_id],
             SH_FL: 'T'
           }
-          search_options[:year] = params[:year] if params[:year]
-          search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
-          search_options[:FLD_TEAM_ID] = params[:opponent] if params[:opponent]
-          search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
+          batting_options(search_options)
           sacrifice_hits = event_search(search_options)
 
           # Add events with sacrifice fly flag (SF_FL) set to true
@@ -146,10 +109,7 @@ class EventsController < ApplicationController
             BAT_ID: params[:bat_id],
             SF_FL: 'T'
           }
-          search_options[:year] = params[:year] if params[:year]
-          search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
-          search_options[:FLD_TEAM_ID] = params[:opponent] if params[:opponent]
-          search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
+          batting_options(search_options)
           sacrifice_flies = event_search(search_options)
 
           @batter_events = at_bats + walks + hit_by_pitches + sacrifice_hits + sacrifice_flies
@@ -161,10 +121,7 @@ class EventsController < ApplicationController
             BAT_ID: params[:bat_id],
             RBI_CT: [1,2,3,4]
           }
-          search_options[:year] = params[:year] if params[:year]
-          search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
-          search_options[:FLD_TEAM_ID] = params[:opponent] if params[:opponent]
-          search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
+          batting_options(search_options)
           @batter_events = event_search(search_options)
 
           # Number of events returned does not equal actual RBI because you can get between 1 and 4 RBI in one event.
@@ -181,28 +138,21 @@ class EventsController < ApplicationController
             BASE1_RUN_ID: params[:bat_id],
             RUN1_SB_FL: 'T'
           }
-          search_options[:year] = params[:year] if params[:year]
-          search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
-          search_options[:FLD_TEAM_ID] = params[:opponent] if params[:opponent]
+          batting_options(search_options)
           steal_second = event_search(search_options)
 
           search_options = {
             BASE2_RUN_ID: params[:bat_id],
             RUN2_SB_FL: 'T'
           }
-          search_options[:year] = params[:year] if params[:year]
-          search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
-          search_options[:FLD_TEAM_ID] = params[:opponent] if params[:opponent]
+          batting_options(search_options)
           steal_third = event_search(search_options)
 
           search_options = {
             BASE3_RUN_ID: params[:bat_id],
             RUN3_SB_FL: 'T'
           }
-          search_options[:year] = params[:year] if params[:year]
-          search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
-          search_options[:FLD_TEAM_ID] = params[:opponent] if params[:opponent]
-          search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
+          batting_options(search_options)
           steal_home = event_search(search_options)
 
           @batter_events = steal_second + steal_third + steal_home
@@ -214,30 +164,21 @@ class EventsController < ApplicationController
             BASE1_RUN_ID: params[:bat_id],
             RUN1_CS_FL: 'T'
           }
-          search_options[:year] = params[:year] if params[:year]
-          search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
-          search_options[:FLD_TEAM_ID] = params[:opponent] if params[:opponent]
-          search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
+          batting_options(search_options)
           caught_at_second = event_search(search_options)
 
           search_options = {
             BASE2_RUN_ID: params[:bat_id],
             RUN2_CS_FL: 'T'
           }
-          search_options[:year] = params[:year] if params[:year]
-          search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
-          search_options[:FLD_TEAM_ID] = params[:opponent] if params[:opponent]
-          search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
+          batting_options(search_options)
           caught_at_third = event_search(search_options)
 
           search_options = {
             BASE3_RUN_ID: params[:bat_id],
             RUN3_CS_FL: 'T'
           }
-          search_options[:year] = params[:year] if params[:year]
-          search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
-          search_options[:FLD_TEAM_ID] = params[:opponent] if params[:opponent]
-          search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
+          batting_options(search_options)
           caught_at_home = event_search(search_options)
 
           @batter_events = caught_at_second + caught_at_third + caught_at_home
@@ -254,40 +195,28 @@ class EventsController < ApplicationController
             # Ref: http://chadwick.sourceforge.net/doc/cwevent.html#cwtools-cwevent-plays
             BAT_DEST_ID: [4,5,6]
           }
-          search_options[:year] = params[:year] if params[:year]
-          search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
-          search_options[:FLD_TEAM_ID] = params[:opponent] if params[:opponent]
-          search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
+          batting_options(search_options)
           scored_batting = event_search(search_options)
 
           search_options = {
             BASE1_RUN_ID: params[:bat_id],
             RUN1_DEST_ID: [4,5,6]
           }
-          search_options[:year] = params[:year] if params[:year]
-          search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
-          search_options[:FLD_TEAM_ID] = params[:opponent] if params[:opponent]
-          search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
+          batting_options(search_options)
           scored_from_first = event_search(search_options)
 
           search_options = {
             BASE2_RUN_ID: params[:bat_id],
             RUN2_DEST_ID: [4,5,6]
           }
-          search_options[:year] = params[:year] if params[:year]
-          search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
-          search_options[:FLD_TEAM_ID] = params[:opponent] if params[:opponent]
-          search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
+          batting_options(search_options)
           scored_from_second = event_search(search_options)
 
           search_options = {
             BASE3_RUN_ID: params[:bat_id],
             RUN3_DEST_ID: [4,5,6]
           }
-          search_options[:year] = params[:year] if params[:year]
-          search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
-          search_options[:FLD_TEAM_ID] = params[:opponent] if params[:opponent]
-          search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
+          batting_options(search_options)
           scored_from_third = event_search(search_options)
 
           @batter_events = scored_batting + scored_from_first + scored_from_second + scored_from_third
@@ -495,6 +424,15 @@ class EventsController < ApplicationController
       search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
       return search_options
     end
+
+    def batting_options(search_options)
+      search_options[:year] = params[:year] if params[:year]
+      search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+      search_options[:FLD_TEAM_ID] = params[:opponent] if params[:opponent]
+      search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
+      return search_options
+    end
+
 
     def set_event
       @event = Event.find(params[:id])
