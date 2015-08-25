@@ -1,3 +1,10 @@
+GIT
+  remote: git://github.com/radar/by_star
+  revision: d2d997c98b43999283d6c443351dfae3815c02b4
+  specs:
+    by_star (2.2.1)
+      activesupport
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -104,6 +111,7 @@ PLATFORMS
 
 DEPENDENCIES
   activerecord-import
+  by_star!
   pg
   rails (= 4.2.3)
   rails-api
