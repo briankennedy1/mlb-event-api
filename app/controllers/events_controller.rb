@@ -498,7 +498,13 @@ class EventsController < ApplicationController
   private
 
     def event_search(options)
+      # if options.has_key?(year)
+        # defined_year = options[year]
+        # options.delete_key(year)
+        # Event.by_year(defined_year).where(options).order(:id)
+      # else
       Event.where(options).order(:id)
+      # end
     end
 
     def set_event
