@@ -30,16 +30,15 @@ end
 puts "~~~~~~~~~~~~~~~~~"
 puts "~~ Adding hits ~~"
 puts "~~~~~~~~~~~~~~~~~"
-all_hits = Event.where(EVENT_CD: [20,21,22,23]).order(:game_date)
+all_hits = Event.where(EVENT_CD: [20,21,22,23]).order(:game_date, :id)
 progressbar = ProgressBar.create(:starting_at => 0, :total => all_hits.count)
 
 all_hits.each do |current_event|
     current_event.attributes= {
-      career_hit: Event.where(BAT_ID: current_event.BAT_ID, EVENT_CD: [20,21,22,23]).count + 1,
-      season_hit: Event.by_year(current_event.game_date.year).where(BAT_ID: current_event.BAT_ID, EVENT_CD: [20,21,22,23]).count + 1,
-      game_hit: Event.by_day(current_event.game_date).where(BAT_ID: current_event.BAT_ID, EVENT_CD: [20,21,22,23]).count + 1
+      career_hit: all_hits.where(BAT_ID: current_event.BAT_ID, EVENT_CD: [20,21,22,23]).index(current_event) + 1,
+      season_hit: all_hits.by_year(current_event.game_date.year).where(BAT_ID: current_event.BAT_ID, EVENT_CD: [20,21,22,23]).index(current_event) + 1,
+      game_hit: all_hits.by_day(current_event.game_date).where(BAT_ID: current_event.BAT_ID, EVENT_CD: [20,21,22,23]).index(current_event) + 1
     }
-  end
   current_event.save
   progressbar.increment
 end
