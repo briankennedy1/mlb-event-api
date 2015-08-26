@@ -11,7 +11,7 @@ gem 'pg'
 
 gem 'ruby-progressbar'
 
-gem 'activerecord-import'
+# gem 'activerecord-import'
 
 gem 'by_star', :git => "git://github.com/radar/by_star"
 

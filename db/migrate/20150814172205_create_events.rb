@@ -3,9 +3,9 @@ class CreateEvents < ActiveRecord::Migration
     create_table :events do |t|
       t.string :GAME_ID, :limit => 12
       t.date :game_date
-      t.integer :career_hits
-      t.integer :season_hits
-      t.integer :game_hits
+      t.integer :career_hit
+      t.integer :season_hit
+      t.integer :game_hit
       t.string :AWAY_TEAM_ID, :limit => 3
       t.integer :INN_CT, :limit => 2
       t.integer :BAT_HOME_ID, :limit => 1
