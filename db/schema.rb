@@ -19,6 +19,9 @@ ActiveRecord::Schema.define(version: 20150814172205) do
   create_table "events", force: :cascade do |t|
     t.string   "GAME_ID",                   limit: 12
     t.date     "game_date"
+    t.integer  "career_hits"
+    t.integer  "season_hits"
+    t.integer  "game_hits"
     t.string   "AWAY_TEAM_ID",              limit: 3
     t.integer  "INN_CT",                    limit: 2
     t.integer  "BAT_HOME_ID",               limit: 2
