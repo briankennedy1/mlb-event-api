@@ -22,6 +22,9 @@ ActiveRecord::Schema.define(version: 20150814172205) do
     t.integer  "career_hit"
     t.integer  "season_hit"
     t.integer  "game_hit"
+    t.integer  "career_single"
+    t.integer  "season_single"
+    t.integer  "game_single"
     t.string   "AWAY_TEAM_ID",              limit: 3
     t.integer  "INN_CT",                    limit: 2
     t.integer  "BAT_HOME_ID",               limit: 2

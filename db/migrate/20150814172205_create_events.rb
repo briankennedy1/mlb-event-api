@@ -6,6 +6,18 @@ class CreateEvents < ActiveRecord::Migration
       t.integer :career_hit
       t.integer :season_hit
       t.integer :game_hit
+      t.integer :career_single
+      t.integer :season_single
+      t.integer :game_single
+      t.integer :career_double
+      t.integer :season_double
+      t.integer :game_double
+      t.integer :career_triple
+      t.integer :season_triple
+      t.integer :game_triple
+      t.integer :career_home_run
+      t.integer :season_home_run
+      t.integer :game_home_run
       t.string :AWAY_TEAM_ID, :limit => 3
       t.integer :INN_CT, :limit => 2
       t.integer :BAT_HOME_ID, :limit => 1
