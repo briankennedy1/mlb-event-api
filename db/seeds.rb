@@ -120,3 +120,8 @@ end
 puts "~~~~~~~~~~~~~~~~~~~"
 puts "~~ Finished hits ~~"
 puts "~~~~~~~~~~~~~~~~~~~"
+
+
+# If career_home_run == nil
+  # generate and fill it in upon request
+# Else serve the file!
