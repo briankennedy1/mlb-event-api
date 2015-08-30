@@ -79,7 +79,7 @@ class CreateEvents < ActiveRecord::Migration
       t.integer :RUN1_DEST_ID, :limit => 1
       t.integer :RUN2_DEST_ID, :limit => 1
       t.integer :RUN3_DEST_ID, :limit => 1
-      t.string :BAT_PLAY_TX, :limit => 8
+      t.string :BAT_PLAY_TX, :limit => 15
       t.string :RUN1_PLAY_TX, :limit => 15
       t.string :RUN2_PLAY_TX, :limit => 15
       t.string :RUN3_PLAY_TX, :limit => 15

@@ -95,7 +95,7 @@ ActiveRecord::Schema.define(version: 20150814172205) do
     t.integer  "RUN1_DEST_ID",              limit: 2
     t.integer  "RUN2_DEST_ID",              limit: 2
     t.integer  "RUN3_DEST_ID",              limit: 2
-    t.string   "BAT_PLAY_TX",               limit: 8
+    t.string   "BAT_PLAY_TX",               limit: 15
     t.string   "RUN1_PLAY_TX",              limit: 15
     t.string   "RUN2_PLAY_TX",              limit: 15
     t.string   "RUN3_PLAY_TX",              limit: 15
