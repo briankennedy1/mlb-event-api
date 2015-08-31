@@ -409,36 +409,36 @@ class EventsController < ApplicationController
 
   private
 
-    def event_search(options)
-      if options.has_key?(:year)
-        Event.by_year(options[:year]).where(options.except(:year)).order(:id)
-      else
-      Event.where(options).order(:id)
-      end
+  def event_search(options)
+    if options.key?(:year)
+      Event.by_year(options[:year]).where(options.except(:year)).order(:id)
+    else
+    Event.where(options).order(:id)
     end
+  end
 
-    def pitching_options(search_options)
-      search_options[:year] = params[:year] if params[:year]
-      search_options[:BAT_ID] = params[:bat_id] if params[:bat_id]
-      search_options[:BAT_TEAM_ID] = params[:opponent] if params[:opponent]
-      search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
-      return search_options
-    end
+  def pitching_options(search_options)
+    search_options[:year] = params[:year] if params[:year]
+    search_options[:BAT_ID] = params[:bat_id] if params[:bat_id]
+    search_options[:BAT_TEAM_ID] = params[:opponent] if params[:opponent]
+    search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
+    search_options
+  end
 
-    def batting_options(search_options)
-      search_options[:year] = params[:year] if params[:year]
-      search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
-      search_options[:FLD_TEAM_ID] = params[:opponent] if params[:opponent]
-      search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
-      return search_options
-    end
+  def batting_options(search_options)
+    search_options[:year] = params[:year] if params[:year]
+    search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
+    search_options[:FLD_TEAM_ID] = params[:opponent] if params[:opponent]
+    search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
+    search_options
+  end
 
+  def set_event
+    @event = Event.find(params[:id])
+  end
 
-    def set_event
-      @event = Event.find(params[:id])
-    end
-
-    def event_params
-      params.require(:event).permit(:GAME_ID, :PIT_ID, :BAT_ID, :EVENT_TX, :EVENT_CD)
-    end
+  def event_params
+    params.require(:event)
+      .permit(:GAME_ID, :PIT_ID, :BAT_ID, :EVENT_TX, :EVENT_CD)
+  end
 end
