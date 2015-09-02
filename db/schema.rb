@@ -17,6 +17,8 @@ ActiveRecord::Schema.define(version: 20150814172205) do
   enable_extension "plpgsql"
 
   create_table "events", force: :cascade do |t|
+    t.integer  "seq_events"
+    t.integer  "year_id"
     t.string   "game_id",                   limit: 12
     t.date     "game_date"
     t.integer  "career_hit"

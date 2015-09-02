@@ -319,7 +319,7 @@ class EventsController < ApplicationController
           # multiple times, one for each person it 'belongs' to.
           # So I actually like this approach for now.
           search_options = {
-            resp_pit_id: params[:pit_id],
+            res_pit_id: params[:pit_id],
             bat_dest_id: [4, 6]
           }
           pitching_options(search_options)

@@ -1,6 +1,8 @@
 class CreateEvents < ActiveRecord::Migration
   def change
     create_table :events do |t|
+      t.integer :seq_events
+      t.integer :year_id
       t.string :game_id, :limit => 12
       t.date :game_date
       t.integer :career_hit
@@ -33,8 +35,8 @@ class CreateEvents < ActiveRecord::Migration
       t.string :resp_bat_hand_cd, :limit => 1
       t.string :pit_id, :limit => 8
       t.string :pit_hand_cd, :limit => 1
-      t.string :resp_pit_id, :limit => 8
-      t.string :resp_pit_hand_cd, :limit => 1
+      t.string :res_pit_id, :limit => 8
+      t.string :res_pit_hand_cd, :limit => 1
       t.string :pos2_fld_id, :limit => 8
       t.string :pos3_fld_id, :limit => 8
       t.string :pos4_fld_id, :limit => 8
