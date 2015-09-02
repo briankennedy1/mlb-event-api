@@ -1,31 +1,89 @@
 require 'csv'
 require 'ruby-progressbar'
-# require 'activerecord-import'
+require 'smarter_csv'
+require 'parallel'
 
-files = Dir.glob('./events/*.csv')
+# files = Dir.glob('./events/*.csv')
 
-files.each do |csv_file|
-  puts '*' * 50
-  puts "Starting #{csv_file}"
-  csv_text = File.read(csv_file)
-  csv = CSV.parse(csv_text, :headers => true)
-  progressbar = ProgressBar.create(
+csv_file = './events/2001.csv'
+
+puts '*' * 50
+puts "Starting #{csv_file}"
+
+  PBAR = ProgressBar.create(
     starting_at: 0,
-    total: csv.count,
+    total: %x{wc -l < "#{csv_file}"}.to_i,
     format: '%a %e %P% Processed: %c from %C'
   )
 
-  csv.each do |row|
-    current_event = Event.new(row.to_hash)
-
+def worker(array_of_hashes)
+  ActiveRecord::Base.connection.reconnect!
+  array_of_hashes.each do |data_hash|
+    current_event = Event.new(data_hash)
     date_to_add = "#{current_event.game_id[3..6]}-#{current_event.game_id[7..8]}-#{current_event.game_id[9..10]}"
     current_event.attributes= { game_date: date_to_add }
-
     current_event.save
-    progressbar.increment
   end
-  puts "Finished #{csv_file}"
+  PBAR.progress= Event.all.count
 end
+
+chunks = SmarterCSV.process(csv_file, chunk_size: 3000)
+
+# 4 processes = 23 minutes
+# 8 processes = 
+
+Parallel.each(chunks, :in_processes => 8) do |chunk|
+  worker(chunk)
+end
+
+puts "Finished #{csv_file}"
+
+
+
+# options = { chunk_size: 20_000 }
+# SmarterCSV.process(csv_file, options) do |chunk|
+#   progressbar = ProgressBar.create(
+#     starting_at: 0,
+#     total: %x{wc -l < "#{csv_file}"}.to_i,
+#     format: '%a %e %P% Processed: %c from %C'
+#   )
+#
+#   chunk.each do |data_hash|
+#     current_event = Event.new(data_hash)
+#
+#     date_to_add = "#{current_event.game_id[3..6]}-#{current_event.game_id[7..8]}-#{current_event.game_id[9..10]}"
+#
+#     current_event.attributes= { game_date: date_to_add }
+#
+#     current_event.save
+#     progressbar.increment
+#   end
+# end
+# puts "Finished #{csv_file}"
+
+
+# files.each do |csv_file|
+#   puts '*' * 50
+#   puts "Starting #{csv_file}"
+#   csv_text = File.read(csv_file)
+#   csv = CSV.parse(csv_text, :headers => true)
+#   progressbar = ProgressBar.create(
+#     starting_at: 0,
+#     total: csv.count,
+#     format: '%a %e %P% Processed: %c from %C'
+#   )
+#
+#   csv.each do |row|
+#     current_event = Event.new(row.to_hash)
+#
+#     date_to_add = "#{current_event.game_id[3..6]}-#{current_event.game_id[7..8]}-#{current_event.game_id[9..10]}"
+#     current_event.attributes= { game_date: date_to_add }
+#
+#     current_event.save
+#     progressbar.increment
+#   end
+#   puts "Finished #{csv_file}"
+# end
 
 # Order all events by game date
 # Find every event with a hit

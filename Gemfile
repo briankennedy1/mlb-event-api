@@ -15,6 +15,9 @@ gem 'activerecord-import'
 
 gem 'by_star', :git => "git://github.com/radar/by_star"
 
+gem 'smarter_csv'
+gem 'parallel'
+
 # To use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
