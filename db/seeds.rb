@@ -9,13 +9,20 @@ files.each do |csv_file|
   puts "Starting #{csv_file}"
   csv_text = File.read(csv_file)
   csv = CSV.parse(csv_text, :headers => true)
-  progressbar = ProgressBar.create(starting_at:0, total: csv.count, format: "%a %e %P% Processed: %c from %C")
+  progressbar = ProgressBar.create(
+    starting_at: 0,
+    total: csv.count,
+    format: '%a %e %P% Processed: %c from %C'
+  )
 
   csv.each do |row|
     current_event = Event.new(row.to_hash)
 
-    date_to_add = "#{current_event.GAME_ID[3..6]}-#{current_event.GAME_ID[7..8]}-#{current_event.GAME_ID[9..10]}"
-    current_event.attributes= {game_date: date_to_add}
+    date_to_add =
+      "#{current_event.GAME_ID[3..6]}-
+      #{current_event.GAME_ID[7..8]}-
+      #{current_event.GAME_ID[9..10]}"
+    current_event.attributes= { game_date: date_to_add }
 
     current_event.save
     progressbar.increment
