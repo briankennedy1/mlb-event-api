@@ -25,7 +25,7 @@ class EventsController < ApplicationController
 
   # Return all events from a specific game
   def show_game
-    @game = event_search(GAME_ID: params[:game_id])
+    @game = event_search(game_id: params[:game_id])
     render json: @game
   end
 
@@ -60,17 +60,17 @@ class EventsController < ApplicationController
         # Return events by searching hash for corresponding event code.
         if event_types.key?(params[:event_type])
           search_options = {
-            BAT_ID: params[:bat_id],
-            EVENT_CD: event_types[params[:event_type]]
+            bat_id: params[:bat_id],
+            event_cd: event_types[params[:event_type]]
           }
           batting_options(search_options)
           @batter_events = event_search(search_options)
 
-        # Look for events with at bat flag (AB_FL) set to true
+        # Look for events with at bat flag (ab_fl) set to true
         elsif params[:event_type] == 'at_bats'
           search_options = {
-            BAT_ID: params[:bat_id],
-            AB_FL: 'T'
+            bat_id: params[:bat_id],
+            ab_fl: 'T'
           }
 
           batting_options(search_options)
@@ -80,42 +80,42 @@ class EventsController < ApplicationController
         # Plate apperances = at bats + walks + hit by pitches +
         # sacrifice hits + sacrifice flies
         elsif params[:event_type] == 'plate_appearances'
-          # Look for events with at bat flag (AB_FL) set to true
+          # Look for events with at bat flag (ab_fl) set to true
           search_options = {
-            BAT_ID: params[:bat_id],
-            AB_FL: 'T'
+            bat_id: params[:bat_id],
+            ab_fl: 'T'
           }
           batting_options(search_options)
           at_bats = event_search(search_options)
 
           # Add walks (14 are regular, 15 are intentional)
           search_options = {
-            BAT_ID: params[:bat_id],
-            EVENT_CD: [14, 15]
+            bat_id: params[:bat_id],
+            event_cd: [14, 15]
           }
           batting_options(search_options)
           walks = event_search(search_options)
 
           # Add hit by pitch events
           search_options = {
-            BAT_ID: params[:bat_id],
-            EVENT_CD: 16
+            bat_id: params[:bat_id],
+            event_cd: 16
           }
           batting_options(search_options)
           hit_by_pitches = event_search(search_options)
 
-          # Add events with sacrifice hit flag (SH_FL) set to true
+          # Add events with sacrifice hit flag (sh_fl) set to true
           search_options = {
-            BAT_ID: params[:bat_id],
-            SH_FL: 'T'
+            bat_id: params[:bat_id],
+            sh_fl: 'T'
           }
           batting_options(search_options)
           sacrifice_hits = event_search(search_options)
 
-          # Add events with sacrifice fly flag (SF_FL) set to true
+          # Add events with sacrifice fly flag (sf_fl) set to true
           search_options = {
-            BAT_ID: params[:bat_id],
-            SF_FL: 'T'
+            bat_id: params[:bat_id],
+            sf_fl: 'T'
           }
           batting_options(search_options)
           sacrifice_flies = event_search(search_options)
@@ -131,8 +131,8 @@ class EventsController < ApplicationController
         # Return events with a RBI by specified batter
         elsif params[:event_type] == 'rbi'
           search_options = {
-            BAT_ID: params[:bat_id],
-            RBI_CT: [1, 2, 3, 4]
+            bat_id: params[:bat_id],
+            rbi_ct: [1, 2, 3, 4]
           }
           batting_options(search_options)
           @batter_events = event_search(search_options)
@@ -141,7 +141,7 @@ class EventsController < ApplicationController
           # because you can get between 1 and 4 RBI in one event.
           # Math to add up if RBI totals:
           # @rbi_count = 0
-          # @batter_events.each {|event| @rbi_count += event[:RBI_CT]}
+          # @batter_events.each {|event| @rbi_count += event[:rbi_ct]}
           # p '*' * 50
           # p @rbi_count
           # p '*' * 50
@@ -150,22 +150,22 @@ class EventsController < ApplicationController
         # by a specified baserunner (using bat_id).
         elsif params[:event_type] == 'stolen_bases'
           search_options = {
-            BASE1_RUN_ID: params[:bat_id],
-            RUN1_SB_FL: 'T'
+            base1_run_id: params[:bat_id],
+            run1_sb_fl: 'T'
           }
           batting_options(search_options)
           steal_second = event_search(search_options)
 
           search_options = {
-            BASE2_RUN_ID: params[:bat_id],
-            RUN2_SB_FL: 'T'
+            base2_run_id: params[:bat_id],
+            run2_sb_fl: 'T'
           }
           batting_options(search_options)
           steal_third = event_search(search_options)
 
           search_options = {
-            BASE3_RUN_ID: params[:bat_id],
-            RUN3_SB_FL: 'T'
+            base3_run_id: params[:bat_id],
+            run3_sb_fl: 'T'
           }
           batting_options(search_options)
           steal_home = event_search(search_options)
@@ -177,22 +177,22 @@ class EventsController < ApplicationController
         # was caught stealing ( at second, third and home).
         elsif params[:event_type] == 'caught_stealing'
           search_options = {
-            BASE1_RUN_ID: params[:bat_id],
-            RUN1_CS_FL: 'T'
+            base1_run_id: params[:bat_id],
+            run1_cs_fl: 'T'
           }
           batting_options(search_options)
           caught_at_second = event_search(search_options)
 
           search_options = {
-            BASE2_RUN_ID: params[:bat_id],
-            RUN2_CS_FL: 'T'
+            base2_run_id: params[:bat_id],
+            run2_cs_fl: 'T'
           }
           batting_options(search_options)
           caught_at_third = event_search(search_options)
 
           search_options = {
-            BASE3_RUN_ID: params[:bat_id],
-            RUN3_CS_FL: 'T'
+            base3_run_id: params[:bat_id],
+            run3_cs_fl: 'T'
           }
           batting_options(search_options)
           caught_at_home = event_search(search_options)
@@ -204,34 +204,34 @@ class EventsController < ApplicationController
         # (using bat_id) scored on the play.
         elsif params[:event_type] == 'runs'
           search_options = {
-            BAT_ID: params[:bat_id],
+            bat_id: params[:bat_id],
             # Destination code 4, 5 and 6 all mean the runner scores.
             # 4 = runner scored
             # 5 = runner scored, unearned
             # 6 = runner scored, unearned to team, earned to pitcher
             # Ref: http://chadwick.sourceforge.net/doc/cwevent.html#cwtools-cwevent-plays
-            BAT_DEST_ID: [4, 5, 6]
+            bat_dest_id: [4, 5, 6]
           }
           batting_options(search_options)
           scored_batting = event_search(search_options)
 
           search_options = {
-            BASE1_RUN_ID: params[:bat_id],
-            RUN1_DEST_ID: [4, 5, 6]
+            base1_run_id: params[:bat_id],
+            run1_dest_id: [4, 5, 6]
           }
           batting_options(search_options)
           scored_from_first = event_search(search_options)
 
           search_options = {
-            BASE2_RUN_ID: params[:bat_id],
-            RUN2_DEST_ID: [4, 5, 6]
+            base2_run_id: params[:bat_id],
+            run2_dest_id: [4, 5, 6]
           }
           batting_options(search_options)
           scored_from_second = event_search(search_options)
 
           search_options = {
-            BASE3_RUN_ID: params[:bat_id],
-            RUN3_DEST_ID: [4, 5, 6]
+            base3_run_id: params[:bat_id],
+            run3_dest_id: [4, 5, 6]
           }
           batting_options(search_options)
           scored_from_third = event_search(search_options)
@@ -254,7 +254,7 @@ class EventsController < ApplicationController
 
       # Return all the events by a  specific batter if no event is specified.
       else
-        @batter_events = event_search(BAT_ID: params[:bat_id])
+        @batter_events = event_search(bat_id: params[:bat_id])
       end
       render json: @batter_events
     end
@@ -293,8 +293,8 @@ class EventsController < ApplicationController
         # Return pitcher events by searching hash for corresponding event code.
         if event_types.key?(params[:event_type])
           search_options = {
-            PIT_ID: params[:pit_id],
-            EVENT_CD: event_types[params[:event_type]]
+            pit_id: params[:pit_id],
+            event_cd: event_types[params[:event_type]]
           }
 
           pitching_options(search_options)
@@ -303,7 +303,7 @@ class EventsController < ApplicationController
         # Return events where the pitcher threw wild pitches
         elsif params[:event_type] == 'wild_pitches'
           search_options = {
-            PIT_ID: params[:pit_id],
+            pit_id: params[:pit_id],
             WP_FL: 'T'
           }
           pitching_options(search_options)
@@ -319,29 +319,29 @@ class EventsController < ApplicationController
           # multiple times, one for each person it 'belongs' to.
           # So I actually like this approach for now.
           search_options = {
-            RESP_PIT_ID: params[:pit_id],
-            BAT_DEST_ID: [4, 6]
+            resp_pit_id: params[:pit_id],
+            bat_dest_id: [4, 6]
           }
           pitching_options(search_options)
           scored_batting = event_search(search_options)
 
           search_options = {
-            RUN1_RESP_PIT_ID: params[:pit_id],
-            RUN1_DEST_ID: [4, 6]
+            run1_resp_pit_id: params[:pit_id],
+            run1_dest_id: [4, 6]
           }
           pitching_options(search_options)
           scored_from_first = event_search(search_options)
 
           search_options = {
-            RUN2_RESP_PIT_ID: params[:pit_id],
-            RUN2_DEST_ID: [4, 6]
+            run2_resp_pit_id: params[:pit_id],
+            run2_dest_id: [4, 6]
           }
           pitching_options(search_options)
           scored_from_second = event_search(search_options)
 
           search_options = {
-            RUN3_RESP_PIT_ID: params[:pit_id],
-            RUN3_DEST_ID: [4, 6]
+            run3_resp_pit_id: params[:pit_id],
+            run3_dest_id: [4, 6]
           }
           pitching_options(search_options)
           scored_from_third = event_search(search_options)
@@ -356,29 +356,29 @@ class EventsController < ApplicationController
         # Return events where the pitcher allowed runs
         elsif params[:event_type] == 'runs_allowed'
           search_options = {
-            PIT_ID: params[:pit_id],
-            BAT_DEST_ID: [4, 5, 6]
+            pit_id: params[:pit_id],
+            bat_dest_id: [4, 5, 6]
           }
           pitching_options(search_options)
           scored_batting = event_search(search_options)
 
           search_options = {
-            RUN1_RESP_PIT_ID: params[:pit_id],
-            RUN1_DEST_ID: [4, 5, 6]
+            run1_resp_pit_id: params[:pit_id],
+            run1_dest_id: [4, 5, 6]
           }
           pitching_options(search_options)
           scored_from_first = event_search(search_options)
 
           search_options = {
-            RUN2_RESP_PIT_ID: params[:pit_id],
-            RUN2_DEST_ID: [4, 5, 6]
+            run2_resp_pit_id: params[:pit_id],
+            run2_dest_id: [4, 5, 6]
           }
           pitching_options(search_options)
           scored_from_second = event_search(search_options)
 
           search_options = {
-            RUN3_RESP_PIT_ID: params[:pit_id],
-            RUN3_DEST_ID: [4, 5, 6]
+            run3_resp_pit_id: params[:pit_id],
+            run3_dest_id: [4, 5, 6]
           }
           pitching_options(search_options)
           scored_from_third = event_search(search_options)
@@ -394,42 +394,42 @@ class EventsController < ApplicationController
         # Batters faced = at bats + walks + hit by pitches +
         # sacrifice hits + sacrifice flies.
         elsif params[:event_type] == 'batters_faced'
-          # Look for events with at bat flag (AB_FL) set to true
+          # Look for events with at bat flag (ab_fl) set to true
           search_options = {
-            PIT_ID: params[:pit_id],
-            AB_FL: 'T'
+            pit_id: params[:pit_id],
+            ab_fl: 'T'
           }
           pitching_options(search_options)
           at_bats = event_search(search_options)
 
           # Add walks (14 are regular, 15 are intentional)
           search_options = {
-            PIT_ID: params[:pit_id],
-            EVENT_CD: [14, 15]
+            pit_id: params[:pit_id],
+            event_cd: [14, 15]
           }
           pitching_options(search_options)
           walks = event_search(search_options)
 
           # Add hit by pitch events
           search_options = {
-            PIT_ID: params[:pit_id],
-            EVENT_CD: 16
+            pit_id: params[:pit_id],
+            event_cd: 16
           }
           pitching_options(search_options)
           hit_by_pitches = event_search(search_options)
 
-          # Add events with sacrifice hit flag (SH_FL) set to true
+          # Add events with sacrifice hit flag (sh_fl) set to true
           search_options = {
-            PIT_ID: params[:pit_id],
-            SH_FL: 'T'
+            pit_id: params[:pit_id],
+            sh_fl: 'T'
           }
           pitching_options(search_options)
           sacrifice_hits = event_search(search_options)
 
-          # Add events with sacrifice fly flag (SF_FL) set to true
+          # Add events with sacrifice fly flag (sf_fl) set to true
           search_options = {
-            PIT_ID: params[:pit_id],
-            SF_FL: 'T'
+            pit_id: params[:pit_id],
+            sf_fl: 'T'
           }
           pitching_options(search_options)
           sacrifice_flies = event_search(search_options)
@@ -452,7 +452,7 @@ class EventsController < ApplicationController
 
       # Return all events from specified pitcher.
       else
-        @pitcher_events = event_search(PIT_ID: params[:pit_id])
+        @pitcher_events = event_search(pit_id: params[:pit_id])
       end
       render json: @pitcher_events
     end
@@ -470,17 +470,17 @@ class EventsController < ApplicationController
 
   def pitching_options(search_options)
     search_options[:year] = params[:year] if params[:year]
-    search_options[:BAT_ID] = params[:bat_id] if params[:bat_id]
-    search_options[:BAT_TEAM_ID] = params[:opponent] if params[:opponent]
-    search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
+    search_options[:bat_id] = params[:bat_id] if params[:bat_id]
+    search_options[:bat_team_id] = params[:opponent] if params[:opponent]
+    search_options[:game_end_fl] = 'T' if params[:game_ending] == 'true'
     search_options
   end
 
   def batting_options(search_options)
     search_options[:year] = params[:year] if params[:year]
-    search_options[:PIT_ID] = params[:pit_id] if params[:pit_id]
-    search_options[:FLD_TEAM_ID] = params[:opponent] if params[:opponent]
-    search_options[:GAME_END_FL] = 'T' if params[:game_ending] == 'true'
+    search_options[:pit_id] = params[:pit_id] if params[:pit_id]
+    search_options[:fld_team_id] = params[:opponent] if params[:opponent]
+    search_options[:game_end_fl] = 'T' if params[:game_ending] == 'true'
     search_options
   end
 
@@ -490,6 +490,6 @@ class EventsController < ApplicationController
 
   def event_params
     params.require(:event)
-      .permit(:GAME_ID, :PIT_ID, :BAT_ID, :EVENT_TX, :EVENT_CD)
+      .permit(:game_id, :pit_id, :bat_id, :event_tx, :event_cd)
   end
 end
