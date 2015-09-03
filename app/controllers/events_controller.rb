@@ -126,7 +126,7 @@ class EventsController < ApplicationController
             hit_by_pitches +
             sacrifice_hits +
             sacrifice_flies
-          @batter_events.sort_by! { |events| events[:id] }
+          @batter_events.sort_by! { |events| events[:game_date] }
 
         # Return events with a RBI by specified batter
         elsif params[:event_type] == 'rbi'
@@ -171,7 +171,7 @@ class EventsController < ApplicationController
           steal_home = event_search(search_options)
 
           @batter_events = steal_second + steal_third + steal_home
-          @batter_events.sort_by! { |events| events[:id] }
+          @batter_events.sort_by! { |events| events[:game_date] }
 
         # Return events where the baserunner (using bat_id)
         # was caught stealing ( at second, third and home).
@@ -198,7 +198,7 @@ class EventsController < ApplicationController
           caught_at_home = event_search(search_options)
 
           @batter_events = caught_at_second + caught_at_third + caught_at_home
-          @batter_events.sort_by! { |events| events[:id] }
+          @batter_events.sort_by! { |events| events[:game_date] }
 
         # Return events where the batter or baserunner
         # (using bat_id) scored on the play.
@@ -241,7 +241,7 @@ class EventsController < ApplicationController
             scored_from_first +
             scored_from_second +
             scored_from_third
-          @batter_events.sort_by! { |events| events[:id] }
+          @batter_events.sort_by! { |events| events[:game_date] }
 
         # Return an error message if the event was not properly specified.
         else
@@ -351,7 +351,7 @@ class EventsController < ApplicationController
             scored_from_first +
             scored_from_second +
             scored_from_third
-          @pitcher_events.sort_by! { |events| events[:id] }
+          @pitcher_events.sort_by! { |events| events[:game_date] }
 
         # Return events where the pitcher allowed runs
         elsif params[:event_type] == 'runs_allowed'
@@ -388,7 +388,7 @@ class EventsController < ApplicationController
             scored_from_first +
             scored_from_second +
             scored_from_third
-          @pitcher_events.sort_by! { |events| events[:id] }
+          @pitcher_events.sort_by! { |events| events[:game_date] }
 
         # Return events where pitcher faced batters.
         # Batters faced = at bats + walks + hit by pitches +
@@ -439,7 +439,7 @@ class EventsController < ApplicationController
             walks + hit_by_pitches +
             sacrifice_hits +
             sacrifice_flies
-          @pitcher_events.sort_by! { |events| events[:id] }
+          @pitcher_events.sort_by! { |events| events[:game_date] }
 
         # Return an error message if the event was not properly specified.
         else
@@ -462,9 +462,9 @@ class EventsController < ApplicationController
 
   def event_search(options)
     if options.key?(:year)
-      Event.by_year(options[:year]).where(options.except(:year)).order(:id)
+      Event.by_year(options[:year]).where(options.except(:year)).order(:game_date)
     else
-      Event.where(options).order(:id)
+      Event.where(options).order(:game_date)
     end
   end
 

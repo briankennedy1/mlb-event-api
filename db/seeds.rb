@@ -3,64 +3,51 @@ require 'ruby-progressbar'
 require 'smarter_csv'
 require 'parallel'
 
-# files = Dir.glob('./events/*.csv')
+files = Dir.glob('./events/*.csv')
 
-csv_file = './events/2001.csv'
+PBAR = ProgressBar.create(
+  starting_at: 0,
+  total: files.count,
+  format: '%a %e %P% Processed: %c from %C'
+)
 
-puts '*' * 50
-puts "Starting #{csv_file}"
-
-  PBAR = ProgressBar.create(
-    starting_at: 0,
-    total: %x{wc -l < "#{csv_file}"}.to_i,
-    format: '%a %e %P% Processed: %c from %C'
-  )
-
-def worker(array_of_hashes)
-  ActiveRecord::Base.connection.reconnect!
-  array_of_hashes.each do |data_hash|
-    current_event = Event.new(data_hash)
-    date_to_add = "#{current_event.game_id[3..6]}-#{current_event.game_id[7..8]}-#{current_event.game_id[9..10]}"
-    current_event.attributes= { game_date: date_to_add }
-    current_event.save
+files.each do |csv_file|
+  def worker(array_of_hashes)
+    ActiveRecord::Base.connection.reconnect!
+    array_of_hashes.each do |data_hash|
+      current_event = Event.new(data_hash)
+      date_to_add = "#{current_event.game_id[3..6]}-#{current_event.game_id[7..8]}-#{current_event.game_id[9..10]}"
+      current_event.attributes= { game_date: date_to_add }
+      current_event.save
+    end
   end
-  PBAR.progress= Event.all.count
+
+  chunks = SmarterCSV.process(csv_file, chunk_size: 1_000)
+
+  Parallel.each(chunks) do |chunk|
+    worker(chunk)
+  end
+  PBAR.increment
 end
 
-chunks = SmarterCSV.process(csv_file, chunk_size: 3000)
-
-# 4 processes = 23 minutes
-# 8 processes = 
-
-Parallel.each(chunks, :in_processes => 8) do |chunk|
-  worker(chunk)
-end
-
-puts "Finished #{csv_file}"
-
-
-
-# options = { chunk_size: 20_000 }
-# SmarterCSV.process(csv_file, options) do |chunk|
-#   progressbar = ProgressBar.create(
-#     starting_at: 0,
-#     total: %x{wc -l < "#{csv_file}"}.to_i,
-#     format: '%a %e %P% Processed: %c from %C'
-#   )
+# files.each do |csv_file|
+#   p '*' * 50
+#   p "Starting #{csv_file}"
 #
-#   chunk.each do |data_hash|
-#     current_event = Event.new(data_hash)
+#   options = { chunk_size: 1_000 }
+#   SmarterCSV.process(csv_file, options) do |chunk|
+#     chunk.each do |data_hash|
+#       current_event = Event.new(data_hash)
 #
-#     date_to_add = "#{current_event.game_id[3..6]}-#{current_event.game_id[7..8]}-#{current_event.game_id[9..10]}"
+#       date_to_add = "#{current_event.game_id[3..6]}-#{current_event.game_id[7..8]}-#{current_event.game_id[9..10]}"
 #
-#     current_event.attributes= { game_date: date_to_add }
+#       current_event.attributes= { game_date: date_to_add }
 #
-#     current_event.save
-#     progressbar.increment
+#       current_event.save
+#     end
 #   end
+#   puts "Finished #{csv_file}"
 # end
-# puts "Finished #{csv_file}"
-
 
 # files.each do |csv_file|
 #   puts '*' * 50
