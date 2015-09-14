@@ -304,7 +304,7 @@ class EventsController < ApplicationController
         elsif params[:event_type] == 'wild_pitches'
           search_options = {
             pit_id: params[:pit_id],
-            WP_FL: 'T'
+            wp_fl: 'T'
           }
           pitching_options(search_options)
           @pitcher_events = event_search(search_options)
