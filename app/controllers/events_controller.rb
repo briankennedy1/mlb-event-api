@@ -32,7 +32,7 @@ class EventsController < ApplicationController
   # Return events based on a specific batter.
   def show_batter_events
     # Return error message if no batter is specified.
-    if params[:bat_id] == nil
+    if params[:bat_id].nil?
       render json: {
         error: 'Missing bat_id',
         message: 'Please query the data with a specific batter using bat_id.
@@ -137,14 +137,14 @@ class EventsController < ApplicationController
           batting_options(search_options)
           @batter_events = event_search(search_options)
 
-          # Number of events returned does not equal actual RBI
-          # because you can get between 1 and 4 RBI in one event.
-          # Math to add up if RBI totals:
-          # @rbi_count = 0
-          # @batter_events.each {|event| @rbi_count += event[:rbi_ct]}
-          # p '*' * 50
-          # p @rbi_count
-          # p '*' * 50
+        # Number of events returned does not equal actual RBI
+        # because you can get between 1 and 4 RBI in one event.
+        # Math to add up if RBI totals:
+        # @rbi_count = 0
+        # @batter_events.each {|event| @rbi_count += event[:rbi_ct]}
+        # p '*' * 50
+        # p @rbi_count
+        # p '*' * 50
 
         # Return events with stolen bases (second, third and home)
         # by a specified baserunner (using bat_id).
@@ -263,7 +263,7 @@ class EventsController < ApplicationController
   # Return events based on a specific pitcher.
   def show_pitcher_events
     # Return error message if no pitcher is specified.
-    if params[:pit_id] == nil
+    if params[:pit_id].nil?
       render json: {
         error: 'Missing pit_id',
         message: 'Please query the data with a specific pitcher using pit_id.
@@ -293,7 +293,7 @@ class EventsController < ApplicationController
         # Return pitcher events by searching hash for corresponding event code.
         if event_types.key?(params[:event_type])
           search_options = {
-            pit_id: params[:pit_id],
+            resp_pit_id: params[:pit_id],
             event_cd: event_types[params[:event_type]]
           }
 
@@ -319,7 +319,7 @@ class EventsController < ApplicationController
           # multiple times, one for each person it 'belongs' to.
           # So I actually like this approach for now.
           search_options = {
-            res_pit_id: params[:pit_id],
+            resp_pit_id: params[:pit_id],
             bat_dest_id: [4, 6]
           }
           pitching_options(search_options)
@@ -356,7 +356,7 @@ class EventsController < ApplicationController
         # Return events where the pitcher allowed runs
         elsif params[:event_type] == 'runs_allowed'
           search_options = {
-            pit_id: params[:pit_id],
+            resp_pit_id: params[:pit_id],
             bat_dest_id: [4, 5, 6]
           }
           pitching_options(search_options)
