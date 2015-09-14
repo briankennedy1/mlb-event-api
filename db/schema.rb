@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150904034656) do
+ActiveRecord::Schema.define(version: 20150914154107) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -199,7 +199,33 @@ ActiveRecord::Schema.define(version: 20150904034656) do
     t.datetime "updated_at",                           null: false
   end
 
+  add_index "events", ["ab_fl"], name: "index_events_on_ab_fl", using: :btree
+  add_index "events", ["base1_run_id"], name: "index_events_on_base1_run_id", using: :btree
+  add_index "events", ["base2_run_id"], name: "index_events_on_base2_run_id", using: :btree
+  add_index "events", ["base3_run_id"], name: "index_events_on_base3_run_id", using: :btree
+  add_index "events", ["bat_dest_id"], name: "index_events_on_bat_dest_id", using: :btree
   add_index "events", ["bat_id"], name: "index_events_on_bat_id", using: :btree
+  add_index "events", ["bat_team_id"], name: "index_events_on_bat_team_id", using: :btree
   add_index "events", ["event_cd"], name: "index_events_on_event_cd", using: :btree
+  add_index "events", ["fld_team_id"], name: "index_events_on_fld_team_id", using: :btree
+  add_index "events", ["game_end_fl"], name: "index_events_on_game_end_fl", using: :btree
+  add_index "events", ["pit_id"], name: "index_events_on_pit_id", using: :btree
+  add_index "events", ["rbi_ct"], name: "index_events_on_rbi_ct", using: :btree
+  add_index "events", ["resp_pit_id"], name: "index_events_on_resp_pit_id", using: :btree
+  add_index "events", ["run1_cs_fl"], name: "index_events_on_run1_cs_fl", using: :btree
+  add_index "events", ["run1_dest_id"], name: "index_events_on_run1_dest_id", using: :btree
+  add_index "events", ["run1_resp_pit_id"], name: "index_events_on_run1_resp_pit_id", using: :btree
+  add_index "events", ["run1_sb_fl"], name: "index_events_on_run1_sb_fl", using: :btree
+  add_index "events", ["run2_cs_fl"], name: "index_events_on_run2_cs_fl", using: :btree
+  add_index "events", ["run2_dest_id"], name: "index_events_on_run2_dest_id", using: :btree
+  add_index "events", ["run2_resp_pit_id"], name: "index_events_on_run2_resp_pit_id", using: :btree
+  add_index "events", ["run2_sb_fl"], name: "index_events_on_run2_sb_fl", using: :btree
+  add_index "events", ["run3_cs_fl"], name: "index_events_on_run3_cs_fl", using: :btree
+  add_index "events", ["run3_dest_id"], name: "index_events_on_run3_dest_id", using: :btree
+  add_index "events", ["run3_resp_pit_id"], name: "index_events_on_run3_resp_pit_id", using: :btree
+  add_index "events", ["run3_sb_fl"], name: "index_events_on_run3_sb_fl", using: :btree
+  add_index "events", ["sf_fl"], name: "index_events_on_sf_fl", using: :btree
+  add_index "events", ["sh_fl"], name: "index_events_on_sh_fl", using: :btree
+  add_index "events", ["wp_fl"], name: "index_events_on_wp_fl", using: :btree
 
 end
