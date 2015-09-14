@@ -462,9 +462,12 @@ class EventsController < ApplicationController
 
   def event_search(options)
     if options.key?(:year)
-      Event.by_year(options[:year]).where(options.except(:year)).order(:game_date)
+      Event.by_year(options[:year])
+        .where(options.except(:year))
+        .order(:game_date)
     else
-      Event.where(options).order(:game_date)
+      Event.where(options)
+        .order(:game_date)
     end
   end
 
