@@ -20,11 +20,56 @@ progressbar = ProgressBar.create(
 all_hits.each_slice(100) do |batch|
   batch.each do |current_event|
     current_event.update_columns(
+
       # career_cycle:
       # if game_single >= 1
       # && game_double >= 1
       # && game_triple >= 1
+      # && game_home_run == 0
+      # && event_cd == 23
+      # it's a cycle
+      # cycle_fl = 'T'
+
+      # elsif game_single == 0
+      # && game_double >= 1
+      # && game_triple >= 1
       # && game_home_run >= 1
+      # && event_cd == 20
+      # it's a cycle
+      # cycle_fl = 'T'
+
+      # elsif game_single >= 1
+      # && game_double == 0
+      # && game_triple >= 1
+      # && game_home_run >= 1
+      # && event_cd == 21
+      # it's a cycle
+      # cycle_fl = 'T'
+
+      # elsif game_single >= 1
+      # && game_double >= 1
+      # && game_triple == 0
+      # && game_home_run >= 1
+      # && event_cd == 22
+      # it's a cycle
+      # cycle_fl = 'T'
+
+      # career_cycle:
+      #   all_hits.where(
+      #     bat_id: current_event.bat_id,
+      #     event_cd: [20, 21, 22, 23]
+      #   ).index(current_event) + 1,
+      # season_cycle:
+      #   all_hits.by_year(current_event.game_date.year).where(
+      #     bat_id: current_event.bat_id,
+      #     event_cd: [20, 21, 22, 23]
+      #   ).index(current_event) + 1,
+      # game_cycle:
+      #   all_hits.by_day(current_event.game_date).where(
+      #     bat_id: current_event.bat_id,
+      #     event_cd: [20, 21, 22, 23]
+      #   ).index(current_event) + 1,
+
       # career_hit:
       #   all_hits.where(
       #     bat_id: current_event.bat_id,
