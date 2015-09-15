@@ -1,9 +1,9 @@
 # Order all events by game date
 # Find every event with a hit
 # Add game/season/career hits
-puts '~~~~~~~~~~~~~~~~~'
-puts '~~ Adding hits ~~'
-puts '~~~~~~~~~~~~~~~~~'
+puts '~~~~~~~~~~~~~~~~~~~'
+puts '~~ Adding homers ~~'
+puts '~~~~~~~~~~~~~~~~~~~'
 # throw in bondb001 to test it on the first run
 all_hits = Event.where(
   # bat_id: 'troum001',
@@ -153,9 +153,9 @@ all_hits.each_slice(100) do |batch|
     progressbar.increment
   end
 end
-puts '~~~~~~~~~~~~~~~~~~~'
-puts '~~ Finished hits ~~'
-puts '~~~~~~~~~~~~~~~~~~~'
+puts '~~~~~~~~~~~~~~~~~~~~~'
+puts '~~ Finished homers ~~'
+puts '~~~~~~~~~~~~~~~~~~~~~'
 
 # If career_home_run == nil
 #   generate and fill it in upon request
