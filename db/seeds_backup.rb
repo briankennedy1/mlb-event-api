@@ -17,6 +17,9 @@ files.each do |csv_file|
     array_of_hashes.each do |data_hash|
       current_event = Event.new(data_hash)
       date_to_add = "#{current_event.game_id[3..6]}-#{current_event.game_id[7..8]}-#{current_event.game_id[9..10]}"
+
+      # Consider changing .attributes= to .update
+      # and remove .save
       current_event.attributes= { game_date: date_to_add }
       current_event.save
     end

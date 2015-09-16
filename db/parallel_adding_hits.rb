@@ -9,17 +9,19 @@ all_hits = Event.where(
   event_cd: 23
 ).order(:game_date, :id)
 
-pbar = ProgressBar.create(
+PBAR = ProgressBar.create(
   starting_at: 0,
   total: all_hits.count,
   format: '%a %e %P% Processed: %c from %C'
 )
 
-Parallel.each(all_hits) do |current_event|
+def worker(array_of_events)
   ActiveRecord::Base.connection.reconnect!
-    current_event.update_columns(
-    career_home_run: current_event.event_cd == 23 ?
-      all_hits.where(
+  array_of_events.each do |event|
+    event.update_columns(
+    career_home_run:
+      current_event.event_cd == 23 ?
+        all_hits.where(
         bat_id: current_event.bat_id,
         event_cd: 23
         ).index(current_event) + 1 : nil,
@@ -34,4 +36,12 @@ Parallel.each(all_hits) do |current_event|
         event_cd: 23
         ).index(current_event) + 1 : nil
     )
+  end
 end
+
+chunks = all_hits.each_slice(100)
+
+Parallel.each(chunks) do |chunk|
+  worker(chunk)
+end
+PBAR.increment
