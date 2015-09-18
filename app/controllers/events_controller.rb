@@ -476,6 +476,8 @@ class EventsController < ApplicationController
     search_options[:bat_id] = params[:bat_id] if params[:bat_id]
     search_options[:bat_team_id] = params[:opponent] if params[:opponent]
     search_options[:game_end_fl] = 'T' if params[:game_ending] == 'true'
+    search_options[:leadoff_fl] = 'T' if params[:lead_off] == 'true'
+    search_options[:inn_ct] = 1 if params[:lead_off] == 'true'
     search_options
   end
 
