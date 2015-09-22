@@ -36,9 +36,8 @@ class EventsController < ApplicationController
       render json: {
         error: 'Missing bat_id',
         message: 'Please query the data with a specific batter using bat_id.
-        For example, a query for Mike Trout would include bat_id=troum001',
-        status: 400
-      }
+        For example, a query for Mike Trout: /v1/batting?bat_id=troum001',
+      }, status: 400
 
     else
       # Build hash of events and corresponding codes to streamline search
@@ -246,12 +245,11 @@ class EventsController < ApplicationController
 
         # Return an error message if the event was not properly specified.
         else
-          @batter_events = {
+          render json: {
             error: 'Query not found',
             message: 'Please check the documentation for the specific keys
-            you can use in your GET request to search for specific events.',
-            status: 400
-          }
+            you can use in your GET request to search for specific events.'
+          }, status: 400
         end
 
       # Return all the events by a  specific batter if no event is specified.
@@ -269,9 +267,8 @@ class EventsController < ApplicationController
       render json: {
         error: 'Missing pit_id',
         message: 'Please query the data with a specific pitcher using pit_id.
-        For example, a query for Zack Greinke would include pit_id=greiz001',
-        status: 400
-      }
+        For example, a query for Zack Greinke: /v1/pitching?pit_id=greiz001',
+      }, status: 400
 
     else
       # Build hash of events and corresponding codes to streamline search
@@ -442,16 +439,17 @@ class EventsController < ApplicationController
             walks + hit_by_pitches +
             sacrifice_hits +
             sacrifice_flies
-          @pitcher_events.sort_by! { |events| [events[:game_date], events[:id]] }
+          @pitcher_events.sort_by! do |events|
+            [events[:game_date], events[:id]]
+          end
 
         # Return an error message if the event was not properly specified.
         else
-          @pitcher_events = {
+          render json: {
             error: 'Query not found',
             message: 'Please check the documentation for the specific keys
-            you can use in your GET request to search for specific events.',
-            status: 400
-          }
+            you can use in your GET request to search for specific events.'
+          }, status: 400
         end
 
       # Return all events from specified pitcher.
