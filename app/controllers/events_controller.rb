@@ -6,12 +6,12 @@ class EventsController < ApplicationController
   # Maybe include some kind of pagination in the future?
   def index
     @events = Event.first(250)
-    render json: @events
+    render json: @events, status: 200
   end
 
   # Return the specified event
   def show
-    render json: @event
+    render json: @event, status: 200
   end
 
   # Return an error message if a game isn't specified.
@@ -20,13 +20,13 @@ class EventsController < ApplicationController
     render json: {
       message: 'Please use a specific game_id to look up games.
       For example: /v1/games/ANA201404020'
-    }
+    }, status: 400
   end
 
   # Return all events from a specific game
   def show_game
     @game = event_search(game_id: params[:game_id])
-    render json: @game
+    render json: @game, status: 200
   end
 
   # Return events based on a specific batter.
@@ -36,7 +36,8 @@ class EventsController < ApplicationController
       render json: {
         error: 'Missing bat_id',
         message: 'Please query the data with a specific batter using bat_id.
-        For example, a query for Mike Trout would include bat_id=troum001'
+        For example, a query for Mike Trout would include bat_id=troum001',
+        status: 400
       }
 
     else
@@ -248,7 +249,8 @@ class EventsController < ApplicationController
           @batter_events = {
             error: 'Query not found',
             message: 'Please check the documentation for the specific keys
-            you can use in your GET request to search for specific events.'
+            you can use in your GET request to search for specific events.',
+            status: 400
           }
         end
 
@@ -256,7 +258,7 @@ class EventsController < ApplicationController
       else
         @batter_events = event_search(bat_id: params[:bat_id])
       end
-      render json: @batter_events
+      render json: @batter_events, status: 200
     end
   end
 
@@ -267,7 +269,8 @@ class EventsController < ApplicationController
       render json: {
         error: 'Missing pit_id',
         message: 'Please query the data with a specific pitcher using pit_id.
-        For example, a query for Zack Greinke would include pit_id=greiz001'
+        For example, a query for Zack Greinke would include pit_id=greiz001',
+        status: 400
       }
 
     else
@@ -446,7 +449,8 @@ class EventsController < ApplicationController
           @pitcher_events = {
             error: 'Query not found',
             message: 'Please check the documentation for the specific keys
-            you can use in your GET request to search for specific events.'
+            you can use in your GET request to search for specific events.',
+            status: 400
           }
         end
 
@@ -454,7 +458,7 @@ class EventsController < ApplicationController
       else
         @pitcher_events = event_search(pit_id: params[:pit_id])
       end
-      render json: @pitcher_events
+      render json: @pitcher_events, status: 200
     end
   end
 

@@ -6,7 +6,7 @@ class EventsControllerTest < ActionController::TestCase
   end
 
   test "should get index" do
-    get :index
+    get '/v1/events'
     assert_response :success
     p "*" * 50
     p JSON.parse(@response.body).length
