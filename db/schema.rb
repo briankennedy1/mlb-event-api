@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150921000800) do
+ActiveRecord::Schema.define(version: 20150922023506) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -21,21 +21,21 @@ ActiveRecord::Schema.define(version: 20150921000800) do
     t.integer  "year_id"
     t.string   "game_id",                   limit: 12
     t.date     "game_date"
-    t.integer  "career_hit"
-    t.integer  "season_hit"
-    t.integer  "game_hit"
-    t.integer  "career_single"
-    t.integer  "season_single"
-    t.integer  "game_single"
-    t.integer  "career_double"
-    t.integer  "season_double"
-    t.integer  "game_double"
-    t.integer  "career_triple"
-    t.integer  "season_triple"
-    t.integer  "game_triple"
-    t.integer  "career_home_run"
-    t.integer  "season_home_run"
-    t.integer  "game_home_run"
+    t.integer  "batter_career_hit"
+    t.integer  "batter_season_hit"
+    t.integer  "batter_game_hit"
+    t.integer  "batter_career_single"
+    t.integer  "batter_season_single"
+    t.integer  "batter_game_single"
+    t.integer  "batter_career_double"
+    t.integer  "batter_season_double"
+    t.integer  "batter_game_double"
+    t.integer  "batter_career_triple"
+    t.integer  "batter_season_triple"
+    t.integer  "batter_game_triple"
+    t.integer  "batter_career_home_run"
+    t.integer  "batter_season_home_run"
+    t.integer  "batter_game_home_run"
     t.string   "away_team_id",              limit: 3
     t.integer  "inn_ct",                    limit: 2
     t.integer  "bat_home_id",               limit: 2
