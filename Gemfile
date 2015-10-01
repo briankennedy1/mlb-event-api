@@ -15,6 +15,8 @@ gem 'by_star', :git => "git://github.com/radar/by_star"
 gem 'smarter_csv'
 gem 'parallel'
 
+gem 'rack-cors', :require => 'rack/cors'
+
 group :test, :development do
   gem 'rspec-rails'
 end
