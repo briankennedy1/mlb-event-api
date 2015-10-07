@@ -256,7 +256,11 @@ class EventsController < ApplicationController
       else
         @batter_events = event_search(bat_id: params[:bat_id])
       end
-      render json: { player: params[:bat_id], event_type: params[:event_type], data: @batter_events }, status: 200
+      render json: {
+        player: params[:bat_id],
+        event_type: params[:event_type],
+        data: @batter_events
+      }, status: 200
     end
   end
 
@@ -445,7 +449,7 @@ class EventsController < ApplicationController
 
         # Return an error message if the event was not properly specified.
         else
-          render json: {
+          return render json: {
             error: 'Query not found',
             message: 'Please check the documentation for the specific keys
             you can use in your GET request to search for specific events.'
@@ -456,7 +460,12 @@ class EventsController < ApplicationController
       else
         @pitcher_events = event_search(pit_id: params[:pit_id])
       end
-      render json: @pitcher_events, status: 200
+      # render json: @pitcher_events, status: 200
+      render json: {
+        player: params[:pit_id],
+        event_type: params[:event_type],
+        data: @pitcher_events
+      }, status: 200
     end
   end
 
