@@ -21,7 +21,7 @@ PLAYERS.each do |player|
         .by_year(current_event.game_date.year)
         .index(current_event) + 1,
       game_hit: all_hits
-        .by_day(current_event.game_date)
+        .where(game_id: current_event.game_id)
         .index(current_event) + 1
     )
     pbar.increment

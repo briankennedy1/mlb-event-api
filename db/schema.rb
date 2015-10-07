@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150922024006) do
+ActiveRecord::Schema.define(version: 20151007212007) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -203,6 +203,9 @@ ActiveRecord::Schema.define(version: 20150922024006) do
     t.integer  "pitcher_game_inning_pitched"
     t.integer  "pitcher_season_inning_pitched"
     t.integer  "pitcher_career_inning_pitched"
+    t.integer  "runner_career_stolen_base"
+    t.integer  "runner_season_stolen_base"
+    t.integer  "runner_game_stolen_base"
   end
 
   add_index "events", ["ab_fl"], name: "index_events_on_ab_fl", using: :btree
