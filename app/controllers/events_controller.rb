@@ -256,7 +256,7 @@ class EventsController < ApplicationController
       else
         @batter_events = event_search(bat_id: params[:bat_id])
       end
-      render json: @batter_events, status: 200
+      render json: { player: params[:bat_id], event_type: params[:event_type], data: @batter_events }, status: 200
     end
   end
 
