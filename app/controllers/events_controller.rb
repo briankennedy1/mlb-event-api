@@ -259,6 +259,7 @@ class EventsController < ApplicationController
       render json: {
         player: params[:bat_id],
         event_type: params[:event_type],
+        batting_or_pitching: 'batting',
         data: @batter_events
       }, status: 200
     end
@@ -464,6 +465,7 @@ class EventsController < ApplicationController
       render json: {
         player: params[:pit_id],
         event_type: params[:event_type],
+        batting_or_pitching: 'pitching',
         data: @pitcher_events
       }, status: 200
     end
