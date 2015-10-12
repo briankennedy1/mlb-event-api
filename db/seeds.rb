@@ -51,6 +51,7 @@ PLAYERS.each do |player|
         runner3_game_stolen_base:
           game_group.index(current_event) + 1
       )
+    end
     pbar.increment
   end
 end

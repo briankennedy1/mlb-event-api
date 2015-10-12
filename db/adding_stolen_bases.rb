@@ -24,14 +24,34 @@ PLAYERS.each do |player|
       sb.game_id == current_event.game_id
     end
 
-    current_event.update_columns(
-      runner_career_stolen_base: all_sbs
-        .index(current_event) + 1,
-      runner_season_stolen_base:
-        season_group.index(current_event) + 1,
-      runner_game_stolen_base:
-        game_group.index(current_event) + 1
-    )
+    if player == current_event.base1_run_id
+      current_event.update_columns(
+        runner1_career_stolen_base: all_sbs
+          .index(current_event) + 1,
+        runner1_season_stolen_base:
+          season_group.index(current_event) + 1,
+        runner1_game_stolen_base:
+          game_group.index(current_event) + 1
+      )
+    elsif player == current_event.base2_run_id
+      current_event.update_columns(
+        runner2_career_stolen_base: all_sbs
+          .index(current_event) + 1,
+        runner2_season_stolen_base:
+          season_group.index(current_event) + 1,
+        runner2_game_stolen_base:
+          game_group.index(current_event) + 1
+      )
+    elsif player == current_event.base3_run_id
+      current_event.update_columns(
+        runner3_career_stolen_base: all_sbs
+          .index(current_event) + 1,
+        runner3_season_stolen_base:
+          season_group.index(current_event) + 1,
+        runner3_game_stolen_base:
+          game_group.index(current_event) + 1
+      )
+    end
     pbar.increment
   end
 end
