@@ -1,7 +1,5 @@
 require 'ruby-progressbar'
 require_relative 'players'
-# sf_fl == 'T'
-# event_cd == 2
 
 PLAYERS.each do |player|
   all_sfs = Event.find_by_sql("SELECT events.* FROM events WHERE
@@ -30,6 +28,7 @@ PLAYERS.each do |player|
       batter_game_sacrifice_fly:
         game_group.index(current_event) + 1
     )
+
     pbar.increment
   end
 end
