@@ -76,6 +76,44 @@ class EventsController < ApplicationController
           batting_options(search_options)
           @batter_events = event_search(search_options)
 
+        elsif params[:event_type] == 'sacrifices'
+          # Add events with sacrifice fly flag (sf_fl) or sacrifice hit flag
+          # (sh_fl) set to true
+          search_options = {
+            bat_id: params[:bat_id],
+            sf_fl: 'T'
+          }
+          batting_options(search_options)
+          sacrifice_hits = event_search(search_options)
+
+          search_options = {
+            bat_id: params[:bat_id],
+            sh_fl: 'T'
+          }
+          batting_options(search_options)
+          sacrifice_flies = event_search(search_options)
+
+          @batter_events = sacrifice_hits + sacrifice_flies
+          @batter_events.sort_by! { |events| [events[:game_date], events[:id]] }
+
+        elsif params[:event_type] == 'sacrifice_hits'
+          # Add events with sacrifice hit flag (sh_fl) set to true
+          search_options = {
+            bat_id: params[:bat_id],
+            sh_fl: 'T'
+          }
+          batting_options(search_options)
+          @batter_events = event_search(search_options)
+
+        elsif params[:event_type] == 'sacrifice_flies'
+          # Add events with sacrifice fly flag (sf_fl) set to true
+          search_options = {
+            bat_id: params[:bat_id],
+            sf_fl: 'T'
+          }
+          batting_options(search_options)
+          @batter_events = event_search(search_options)
+
         # Return events with plate appearances by specified batter.
         # Plate apperances = at bats + walks + hit by pitches +
         # sacrifice hits + sacrifice flies
@@ -316,13 +354,12 @@ class EventsController < ApplicationController
 
         # Return events where the pitcher allowed earned runs
         elsif params[:event_type] == 'earned_runs'
-          # This method may be problematic because it returns multiple copies
-          # of an event if more than one run was scored in that event.
-          # For example, a two-run home run would return one event for the
-          # batter scoring and the same event for the runner on first scoring.
+          # This method returns multiple copies of an event if more than one
+          # run was scored in that event.
+          # For example: a two-run home run would return one event for the
+          # batter scoring and the same event for the runner scoring.
           # Although this is just one event, I want it to be represented
           # multiple times, one for each person it 'belongs' to.
-          # So I actually like this approach for now.
           search_options = {
             resp_pit_id: params[:pit_id],
             bat_dest_id: [4, 6]
