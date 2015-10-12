@@ -1,34 +1,17 @@
 require 'ruby-progressbar'
 require_relative 'players'
 
-PLAYERS.each do |player|
-  all_shs = Event.find_by_sql("SELECT events.* FROM events WHERE
-    events.bat_id = '#{player}' AND events.sh_fl = 'T' ")
-  all_shs.sort! { |x, y| [x.game_date, x.id] <=> [y.game_date, y.id] }
-  pbar = ProgressBar.create(
-    starting_at: 0,
-    total: all_shs.length,
-    format: "Current player: #{player} %a %e %P% Processed: %c from %C"
-  )
-
-  all_shs.each do |current_event|
-    season_group = all_shs.select do |sh|
-      sh.game_date.year == current_event.game_date.year
-    end
-
-    game_group = all_shs.select do |sh|
-      sh.game_id == current_event.game_id
-    end
-
-    current_event.update_columns(
-      batter_career_sacrifice_hit: all_shs
-        .index(current_event) + 1,
-      batter_season_sacrifice_hit:
-        season_group.index(current_event) + 1,
-      batter_game_sacrifice_hit:
-        game_group.index(current_event) + 1
-    )
-
-    pbar.increment
-  end
-end
+require_relative 'add_pitcher_balks'
+require_relative 'add_pitcher_doubles'
+require_relative 'add_pitcher_hit_by_pitches'
+require_relative 'add_pitcher_homers'
+require_relative 'add_pitcher_intentional_walks'
+require_relative 'add_pitcher_outs'
+require_relative 'add_pitcher_pick_offs'
+require_relative 'add_pitcher_sacrifice_flies'
+require_relative 'add_pitcher_sacrifice_hits'
+require_relative 'add_pitcher_singles'
+require_relative 'add_pitcher_stolen_bases'
+require_relative 'add_pitcher_triples'
+require_relative 'add_pitcher_walks'
+require_relative 'add_pitcher_wild_pitches'
