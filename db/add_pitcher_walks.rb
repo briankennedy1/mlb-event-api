@@ -18,11 +18,11 @@ PLAYERS.each do |player|
     end
 
     current_event.update_columns(
-      pitcher_career_walks: all_bbs
+      pitcher_career_walk: all_bbs
         .index(current_event) + 1,
-      pitcher_season_walks:
+      pitcher_season_walk:
         season_group.index(current_event) + 1,
-      pitcher_game_walks:
+      pitcher_game_walk:
         game_group.index(current_event) + 1
     )
 
