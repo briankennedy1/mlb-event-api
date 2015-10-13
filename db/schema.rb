@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151012230634) do
+ActiveRecord::Schema.define(version: 20151013014544) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -224,12 +224,6 @@ ActiveRecord::Schema.define(version: 20151012230634) do
     t.integer  "pitcher_career_double"
     t.integer  "pitcher_season_double"
     t.integer  "pitcher_game_double"
-    t.integer  "pitcher_career_hit_by_pitche"
-    t.integer  "pitcher_season_hit_by_pitche"
-    t.integer  "pitcher_game_hit_by_pitche"
-    t.integer  "pitcher_career_homer"
-    t.integer  "pitcher_season_homer"
-    t.integer  "pitcher_game_homer"
     t.integer  "pitcher_career_intentional_walk"
     t.integer  "pitcher_season_intentional_walk"
     t.integer  "pitcher_game_intentional_walk"
@@ -260,6 +254,12 @@ ActiveRecord::Schema.define(version: 20151012230634) do
     t.integer  "pitcher_career_wild_pitch"
     t.integer  "pitcher_season_wild_pitch"
     t.integer  "pitcher_game_wild_pitch"
+    t.integer  "pitcher_career_hit_by_pitch"
+    t.integer  "pitcher_season_hit_by_pitch"
+    t.integer  "pitcher_game_hit_by_pitch"
+    t.integer  "pitcher_career_home_run"
+    t.integer  "pitcher_season_home_run"
+    t.integer  "pitcher_game_home_run"
   end
 
   add_index "events", ["ab_fl"], name: "index_events_on_ab_fl", using: :btree

@@ -1,6 +1,3 @@
-require 'ruby-progressbar'
-require_relative 'players'
-
 PLAYERS.each do |player|
   all_hits = Event.where(
     bat_id: player,

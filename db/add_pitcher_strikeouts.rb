@@ -1,6 +1,3 @@
-require 'ruby-progressbar'
-require_relative 'players'
-
 PLAYERS.each do |player|
   all_strikeouts = Event.where(
     pit_id: player,

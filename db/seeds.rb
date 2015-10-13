@@ -1,9 +1,9 @@
 require 'ruby-progressbar'
 require_relative 'players'
 
-require_relative 'add_pitcher_balks'
-require_relative 'add_pitcher_doubles'
-require_relative 'add_pitcher_hit_by_pitches'
+# require_relative 'add_pitcher_balks'
+# require_relative 'add_pitcher_doubles'
+# require_relative 'add_pitcher_hit_by_pitches'
 require_relative 'add_pitcher_homers'
 require_relative 'add_pitcher_intentional_walks'
 require_relative 'add_pitcher_outs'

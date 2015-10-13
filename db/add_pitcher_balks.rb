@@ -1,9 +1,6 @@
-require 'ruby-progressbar'
-require_relative 'players'
-
 PLAYERS.each do |player|
   all_wps = Event.find_by_sql("SELECT events.* FROM events WHERE
-    events.pit_id = '#{player}' AND events.event_cd = '9' ")
+    events.pit_id = '#{player}' AND events.event_cd = '11' ")
   all_wps.sort! { |x, y| [x.game_date, x.id] <=> [y.game_date, y.id] }
   pbar = ProgressBar.create(
     starting_at: 0,
@@ -21,11 +18,11 @@ PLAYERS.each do |player|
     end
 
     current_event.update_columns(
-      pitcher_career_wild_pitch: all_wps
+      pitcher_career_balk: all_wps
         .index(current_event) + 1,
-      pitcher_season_wild_pitch:
+      pitcher_season_balk:
         season_group.index(current_event) + 1,
-      pitcher_game_wild_pitch:
+      pitcher_game_balk:
         game_group.index(current_event) + 1
     )
 

@@ -1,6 +1,3 @@
-require 'ruby-progressbar'
-require_relative 'players'
-
 PLAYERS.each do |player|
   all_sbs = Event.find_by_sql("SELECT events.* FROM events WHERE
     events.base1_run_id = '#{player}' AND events.run1_sb_fl = 'T'
