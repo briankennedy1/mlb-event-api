@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
 scope '/v1' do
-  resources :events, except: [:new, :edit]
+  resources :players, :events, except: [:new, :edit]
   get 'games' => 'events#all_games'
   get 'games/:game_id' => 'events#show_game'
   get 'batting' => 'events#show_batter_events'
