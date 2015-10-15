@@ -5,7 +5,7 @@ class PlayersController < ApplicationController
   end
   def search
     query = params[:player].downcase
-    @players = Player.where('lower(first_name) LIKE ? or lower(last_name) LIKE ?', "%#{query}%", "%#{query}%")
+    @players = Player.where('lower(full_name) LIKE ? AND debut_year >= 1974', "%#{query}%").order(:debut).reverse
     render json: { players: @players }, status: 200
   end
 end
