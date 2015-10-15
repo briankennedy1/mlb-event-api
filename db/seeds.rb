@@ -16,5 +16,6 @@ require 'ruby-progressbar'
 # require_relative 'add_pitcher_walks'
 # require_relative 'add_pitcher_wild_pitches'
 # require_relative 'seed_players_from_csv'
-
-require_relative 'add_full_name_to_players'
+# require_relative 'add_full_name_to_players'
+# require_relative 'update_players_debut_from_csv'
+require_relative 'update_players_debut_year'
