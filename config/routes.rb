@@ -3,6 +3,7 @@ scope '/v1' do
   resources :players, :events, except: [:new, :edit]
   get 'games' => 'events#all_games'
   get 'games/:game_id' => 'events#show_game'
+  get 'players/search/:player' => 'players#search'
   get 'batting' => 'events#show_batter_events'
   get 'pitching' => 'events#show_pitcher_events'
 end
