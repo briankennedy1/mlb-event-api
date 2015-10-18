@@ -80,6 +80,6 @@ test:
 #
 production:
   <<: *default
-  database: mlb-event-api_production
-  username: mlb-event-api
+  database: ebdb
+  username: mlbeventdb
   password: <%= ENV['MLB-EVENT-API_DATABASE_PASSWORD'] %>
