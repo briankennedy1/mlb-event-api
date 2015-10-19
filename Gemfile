@@ -1,21 +1,15 @@
 source 'https://rubygems.org'
 
 gem 'rails', '4.2.3'
-
 gem 'rails-api'
-
 gem 'pg'
-
 gem 'ruby-progressbar'
-
 gem 'activerecord-import'
-
 gem 'by_star'
-
 gem 'smarter_csv'
 gem 'parallel'
-
 gem 'rack-cors', :require => 'rack/cors'
+gem 'dotenv-rails', :groups => [:development, :test]
 
 group :test, :development do
   gem 'rspec-rails'

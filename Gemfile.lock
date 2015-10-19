@@ -43,6 +43,10 @@ GEM
     by_star (2.2.1)
       activesupport
     diff-lcs (1.2.5)
+    dotenv (2.0.2)
+    dotenv-rails (2.0.2)
+      dotenv (= 2.0.2)
+      railties (~> 4.0)
     erubis (2.7.0)
     globalid (0.3.6)
       activesupport (>= 4.1.0)
@@ -127,6 +131,7 @@ PLATFORMS
 DEPENDENCIES
   activerecord-import
   by_star
+  dotenv-rails
   parallel
   pg
   rack-cors
