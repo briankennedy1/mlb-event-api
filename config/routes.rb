@@ -1,12 +1,12 @@
 Rails.application.routes.draw do
-scope '/v1' do
-  resources :players, :events, except: [:new, :edit]
-  get 'games' => 'events#all_games'
-  get 'games/:game_id' => 'events#show_game'
-  get 'players/search/:player' => 'players#search'
-  get 'batting' => 'events#show_batter_events'
-  get 'pitching' => 'events#show_pitcher_events'
-end
+  scope '/v1' do
+    resources :players, :events, except: [:new, :edit]
+    get 'games' => 'events#all_games'
+    get 'games/:game_id' => 'events#show_game'
+    get 'players/search/:player' => 'players#search'
+    get 'batting' => 'events#show_batter_events'
+    get 'pitching' => 'events#show_pitcher_events'
+  end
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
