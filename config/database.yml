@@ -26,8 +26,9 @@ default: &default
 #   database: mlb-event-api_development
 
 development:
-  adapter: postgresql
-  encoding: utf8
+  <<: *default
+  # adapter: postgresql
+  # encoding: utf8
   database: <%= ENV['RDS_DB_NAME'] %>
   username: <%= ENV['RDS_USERNAME'] %>
   password: <%= ENV['RDS_PASSWORD'] %>
@@ -95,8 +96,9 @@ test:
 #
 
 production:
-  adapter: postgresql
-  encoding: utf8
+  <<: *default
+  # adapter: postgresql
+  # encoding: utf8
   database: <%= ENV['RDS_DB_NAME'] %>
   username: <%= ENV['RDS_USERNAME'] %>
   password: <%= ENV['RDS_PASSWORD'] %>
