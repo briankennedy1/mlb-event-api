@@ -42,3 +42,6 @@ bower.json
 
 # Ignore .env
 .env
+
+# EC2 ssh key
+ec2key.pem
