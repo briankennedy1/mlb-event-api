@@ -34,9 +34,9 @@ class EventsController < ApplicationController
     # Return error message if no batter is specified.
     if params[:bat_id].nil?
       render json: {
-        error: 'Missing bat_id',
-        message: 'Please query the data with a specific batter using bat_id.
-        For example, a query for Mike Trout: /v1/batting?bat_id=troum001',
+        error: 'Missing bat_id and query',
+        message: 'Please query the data with a specific batter using bat_id and event.
+        For example, a query for Mike Trout: /v1/batting?bat_id=troum001&event_type=triples',
       }, status: 400
 
     else
