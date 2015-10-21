@@ -12,6 +12,16 @@ gem 'parallel'
 gem 'rack-cors', :require => 'rack/cors'
 gem 'dotenv-rails', :groups => [:development, :test]
 
+gem 'figaro'
+gem 'puma'
+group :development do
+  gem 'capistrano'
+  gem 'capistrano3-puma'
+  gem 'capistrano-rails', require: false
+  gem 'capistrano-bundler', require: false
+  gem 'capistrano-rbenv'
+end
+
 group :test, :development do
   gem 'rspec-rails'
 end
