@@ -11,6 +11,7 @@ gem 'smarter_csv'
 gem 'parallel'
 gem 'rack-cors', :require => 'rack/cors'
 gem 'dotenv-rails', :groups => [:development, :test]
+gem 'rails_12factor', group: :production
 
 group :test, :development do
   gem 'rspec-rails'
