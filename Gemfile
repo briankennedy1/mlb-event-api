@@ -4,6 +4,7 @@ ruby '2.1.5'
 gem 'rails', '4.2.3'
 gem 'rails-api'
 gem 'pg'
+
 gem 'ruby-progressbar'
 gem 'activerecord-import'
 gem 'by_star'
