@@ -3,8 +3,9 @@ class GamesController < ApplicationController
   # There are too many games to return all events from all games.
   def all_games
     render json: {
-      message: 'Please use a specific game_id to look up games.
-      For example: /v1/games/ANA201404020'
+      error: 'Request not specific enough',
+      message:
+        'Please use a specific game_id to look up games. API documentation: http://docs.mlbevents.apiary.io/'
     }, status: 400
   end
 

@@ -16,276 +16,262 @@ class EventsController < ApplicationController
 
   # Return events based on a specific batter.
   def show_batter_events
-    # Return error message if no batter is specified.
-    if params[:bat_id].nil?
-      render json: {
-        error: 'Missing bat_id and query',
-        message: 'Please query the data with a specific batter using bat_id and event.
-        For example, a query for Mike Trout: /v1/batting?bat_id=troum001&event_type=triples',
-      }, status: 400
+    # Build hash of events and corresponding codes to streamline search
+    if params[:event_type]
+      event_types = {
+        'hits' => [20, 21, 22, 23],
+        'outs' => 2,
+        'strikeouts' => 3,
+        'walks' => [14, 15],
+        'intentional_walks' => 15,
+        'hit_by_pitches' => 16,
+        'errors' => 18,
+        'fielders_choices' => 19,
+        'singles' => 20,
+        'doubles' => 21,
+        'triples' => 22,
+        'home_runs' => 23
+      }
 
-    else
-      # Build hash of events and corresponding codes to streamline search
-      if params[:event_type]
-        event_types = {
-          'hits' => [20, 21, 22, 23],
-          'outs' => 2,
-          'strikeouts' => 3,
-          'walks' => [14, 15],
-          'intentional_walks' => 15,
-          'hit_by_pitches' => 16,
-          'errors' => 18,
-          'fielders_choices' => 19,
-          'singles' => 20,
-          'doubles' => 21,
-          'triples' => 22,
-          'home_runs' => 23
+      # Return events by searching hash for corresponding event code.
+      if event_types.key?(params[:event_type])
+        search_options = {
+          bat_id: params[:bat_id],
+          event_cd: event_types[params[:event_type]]
+        }
+        batting_options(search_options)
+        @batter_events = event_search(search_options)
+
+      # Look for events with at bat flag (ab_fl) set to true
+      elsif params[:event_type] == 'at_bats'
+        search_options = {
+          bat_id: params[:bat_id],
+          ab_fl: 'T'
         }
 
-        # Return events by searching hash for corresponding event code.
-        if event_types.key?(params[:event_type])
-          search_options = {
-            bat_id: params[:bat_id],
-            event_cd: event_types[params[:event_type]]
-          }
-          batting_options(search_options)
-          @batter_events = event_search(search_options)
+        batting_options(search_options)
+        @batter_events = event_search(search_options)
 
+      elsif params[:event_type] == 'sacrifices'
+        # Add events with sacrifice fly flag (sf_fl) or sacrifice hit flag
+        # (sh_fl) set to true
+        search_options = {
+          bat_id: params[:bat_id],
+          sf_fl: 'T'
+        }
+        batting_options(search_options)
+        sacrifice_hits = event_search(search_options)
+
+        search_options = {
+          bat_id: params[:bat_id],
+          sh_fl: 'T'
+        }
+        batting_options(search_options)
+        sacrifice_flies = event_search(search_options)
+
+        @batter_events = sacrifice_hits + sacrifice_flies
+        @batter_events.sort_by! { |events| [events[:game_date], events[:id]] }
+
+      elsif params[:event_type] == 'sacrifice_hits'
+        # Add events with sacrifice hit flag (sh_fl) set to true
+        search_options = {
+          bat_id: params[:bat_id],
+          sh_fl: 'T'
+        }
+        batting_options(search_options)
+        @batter_events = event_search(search_options)
+
+      elsif params[:event_type] == 'sacrifice_flies'
+        # Add events with sacrifice fly flag (sf_fl) set to true
+        search_options = {
+          bat_id: params[:bat_id],
+          sf_fl: 'T'
+        }
+        batting_options(search_options)
+        @batter_events = event_search(search_options)
+
+      # Return events with plate appearances by specified batter.
+      # Plate apperances = at bats + walks + hit by pitches +
+      # sacrifice hits + sacrifice flies
+      elsif params[:event_type] == 'plate_appearances'
         # Look for events with at bat flag (ab_fl) set to true
-        elsif params[:event_type] == 'at_bats'
-          search_options = {
-            bat_id: params[:bat_id],
-            ab_fl: 'T'
-          }
+        search_options = {
+          bat_id: params[:bat_id],
+          ab_fl: 'T'
+        }
+        batting_options(search_options)
+        at_bats = event_search(search_options)
 
-          batting_options(search_options)
-          @batter_events = event_search(search_options)
+        # Add walks (14 are regular, 15 are intentional)
+        search_options = {
+          bat_id: params[:bat_id],
+          event_cd: [14, 15]
+        }
+        batting_options(search_options)
+        walks = event_search(search_options)
 
-        elsif params[:event_type] == 'sacrifices'
-          # Add events with sacrifice fly flag (sf_fl) or sacrifice hit flag
-          # (sh_fl) set to true
-          search_options = {
-            bat_id: params[:bat_id],
-            sf_fl: 'T'
-          }
-          batting_options(search_options)
-          sacrifice_hits = event_search(search_options)
+        # Add hit by pitch events
+        search_options = {
+          bat_id: params[:bat_id],
+          event_cd: 16
+        }
+        batting_options(search_options)
+        hit_by_pitches = event_search(search_options)
 
-          search_options = {
-            bat_id: params[:bat_id],
-            sh_fl: 'T'
-          }
-          batting_options(search_options)
-          sacrifice_flies = event_search(search_options)
+        # Add events with sacrifice hit flag (sh_fl) set to true
+        search_options = {
+          bat_id: params[:bat_id],
+          sh_fl: 'T'
+        }
+        batting_options(search_options)
+        sacrifice_hits = event_search(search_options)
 
-          @batter_events = sacrifice_hits + sacrifice_flies
-          @batter_events.sort_by! { |events| [events[:game_date], events[:id]] }
+        # Add events with sacrifice fly flag (sf_fl) set to true
+        search_options = {
+          bat_id: params[:bat_id],
+          sf_fl: 'T'
+        }
+        batting_options(search_options)
+        sacrifice_flies = event_search(search_options)
 
-        elsif params[:event_type] == 'sacrifice_hits'
-          # Add events with sacrifice hit flag (sh_fl) set to true
-          search_options = {
-            bat_id: params[:bat_id],
-            sh_fl: 'T'
-          }
-          batting_options(search_options)
-          @batter_events = event_search(search_options)
+        @batter_events =
+          at_bats +
+          walks +
+          hit_by_pitches +
+          sacrifice_hits +
+          sacrifice_flies
+        @batter_events.sort_by! { |events| [events[:game_date], events[:id]] }
 
-        elsif params[:event_type] == 'sacrifice_flies'
-          # Add events with sacrifice fly flag (sf_fl) set to true
-          search_options = {
-            bat_id: params[:bat_id],
-            sf_fl: 'T'
-          }
-          batting_options(search_options)
-          @batter_events = event_search(search_options)
+      # Return events with a RBI by specified batter
+      elsif params[:event_type] == 'rbi'
+        search_options = {
+          bat_id: params[:bat_id],
+          rbi_ct: [1, 2, 3, 4]
+        }
+        batting_options(search_options)
+        @batter_events = event_search(search_options)
 
-        # Return events with plate appearances by specified batter.
-        # Plate apperances = at bats + walks + hit by pitches +
-        # sacrifice hits + sacrifice flies
-        elsif params[:event_type] == 'plate_appearances'
-          # Look for events with at bat flag (ab_fl) set to true
-          search_options = {
-            bat_id: params[:bat_id],
-            ab_fl: 'T'
-          }
-          batting_options(search_options)
-          at_bats = event_search(search_options)
+      # Number of events returned does not equal actual RBI
+      # because you can get between 1 and 4 RBI in one event.
+      # Math to add up if RBI totals:
+      # @rbi_count = 0
+      # @batter_events.each {|event| @rbi_count += event[:rbi_ct]}
+      # p '*' * 50
+      # p @rbi_count
+      # p '*' * 50
 
-          # Add walks (14 are regular, 15 are intentional)
-          search_options = {
-            bat_id: params[:bat_id],
-            event_cd: [14, 15]
-          }
-          batting_options(search_options)
-          walks = event_search(search_options)
+      # Return events with stolen bases (second, third and home)
+      # by a specified baserunner (using bat_id).
+      elsif params[:event_type] == 'stolen_bases'
+        search_options = {
+          base1_run_id: params[:bat_id],
+          run1_sb_fl: 'T'
+        }
+        batting_options(search_options)
+        steal_second = event_search(search_options)
 
-          # Add hit by pitch events
-          search_options = {
-            bat_id: params[:bat_id],
-            event_cd: 16
-          }
-          batting_options(search_options)
-          hit_by_pitches = event_search(search_options)
+        search_options = {
+          base2_run_id: params[:bat_id],
+          run2_sb_fl: 'T'
+        }
+        batting_options(search_options)
+        steal_third = event_search(search_options)
 
-          # Add events with sacrifice hit flag (sh_fl) set to true
-          search_options = {
-            bat_id: params[:bat_id],
-            sh_fl: 'T'
-          }
-          batting_options(search_options)
-          sacrifice_hits = event_search(search_options)
+        search_options = {
+          base3_run_id: params[:bat_id],
+          run3_sb_fl: 'T'
+        }
+        batting_options(search_options)
+        steal_home = event_search(search_options)
 
-          # Add events with sacrifice fly flag (sf_fl) set to true
-          search_options = {
-            bat_id: params[:bat_id],
-            sf_fl: 'T'
-          }
-          batting_options(search_options)
-          sacrifice_flies = event_search(search_options)
+        @batter_events = steal_second + steal_third + steal_home
+        @batter_events.sort_by! { |events| [events[:game_date], events[:id]] }
 
-          @batter_events =
-            at_bats +
-            walks +
-            hit_by_pitches +
-            sacrifice_hits +
-            sacrifice_flies
-          @batter_events.sort_by! { |events| [events[:game_date], events[:id]] }
+      # Return events where the baserunner (using bat_id)
+      # was caught stealing ( at second, third and home).
+      elsif params[:event_type] == 'caught_stealing'
+        search_options = {
+          base1_run_id: params[:bat_id],
+          run1_cs_fl: 'T'
+        }
+        batting_options(search_options)
+        caught_at_second = event_search(search_options)
 
-        # Return events with a RBI by specified batter
-        elsif params[:event_type] == 'rbi'
-          search_options = {
-            bat_id: params[:bat_id],
-            rbi_ct: [1, 2, 3, 4]
-          }
-          batting_options(search_options)
-          @batter_events = event_search(search_options)
+        search_options = {
+          base2_run_id: params[:bat_id],
+          run2_cs_fl: 'T'
+        }
+        batting_options(search_options)
+        caught_at_third = event_search(search_options)
 
-        # Number of events returned does not equal actual RBI
-        # because you can get between 1 and 4 RBI in one event.
-        # Math to add up if RBI totals:
-        # @rbi_count = 0
-        # @batter_events.each {|event| @rbi_count += event[:rbi_ct]}
-        # p '*' * 50
-        # p @rbi_count
-        # p '*' * 50
+        search_options = {
+          base3_run_id: params[:bat_id],
+          run3_cs_fl: 'T'
+        }
+        batting_options(search_options)
+        caught_at_home = event_search(search_options)
 
-        # Return events with stolen bases (second, third and home)
-        # by a specified baserunner (using bat_id).
-        elsif params[:event_type] == 'stolen_bases'
-          search_options = {
-            base1_run_id: params[:bat_id],
-            run1_sb_fl: 'T'
-          }
-          batting_options(search_options)
-          steal_second = event_search(search_options)
+        @batter_events = caught_at_second + caught_at_third + caught_at_home
+        @batter_events.sort_by! { |events| [events[:game_date], events[:id]] }
 
-          search_options = {
-            base2_run_id: params[:bat_id],
-            run2_sb_fl: 'T'
-          }
-          batting_options(search_options)
-          steal_third = event_search(search_options)
+      # Return events where the batter or baserunner
+      # (using bat_id) scored on the play.
+      elsif params[:event_type] == 'runs'
+        search_options = {
+          bat_id: params[:bat_id],
+          # Destination code 4, 5 and 6 all mean the runner scores.
+          # 4 = runner scored
+          # 5 = runner scored, unearned
+          # 6 = runner scored, unearned to team, earned to pitcher
+          # Ref: http://chadwick.sourceforge.net/doc/cwevent.html#cwtools-cwevent-plays
+          bat_dest_id: [4, 5, 6]
+        }
+        batting_options(search_options)
+        scored_batting = event_search(search_options)
 
-          search_options = {
-            base3_run_id: params[:bat_id],
-            run3_sb_fl: 'T'
-          }
-          batting_options(search_options)
-          steal_home = event_search(search_options)
+        search_options = {
+          base1_run_id: params[:bat_id],
+          run1_dest_id: [4, 5, 6]
+        }
+        batting_options(search_options)
+        scored_from_first = event_search(search_options)
 
-          @batter_events = steal_second + steal_third + steal_home
-          @batter_events.sort_by! { |events| [events[:game_date], events[:id]] }
+        search_options = {
+          base2_run_id: params[:bat_id],
+          run2_dest_id: [4, 5, 6]
+        }
+        batting_options(search_options)
+        scored_from_second = event_search(search_options)
 
-        # Return events where the baserunner (using bat_id)
-        # was caught stealing ( at second, third and home).
-        elsif params[:event_type] == 'caught_stealing'
-          search_options = {
-            base1_run_id: params[:bat_id],
-            run1_cs_fl: 'T'
-          }
-          batting_options(search_options)
-          caught_at_second = event_search(search_options)
+        search_options = {
+          base3_run_id: params[:bat_id],
+          run3_dest_id: [4, 5, 6]
+        }
+        batting_options(search_options)
+        scored_from_third = event_search(search_options)
 
-          search_options = {
-            base2_run_id: params[:bat_id],
-            run2_cs_fl: 'T'
-          }
-          batting_options(search_options)
-          caught_at_third = event_search(search_options)
+        @batter_events =
+          scored_batting +
+          scored_from_first +
+          scored_from_second +
+          scored_from_third
+        @batter_events.sort_by! { |events| [events[:game_date], events[:id]] }
 
-          search_options = {
-            base3_run_id: params[:bat_id],
-            run3_cs_fl: 'T'
-          }
-          batting_options(search_options)
-          caught_at_home = event_search(search_options)
-
-          @batter_events = caught_at_second + caught_at_third + caught_at_home
-          @batter_events.sort_by! { |events| [events[:game_date], events[:id]] }
-
-        # Return events where the batter or baserunner
-        # (using bat_id) scored on the play.
-        elsif params[:event_type] == 'runs'
-          search_options = {
-            bat_id: params[:bat_id],
-            # Destination code 4, 5 and 6 all mean the runner scores.
-            # 4 = runner scored
-            # 5 = runner scored, unearned
-            # 6 = runner scored, unearned to team, earned to pitcher
-            # Ref: http://chadwick.sourceforge.net/doc/cwevent.html#cwtools-cwevent-plays
-            bat_dest_id: [4, 5, 6]
-          }
-          batting_options(search_options)
-          scored_batting = event_search(search_options)
-
-          search_options = {
-            base1_run_id: params[:bat_id],
-            run1_dest_id: [4, 5, 6]
-          }
-          batting_options(search_options)
-          scored_from_first = event_search(search_options)
-
-          search_options = {
-            base2_run_id: params[:bat_id],
-            run2_dest_id: [4, 5, 6]
-          }
-          batting_options(search_options)
-          scored_from_second = event_search(search_options)
-
-          search_options = {
-            base3_run_id: params[:bat_id],
-            run3_dest_id: [4, 5, 6]
-          }
-          batting_options(search_options)
-          scored_from_third = event_search(search_options)
-
-          @batter_events =
-            scored_batting +
-            scored_from_first +
-            scored_from_second +
-            scored_from_third
-          @batter_events.sort_by! { |events| [events[:game_date], events[:id]] }
-
-        # Return an error message if the event was not properly specified.
-        else
-          render json: {
-            error: 'Query not found',
-            message: 'Please check the documentation for the specific keys
-            you can use in your GET request to search for specific events.'
-          }, status: 400
-        end
-
-      # Return all the events by a  specific batter if no event is specified.
+      # Return an error message if the event was not properly specified.
       else
-        @batter_events = event_search(bat_id: params[:bat_id])
+        return event_not_found
       end
-      render json: {
-        player: params[:bat_id],
-        event_type: params[:event_type],
-        batting_or_pitching: 'batting',
-        data: @batter_events
-      }, status: 200
+
+    # Return all the events by a  specific batter if no event is specified.
+    else
+      @batter_events = event_search(bat_id: params[:bat_id])
     end
+    render json: {
+      player: params[:bat_id],
+      event_type: params[:event_type],
+      batting_or_pitching: 'batting',
+      data: @batter_events
+    }, status: 200
   end
 
   # Return events based on a specific pitcher.
@@ -295,7 +281,7 @@ class EventsController < ApplicationController
       render json: {
         error: 'Missing pit_id',
         message: 'Please query the data with a specific pitcher using pit_id.
-        For example, a query for Zack Greinke: /v1/greiz001/pitching',
+        For example, a query for Zack Greinke: /v1/greiz001/pitching'
       }, status: 400
 
     else
@@ -472,11 +458,7 @@ class EventsController < ApplicationController
 
         # Return an error message if the event was not properly specified.
         else
-          return render json: {
-            error: 'Query not found',
-            message: 'Please check the documentation for the specific keys
-            you can use in your GET request to search for specific events.'
-          }, status: 400
+          return event_not_found
         end
 
       # Return all events from specified pitcher.
@@ -533,5 +515,12 @@ class EventsController < ApplicationController
   def event_params
     params.require(:event)
       .permit(:game_id, :pit_id, :bat_id, :event_tx, :event_cd)
+  end
+
+  def event_not_found
+    render json: {
+      error: 'Event not found',
+      message: 'Check the API documentation for events you can query: http://docs.mlbevents.apiary.io/'
+    }, status: 400
   end
 end
