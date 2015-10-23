@@ -10,7 +10,7 @@ class GamesController < ApplicationController
 
   # Return all events from a specific game
   def show_game
-    @game = event_search(game_id: params[:game_id])
+    @game = Event.where(game_id: params[:game_id]).order(:game_date, :id)
     render json: @game, status: 200
   end
 end

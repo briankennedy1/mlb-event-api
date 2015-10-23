@@ -295,7 +295,7 @@ class EventsController < ApplicationController
       render json: {
         error: 'Missing pit_id',
         message: 'Please query the data with a specific pitcher using pit_id.
-        For example, a query for Zack Greinke: /v1/pitching?pit_id=greiz001',
+        For example, a query for Zack Greinke: /v1/greiz001/pitching',
       }, status: 400
 
     else

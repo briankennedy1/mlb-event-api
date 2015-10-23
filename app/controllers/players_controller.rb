@@ -6,6 +6,9 @@ class PlayersController < ApplicationController
 
   def show
     @player = Player.find_by(player_id: params[:player_id])
+    if @player.nil?
+      @player = { error: 'Player not found. API documentation: http://docs.mlbevents.apiary.io/' }
+      return render json: @player, status: 400
     render json: @player, status: 200
   end
 
