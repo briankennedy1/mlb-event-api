@@ -20,7 +20,7 @@ class EventsController < ApplicationController
     if params[:event_type]
       event_types = {
         'hits' => [20, 21, 22, 23],
-        'outs' => 2,
+        'outs' => [2, 3],
         'strikeouts' => 3,
         'walks' => [14, 15],
         'intentional_walks' => 15,
@@ -280,7 +280,7 @@ class EventsController < ApplicationController
     if params[:event_type]
       event_types = {
         'hits' => [20, 21, 22, 23],
-        'outs' => 2,
+        'outs' => [2, 3],
         'strikeouts' => 3,
         'walks' => [14, 15],
         'intentional_walks' => 15,
