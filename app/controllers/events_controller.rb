@@ -351,12 +351,11 @@ class EventsController < ApplicationController
         scored_from_third = event_search(search_options)
 
         @pitcher_events =
-          # scored_batting +
-          # scored_from_first +
-          # scored_from_second +
+          scored_batting +
+          scored_from_first +
+          scored_from_second +
           scored_from_third
-
-        # @pitcher_events.sort_by! { |events| [events[:game_date], events[:id]] }
+        @pitcher_events.sort_by! { |events| [events[:game_date], events[:id]] }
 
       # Return events where the pitcher allowed runs
       elsif params[:event_type] == 'runs_allowed'

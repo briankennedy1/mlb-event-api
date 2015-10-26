@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151015173354) do
+ActiveRecord::Schema.define(version: 20151026180700) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -284,14 +284,7 @@ ActiveRecord::Schema.define(version: 20151015173354) do
   add_index "events", ["run2_cs_fl"], name: "index_events_on_run2_cs_fl", using: :btree
   add_index "events", ["run2_dest_id"], name: "index_events_on_run2_dest_id", using: :btree
   add_index "events", ["run2_resp_pit_id"], name: "index_events_on_run2_resp_pit_id", using: :btree
-  add_index "events", ["run2_sb_fl"], name: "index_events_on_run2_sb_fl", using: :btree
-  add_index "events", ["run3_cs_fl"], name: "index_events_on_run3_cs_fl", using: :btree
-  add_index "events", ["run3_dest_id"], name: "index_events_on_run3_dest_id", using: :btree
   add_index "events", ["run3_resp_pit_id"], name: "index_events_on_run3_resp_pit_id", using: :btree
-  add_index "events", ["run3_sb_fl"], name: "index_events_on_run3_sb_fl", using: :btree
-  add_index "events", ["sf_fl"], name: "index_events_on_sf_fl", using: :btree
-  add_index "events", ["sh_fl"], name: "index_events_on_sh_fl", using: :btree
-  add_index "events", ["wp_fl"], name: "index_events_on_wp_fl", using: :btree
 
   create_table "players", force: :cascade do |t|
     t.string   "first_name"
