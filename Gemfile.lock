@@ -63,6 +63,7 @@ GEM
       mini_portile (~> 0.6.0)
     parallel (1.6.1)
     pg (0.18.2)
+    puma (2.14.0)
     rack (1.6.4)
     rack-cors (0.4.0)
     rack-test (0.6.3)
@@ -139,6 +140,7 @@ DEPENDENCIES
   dotenv-rails
   parallel
   pg
+  puma
   rack-cors
   rails (= 4.2.3)
   rails-api
