@@ -12,8 +12,8 @@ Rails.application.configure do
     metastore: client,
     entitystore: client
   }
-  config.static_cache_control = 'public, max-age=2592000'
   config.serve_static_assets = true
+  config.static_cache_control = 'public, max-age=2592000'
 
   # Code is not reloaded between requests.
   config.cache_classes = true
