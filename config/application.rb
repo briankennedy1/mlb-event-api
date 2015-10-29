@@ -11,11 +11,6 @@ module MlbEventApi
     config.cache_store = :dalli_store
     config.action_controller.page_cache_directory = "#{Rails.root.to_s}/public/deploy"
 
-    config.middleware.use Rack::Cache,
-       verbose:      true,
-       metastore:   "memcached://#{ENV['MEMCACHIER_SERVERS']}",
-       entitystore: 'file:/var/cache/rack/body'
-
     config.middleware.insert_before 0, "Rack::Cors" do
       allow do
         origins '*'
