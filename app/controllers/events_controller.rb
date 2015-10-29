@@ -1,4 +1,4 @@
-class EventsController < ApplicationController
+class EventsController < ActionController::Base
   before_action :set_event, only: [:show, :update, :destroy]
 
   caches_page :index
