@@ -1,6 +1,9 @@
 class EventsController < ApplicationController
   before_action :set_event, only: [:show, :update, :destroy]
 
+  caches_page :public
+  caches_action :index, :show
+
   # Return the first 250 events if no event is specified.
   # There are too many events to return them all.
   # Maybe include some kind of pagination in the future?
