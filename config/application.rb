@@ -13,7 +13,7 @@ module MlbEventApi
 
     config.middleware.use Rack::Cache,
        verbose:      true,
-       metastore:   'file:/var/cache/rack/meta',
+       metastore:   "memcached://#{ENV['MEMCACHIER_SERVERS']}",
        entitystore: 'file:/var/cache/rack/body'
 
     config.middleware.insert_before 0, "Rack::Cors" do
