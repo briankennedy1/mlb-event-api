@@ -13,6 +13,10 @@ gem 'parallel'
 gem 'rack-cors', :require => 'rack/cors'
 gem 'dotenv-rails', :groups => [:development, :test]
 gem 'rails_12factor', group: :production
+gem 'rack-cache'
+gem 'dalli'
+gem 'kgio'
+gem 'memcachier'
 
 group :test, :development do
   gem 'rspec-rails'
