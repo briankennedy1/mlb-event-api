@@ -1,4 +1,4 @@
-class EventsController < ApplicationController
+class EventsController < ActionController
   before_action :set_event, only: [:show, :update, :destroy]
 
   caches_page :public
