@@ -18,6 +18,7 @@ gem 'dalli'
 gem 'kgio'
 gem 'memcachier'
 gem 'actionpack-action_caching'
+gem 'actionpack-page_caching'
 
 group :test, :development do
   gem 'rspec-rails'
