@@ -19,6 +19,7 @@ gem 'rack-cache'
 gem 'dalli'
 gem 'kgio'
 gem 'memcachier'
+gem 'connection_pool'
 
 group :test, :development do
   gem 'rspec-rails'
