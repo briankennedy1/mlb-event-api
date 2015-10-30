@@ -1,21 +1,21 @@
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
-  client = Dalli::Client.new((ENV['MEMCACHIER_SERVERS'] || '').split(','),
-                             username: ENV['MEMCACHIER_USERNAME'],
-                             password: ENV['MEMCACHIER_PASSWORD'],
-                             failover: true,
-                             socket_timeout: 1.5,
-                             socket_failure_delay: 0.2,
-                             pool_size: 5,
-                             value_max_bytes: 10_485_760)
-  config.action_dispatch.rack_cache = {
-    metastore: client,
-    entitystore: client
-  }
-
-  config.serve_static_files = true
-  config.static_cache_control = 'public, max-age=2592000'
+  # client = Dalli::Client.new((ENV['MEMCACHIER_SERVERS'] || '').split(','),
+  #                            username: ENV['MEMCACHIER_USERNAME'],
+  #                            password: ENV['MEMCACHIER_PASSWORD'],
+  #                            failover: true,
+  #                            socket_timeout: 1.5,
+  #                            socket_failure_delay: 0.2,
+  #                            pool_size: 5,
+  #                            value_max_bytes: 10_485_760)
+  # config.action_dispatch.rack_cache = {
+  #   metastore: client,
+  #   entitystore: client
+  # }
+  #
+  # config.serve_static_files = true
+  # config.static_cache_control = 'public, max-age=2592000'
 
   # Code is not reloaded between requests.
   config.cache_classes = true
