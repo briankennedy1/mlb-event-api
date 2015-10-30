@@ -45,7 +45,7 @@ class EventsController < ActionController::Base
           event_cd: event_types[params[:event_type]]
         }
         batting_options(search_options)
-        @batter_events = event_search(search_options)
+        @batter_events = event_search(search_options, params[:event_type], 'batter')
 
       # Look for events with at bat flag (ab_fl) set to true
       elsif params[:event_type] == 'at_bats'
@@ -472,14 +472,21 @@ class EventsController < ActionController::Base
 
   private
 
-  def event_search(options)
+  def event_search(options, event_type, batter_or_pitcher)
     if options.key?(:year)
-      Event.select('id, game_id, game_date, event_cd')
+      Event.select("id, game_id, game_date, event_cd, #{batter_or_pitcher}_career_#{event_type}")
         .by_year(options[:year])
         .where(options.except(:year))
         .order(:game_date, :id)
     else
-      Event.select('id, game_id, game_date, event_cd')
+      Event.select("id,
+                    game_id,
+                    game_date,
+                    event_cd,
+                    #{batter_or_pitcher}_career_#{event_type.chomp('s')},
+                    #{batter_or_pitcher}_season_#{event_type.chomp('s')},
+                    #{batter_or_pitcher}_game_#{event_type.chomp('s')}
+                  ")
         .where(options)
         .order(:game_date, :id)
     end
