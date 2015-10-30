@@ -7,6 +7,7 @@ Rails.application.routes.draw do
     get 'players/:pit_id/pitching/:event_type' => 'events#show_pitcher_events'
     get 'players/search/:player' => 'players#search'
     get 'players/:player_id' => 'players#show'
+    get 'players/:player_id/:request_type' => 'players#bad_request'
     get 'players' => 'players#index'
   end
   # The priority is based upon order of creation: first created -> highest priority.
