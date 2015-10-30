@@ -7,8 +7,11 @@ class EventsController < ActionController::Base
   # There are too many events to return them all.
   # Maybe include some kind of pagination in the future?
   def index
-    @events = Event.first(250)
-    render json: @events, status: 200
+    @events = Event.select('id, game_id').first(250)
+    render json: {
+      message: 'First 250 events in database.',
+      data: @events
+    }, status: 200
   end
 
   # Return the specified event
@@ -471,11 +474,13 @@ class EventsController < ActionController::Base
 
   def event_search(options)
     if options.key?(:year)
-      Event.by_year(options[:year])
+      Event.select('id, game_id, game_date, event_cd')
+        .by_year(options[:year])
         .where(options.except(:year))
         .order(:game_date, :id)
     else
-      Event.where(options)
+      Event.select('id, game_id, game_date, event_cd')
+        .where(options)
         .order(:game_date, :id)
     end
   end
