@@ -11,14 +11,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151026180700) do
+ActiveRecord::Schema.define(version: 20151030172309) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "events", force: :cascade do |t|
-    t.integer  "seq_events"
-    t.integer  "year_id"
     t.string   "game_id",                         limit: 12
     t.date     "game_date"
     t.integer  "batter_career_hit"
