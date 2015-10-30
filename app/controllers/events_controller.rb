@@ -1,13 +1,14 @@
 class EventsController < ActionController::Base
   before_action :set_event, only: [:show, :update, :destroy]
 
-  # caches_action :index, :show_pitcher_events, :show_batter_events
-
   # Return the first 250 events if no event is specified.
   # There are too many events to return them all.
   # Maybe include some kind of pagination in the future?
   def index
-    @events = Event.select('id, game_id').first(250)
+    @events = Event.select(
+      'id, game_id'
+    ).first(250)
+
     render json: {
       message: 'First 250 events in database.',
       data: @events
@@ -44,7 +45,11 @@ class EventsController < ActionController::Base
         event_cd: event_types[params[:event_type]]
       }
       batting_options(search_options)
-      @batter_events = event_search(search_options, params[:event_type], 'batter')
+      @batter_events = event_search(
+        search_options,
+        params[:event_type],
+        'batter'
+      )
 
     # Look for events with at bat flag (ab_fl) set to true
     elsif params[:event_type] == 'at_bats'
@@ -54,7 +59,11 @@ class EventsController < ActionController::Base
       }
 
       batting_options(search_options)
-      @batter_events = event_search(search_options, params[:event_type], 'batter')
+      @batter_events = event_search(
+        search_options,
+        params[:event_type],
+        'batter'
+      )
 
     elsif params[:event_type] == 'sacrifices'
       # Add events with sacrifice fly flag (sf_fl) or sacrifice hit flag
@@ -64,14 +73,22 @@ class EventsController < ActionController::Base
         sf_fl: 'T'
       }
       batting_options(search_options)
-      sacrifice_hits = event_search(search_options, params[:event_type], 'batter')
+      sacrifice_hits = event_search(
+        search_options,
+        params[:event_type],
+        'batter'
+      )
 
       search_options = {
         bat_id: params[:bat_id],
         sh_fl: 'T'
       }
       batting_options(search_options)
-      sacrifice_flies = event_search(search_options, params[:event_type], 'batter')
+      sacrifice_flies = event_search(
+        search_options,
+        params[:event_type],
+        'batter'
+      )
 
       @batter_events = sacrifice_hits + sacrifice_flies
       @batter_events.sort_by! { |events| [events[:game_date], events[:id]] }
@@ -83,7 +100,11 @@ class EventsController < ActionController::Base
         sh_fl: 'T'
       }
       batting_options(search_options)
-      @batter_events = event_search(search_options, params[:event_type], 'batter')
+      @batter_events = event_search(
+        search_options,
+        params[:event_type],
+        'batter'
+      )
 
     elsif params[:event_type] == 'sacrifice_flies'
       # Add events with sacrifice fly flag (sf_fl) set to true
@@ -92,7 +113,11 @@ class EventsController < ActionController::Base
         sf_fl: 'T'
       }
       batting_options(search_options)
-      @batter_events = event_search(search_options, params[:event_type], 'batter')
+      @batter_events = event_search(
+        search_options,
+        params[:event_type],
+        'batter'
+      )
 
     # Return events with plate appearances by specified batter.
     # Plate apperances = at bats + walks + hit by pitches +
@@ -104,7 +129,11 @@ class EventsController < ActionController::Base
         ab_fl: 'T'
       }
       batting_options(search_options)
-      at_bats = event_search(search_options, params[:event_type], 'batter')
+      at_bats = event_search(
+        search_options,
+        params[:event_type],
+        'batter'
+      )
 
       # Add walks (14 are regular, 15 are intentional)
       search_options = {
@@ -112,7 +141,11 @@ class EventsController < ActionController::Base
         event_cd: [14, 15]
       }
       batting_options(search_options)
-      walks = event_search(search_options, params[:event_type], 'batter')
+      walks = event_search(
+        search_options,
+        params[:event_type],
+        'batter'
+      )
 
       # Add hit by pitch events
       search_options = {
@@ -120,7 +153,11 @@ class EventsController < ActionController::Base
         event_cd: 16
       }
       batting_options(search_options)
-      hit_by_pitches = event_search(search_options, params[:event_type], 'batter')
+      hit_by_pitches = event_search(
+        search_options,
+        params[:event_type],
+        'batter'
+      )
 
       # Add events with sacrifice hit flag (sh_fl) set to true
       search_options = {
@@ -128,7 +165,11 @@ class EventsController < ActionController::Base
         sh_fl: 'T'
       }
       batting_options(search_options)
-      sacrifice_hits = event_search(search_options, params[:event_type], 'batter')
+      sacrifice_hits = event_search(
+        search_options,
+        params[:event_type],
+        'batter'
+      )
 
       # Add events with sacrifice fly flag (sf_fl) set to true
       search_options = {
@@ -136,7 +177,11 @@ class EventsController < ActionController::Base
         sf_fl: 'T'
       }
       batting_options(search_options)
-      sacrifice_flies = event_search(search_options, params[:event_type], 'batter')
+      sacrifice_flies = event_search(
+        search_options,
+        params[:event_type],
+        'batter'
+      )
 
       @batter_events =
         at_bats +
@@ -153,7 +198,11 @@ class EventsController < ActionController::Base
         rbi_ct: [1, 2, 3, 4]
       }
       batting_options(search_options)
-      @batter_events = event_search(search_options, params[:event_type], 'batter')
+      @batter_events = event_search(
+        search_options,
+        params[:event_type],
+        'batter'
+      )
 
     # Number of events returned does not equal actual RBI
     # because you can get between 1 and 4 RBI in one event.
@@ -172,21 +221,33 @@ class EventsController < ActionController::Base
         run1_sb_fl: 'T'
       }
       batting_options(search_options)
-      steal_second = event_search(search_options, params[:event_type], 'batter')
+      steal_second = event_search(
+        search_options,
+        params[:event_type],
+        'batter'
+      )
 
       search_options = {
         base2_run_id: params[:bat_id],
         run2_sb_fl: 'T'
       }
       batting_options(search_options)
-      steal_third = event_search(search_options, params[:event_type], 'batter')
+      steal_third = event_search(
+        search_options,
+        params[:event_type],
+        'batter'
+      )
 
       search_options = {
         base3_run_id: params[:bat_id],
         run3_sb_fl: 'T'
       }
       batting_options(search_options)
-      steal_home = event_search(search_options, params[:event_type], 'batter')
+      steal_home = event_search(
+        search_options,
+        params[:event_type],
+        'batter'
+      )
 
       @batter_events = steal_second + steal_third + steal_home
       @batter_events.sort_by! { |events| [events[:game_date], events[:id]] }
@@ -199,21 +260,33 @@ class EventsController < ActionController::Base
         run1_cs_fl: 'T'
       }
       batting_options(search_options)
-      caught_at_second = event_search(search_options, params[:event_type], 'batter')
+      caught_at_second = event_search(
+        search_options,
+        params[:event_type],
+        'batter'
+      )
 
       search_options = {
         base2_run_id: params[:bat_id],
         run2_cs_fl: 'T'
       }
       batting_options(search_options)
-      caught_at_third = event_search(search_options, params[:event_type], 'batter')
+      caught_at_third = event_search(
+        search_options,
+        params[:event_type],
+        'batter'
+      )
 
       search_options = {
         base3_run_id: params[:bat_id],
         run3_cs_fl: 'T'
       }
       batting_options(search_options)
-      caught_at_home = event_search(search_options, params[:event_type], 'batter')
+      caught_at_home = event_search(
+        search_options,
+        params[:event_type],
+        'batter'
+      )
 
       @batter_events = caught_at_second + caught_at_third + caught_at_home
       @batter_events.sort_by! { |events| [events[:game_date], events[:id]] }
@@ -231,28 +304,44 @@ class EventsController < ActionController::Base
         bat_dest_id: [4, 5, 6]
       }
       batting_options(search_options)
-      scored_batting = event_search(search_options, params[:event_type], 'batter')
+      scored_batting = event_search(
+        search_options,
+        params[:event_type],
+        'batter'
+      )
 
       search_options = {
         base1_run_id: params[:bat_id],
         run1_dest_id: [4, 5, 6]
       }
       batting_options(search_options)
-      scored_from_first = event_search(search_options, params[:event_type], 'batter')
+      scored_from_first = event_search(
+        search_options,
+        params[:event_type],
+        'batter'
+      )
 
       search_options = {
         base2_run_id: params[:bat_id],
         run2_dest_id: [4, 5, 6]
       }
       batting_options(search_options)
-      scored_from_second = event_search(search_options, params[:event_type], 'batter')
+      scored_from_second = event_search(
+        search_options,
+        params[:event_type],
+        'batter'
+      )
 
       search_options = {
         base3_run_id: params[:bat_id],
         run3_dest_id: [4, 5, 6]
       }
       batting_options(search_options)
-      scored_from_third = event_search(search_options, params[:event_type], 'batter')
+      scored_from_third = event_search(
+        search_options,
+        params[:event_type],
+        'batter'
+      )
 
       @batter_events =
         scored_batting +
@@ -302,7 +391,11 @@ class EventsController < ActionController::Base
       }
 
       pitching_options(search_options)
-      @pitcher_events = event_search(search_options, params[:event_type], 'pitcher')
+      @pitcher_events = event_search(
+        search_options,
+        params[:event_type],
+        'pitcher'
+      )
 
     # Return events where the pitcher threw wild pitches
     elsif params[:event_type] == 'wild_pitches'
@@ -311,7 +404,11 @@ class EventsController < ActionController::Base
         wp_fl: 'T'
       }
       pitching_options(search_options)
-      @pitcher_events = event_search(search_options, params[:event_type], 'pitcher')
+      @pitcher_events = event_search(
+        search_options,
+        params[:event_type],
+        'pitcher'
+      )
 
     # Return events where the pitcher allowed earned runs
     elsif params[:event_type] == 'earned_runs'
@@ -326,28 +423,44 @@ class EventsController < ActionController::Base
         bat_dest_id: [4, 6]
       }
       pitching_options(search_options)
-      scored_batting = event_search(search_options, params[:event_type], 'pitcher')
+      scored_batting = event_search(
+        search_options,
+        params[:event_type],
+        'pitcher'
+      )
 
       search_options = {
         run1_resp_pit_id: params[:pit_id],
         run1_dest_id: [4, 6]
       }
       pitching_options(search_options)
-      scored_from_first = event_search(search_options, params[:event_type], 'pitcher')
+      scored_from_first = event_search(
+        search_options,
+        params[:event_type],
+        'pitcher'
+      )
 
       search_options = {
         run2_resp_pit_id: params[:pit_id],
         run2_dest_id: [4, 6]
       }
       pitching_options(search_options)
-      scored_from_second = event_search(search_options, params[:event_type], 'pitcher')
+      scored_from_second = event_search(
+        search_options,
+        params[:event_type],
+        'pitcher'
+      )
 
       search_options = {
         run3_resp_pit_id: params[:pit_id],
         run3_dest_id: [4, 6]
       }
       pitching_options(search_options)
-      scored_from_third = event_search(search_options, params[:event_type], 'pitcher')
+      scored_from_third = event_search(
+        search_options,
+        params[:event_type],
+        'pitcher'
+      )
 
       @pitcher_events =
         scored_batting +
@@ -363,28 +476,44 @@ class EventsController < ActionController::Base
         bat_dest_id: [4, 5, 6]
       }
       pitching_options(search_options)
-      scored_batting = event_search(search_options, params[:event_type], 'pitcher')
+      scored_batting = event_search(
+        search_options,
+        params[:event_type],
+        'pitcher'
+      )
 
       search_options = {
         run1_resp_pit_id: params[:pit_id],
         run1_dest_id: [4, 5, 6]
       }
       pitching_options(search_options)
-      scored_from_first = event_search(search_options, params[:event_type], 'pitcher')
+      scored_from_first = event_search(
+        search_options,
+        params[:event_type],
+        'pitcher'
+      )
 
       search_options = {
         run2_resp_pit_id: params[:pit_id],
         run2_dest_id: [4, 5, 6]
       }
       pitching_options(search_options)
-      scored_from_second = event_search(search_options, params[:event_type], 'pitcher')
+      scored_from_second = event_search(
+        search_options,
+        params[:event_type],
+        'pitcher'
+      )
 
       search_options = {
         run3_resp_pit_id: params[:pit_id],
         run3_dest_id: [4, 5, 6]
       }
       pitching_options(search_options)
-      scored_from_third = event_search(search_options, params[:event_type], 'pitcher')
+      scored_from_third = event_search(
+        search_options,
+        params[:event_type],
+        'pitcher'
+      )
 
       @pitcher_events =
         scored_batting +
@@ -403,7 +532,11 @@ class EventsController < ActionController::Base
         ab_fl: 'T'
       }
       pitching_options(search_options)
-      at_bats = event_search(search_options, params[:event_type], 'pitcher')
+      at_bats = event_search(
+        search_options,
+        params[:event_type],
+        'pitcher'
+      )
 
       # Add walks (14 are regular, 15 are intentional)
       search_options = {
@@ -411,7 +544,11 @@ class EventsController < ActionController::Base
         event_cd: [14, 15]
       }
       pitching_options(search_options)
-      walks = event_search(search_options, params[:event_type], 'pitcher')
+      walks = event_search(
+        search_options,
+        params[:event_type],
+        'pitcher'
+      )
 
       # Add hit by pitch events
       search_options = {
@@ -419,7 +556,11 @@ class EventsController < ActionController::Base
         event_cd: 16
       }
       pitching_options(search_options)
-      hit_by_pitches = event_search(search_options, params[:event_type], 'pitcher')
+      hit_by_pitches = event_search(
+        search_options,
+        params[:event_type],
+        'pitcher'
+      )
 
       # Add events with sacrifice hit flag (sh_fl) set to true
       search_options = {
@@ -427,7 +568,11 @@ class EventsController < ActionController::Base
         sh_fl: 'T'
       }
       pitching_options(search_options)
-      sacrifice_hits = event_search(search_options, params[:event_type], 'pitcher')
+      sacrifice_hits = event_search(
+        search_options,
+        params[:event_type],
+        'pitcher'
+      )
 
       # Add events with sacrifice fly flag (sf_fl) set to true
       search_options = {
@@ -435,7 +580,11 @@ class EventsController < ActionController::Base
         sf_fl: 'T'
       }
       pitching_options(search_options)
-      sacrifice_flies = event_search(search_options, params[:event_type], 'pitcher')
+      sacrifice_flies = event_search(
+        search_options,
+        params[:event_type],
+        'pitcher'
+      )
 
       @pitcher_events =
         at_bats +
@@ -463,7 +612,12 @@ class EventsController < ActionController::Base
 
   def event_search(options, event_type, batter_or_pitcher)
     if options.key?(:year)
-      Event.select("id, game_id, game_date, event_cd, #{batter_or_pitcher}_career_#{event_type}")
+      Event.select("id,
+                    game_id,
+                    game_date,
+                    event_cd,
+                    #{batter_or_pitcher}_career_#{event_type}"
+                  )
         .by_year(options[:year])
         .where(options.except(:year))
         .order(:game_date, :id)
@@ -474,8 +628,8 @@ class EventsController < ActionController::Base
                     event_cd,
                     #{batter_or_pitcher}_career_#{event_type.chomp('s')},
                     #{batter_or_pitcher}_season_#{event_type.chomp('s')},
-                    #{batter_or_pitcher}_game_#{event_type.chomp('s')}
-                  ")
+                    #{batter_or_pitcher}_game_#{event_type.chomp('s')}"
+                  )
         .where(options)
         .order(:game_date, :id)
     end
