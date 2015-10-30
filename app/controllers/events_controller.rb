@@ -1,8 +1,7 @@
 class EventsController < ActionController::Base
   before_action :set_event, only: [:show, :update, :destroy]
 
-  caches_action :index, :show_pitcher_events, :show_batter_events
-  # caches_action :index, :show
+  # caches_action :index, :show_pitcher_events, :show_batter_events
 
   # Return the first 250 events if no event is specified.
   # There are too many events to return them all.

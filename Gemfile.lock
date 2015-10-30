@@ -14,10 +14,6 @@ GEM
       rack-test (~> 0.6.2)
       rails-dom-testing (~> 1.0, >= 1.0.5)
       rails-html-sanitizer (~> 1.0, >= 1.0.2)
-    actionpack-action_caching (1.1.1)
-      actionpack (>= 4.0.0, < 5.0)
-    actionpack-page_caching (1.0.2)
-      actionpack (>= 4.0.0, < 5)
     actionview (4.2.3)
       activesupport (= 4.2.3)
       builder (~> 3.1)
@@ -46,8 +42,6 @@ GEM
     builder (3.2.2)
     by_star (2.2.1)
       activesupport
-    connection_pool (2.2.0)
-    dalli (2.7.4)
     diff-lcs (1.2.5)
     dotenv (2.0.2)
     dotenv-rails (2.0.2)
@@ -58,12 +52,10 @@ GEM
       activesupport (>= 4.1.0)
     i18n (0.7.0)
     json (1.8.3)
-    kgio (2.10.0)
     loofah (2.0.2)
       nokogiri (>= 1.5.9)
     mail (2.6.3)
       mime-types (>= 1.16, < 3)
-    memcachier (0.0.2)
     mime-types (2.6.1)
     mini_portile (0.6.2)
     minitest (5.8.0)
@@ -73,8 +65,6 @@ GEM
     pg (0.18.2)
     puma (2.14.0)
     rack (1.6.4)
-    rack-cache (1.5.1)
-      rack (>= 0.4)
     rack-cors (0.4.0)
     rack-test (0.6.3)
       rack (>= 1.0)
@@ -145,19 +135,12 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  actionpack-action_caching
-  actionpack-page_caching
   activerecord-import
   by_star
-  connection_pool
-  dalli
   dotenv-rails
-  kgio
-  memcachier
   parallel
   pg
   puma
-  rack-cache
   rack-cors
   rails (= 4.2.3)
   rails-api

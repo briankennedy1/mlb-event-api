@@ -8,8 +8,8 @@ Bundler.require(*Rails.groups)
 
 module MlbEventApi
   class Application < Rails::Application
-    config.cache_store = :dalli_store
-    config.action_controller.page_cache_directory = "#{Rails.root.to_s}/public/deploy"
+    # config.cache_store = :dalli_store
+    # config.action_controller.page_cache_directory = "#{Rails.root.to_s}/public/deploy"
 
     config.middleware.insert_before 0, "Rack::Cors" do
       allow do
