@@ -612,24 +612,12 @@ class EventsController < ActionController::Base
 
   def event_search(options, event_type, batter_or_pitcher)
     if options.key?(:year)
-      Event.select("id,
-                    game_id,
-                    game_date,
-                    event_cd,
-                    #{batter_or_pitcher}_career_#{event_type}"
-                  )
+      Event.select("id, game_id, game_date, event_cd, #{batter_or_pitcher}_career_#{event_type}")
         .by_year(options[:year])
         .where(options.except(:year))
         .order(:game_date, :id)
     else
-      Event.select("id,
-                    game_id,
-                    game_date,
-                    event_cd,
-                    #{batter_or_pitcher}_career_#{event_type.chomp('s')},
-                    #{batter_or_pitcher}_season_#{event_type.chomp('s')},
-                    #{batter_or_pitcher}_game_#{event_type.chomp('s')}"
-                  )
+      Event.select("id, game_id, game_date, event_cd, #{batter_or_pitcher}_career_#{event_type.chomp('s')}, #{batter_or_pitcher}_season_#{event_type.chomp('s')}, #{batter_or_pitcher}_game_#{event_type.chomp('s')}")
         .where(options)
         .order(:game_date, :id)
     end

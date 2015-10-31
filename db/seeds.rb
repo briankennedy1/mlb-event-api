@@ -19,3 +19,8 @@ require 'ruby-progressbar'
 # require_relative 'add_full_name_to_players'
 # require_relative 'update_players_debut_from_csv'
 # require_relative 'update_players_debut_year'
+
+require_relative 'add_batter_walks'
+require_relative 'add_batter_intentional_walks'
+require_relative 'add_batter_hit_by_pitches'
+require_relative 'add_batter_fielders_choices'
