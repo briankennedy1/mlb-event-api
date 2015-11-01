@@ -1,5 +1,5 @@
 require 'ruby-progressbar'
-# require_relative 'players'
+require_relative 'players'
 
 # require_relative 'add_pitcher_balks'
 # require_relative 'add_pitcher_doubles'

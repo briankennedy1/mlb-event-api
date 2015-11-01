@@ -6,7 +6,7 @@ PLAYERS.each do |player|
 
   pbar = ProgressBar.create(
     starting_at: 0,
-    total: all_hits.length,
+    total: all_fcs.length,
     format: "Current player: #{player} %a %e %P% Processed: %c from %C"
   )
 
