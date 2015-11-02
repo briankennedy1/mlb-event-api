@@ -52,46 +52,46 @@ class EventsController < ActionController::Base
       )
 
     # Look for events with at bat flag (ab_fl) set to true
-    elsif params[:event_type] == 'at_bats'
-      search_options = {
-        bat_id: params[:bat_id],
-        ab_fl: 'T'
-      }
+    # elsif params[:event_type] == 'at_bats'
+    #   search_options = {
+    #     bat_id: params[:bat_id],
+    #     ab_fl: 'T'
+    #   }
+    #
+    #   batting_options(search_options)
+    #   @batter_events = event_search(
+    #     search_options,
+    #     params[:event_type],
+    #     'batter'
+    #   )
 
-      batting_options(search_options)
-      @batter_events = event_search(
-        search_options,
-        params[:event_type],
-        'batter'
-      )
-
-    elsif params[:event_type] == 'sacrifices'
-      # Add events with sacrifice fly flag (sf_fl) or sacrifice hit flag
-      # (sh_fl) set to true
-      search_options = {
-        bat_id: params[:bat_id],
-        sf_fl: 'T'
-      }
-      batting_options(search_options)
-      sacrifice_hits = event_search(
-        search_options,
-        params[:event_type],
-        'batter'
-      )
-
-      search_options = {
-        bat_id: params[:bat_id],
-        sh_fl: 'T'
-      }
-      batting_options(search_options)
-      sacrifice_flies = event_search(
-        search_options,
-        params[:event_type],
-        'batter'
-      )
-
-      @batter_events = sacrifice_hits + sacrifice_flies
-      @batter_events.sort_by! { |events| [events[:game_date], events[:id]] }
+    # elsif params[:event_type] == 'sacrifices'
+    #   # Add events with sacrifice fly flag (sf_fl) or sacrifice hit flag
+    #   # (sh_fl) set to true
+    #   search_options = {
+    #     bat_id: params[:bat_id],
+    #     sf_fl: 'T'
+    #   }
+    #   batting_options(search_options)
+    #   sacrifice_hits = event_search(
+    #     search_options,
+    #     params[:event_type],
+    #     'batter'
+    #   )
+    #
+    #   search_options = {
+    #     bat_id: params[:bat_id],
+    #     sh_fl: 'T'
+    #   }
+    #   batting_options(search_options)
+    #   sacrifice_flies = event_search(
+    #     search_options,
+    #     params[:event_type],
+    #     'batter'
+    #   )
+    #
+    #   @batter_events = sacrifice_hits + sacrifice_flies
+    #   @batter_events.sort_by! { |events| [events[:game_date], events[:id]] }
 
     elsif params[:event_type] == 'sacrifice_hits'
       # Add events with sacrifice hit flag (sh_fl) set to true
@@ -122,74 +122,74 @@ class EventsController < ActionController::Base
     # Return events with plate appearances by specified batter.
     # Plate apperances = at bats + walks + hit by pitches +
     # sacrifice hits + sacrifice flies
-    elsif params[:event_type] == 'plate_appearances'
-      # Look for events with at bat flag (ab_fl) set to true
-      search_options = {
-        bat_id: params[:bat_id],
-        ab_fl: 'T'
-      }
-      batting_options(search_options)
-      at_bats = event_search(
-        search_options,
-        params[:event_type],
-        'batter'
-      )
-
-      # Add walks (14 are regular, 15 are intentional)
-      search_options = {
-        bat_id: params[:bat_id],
-        event_cd: [14, 15]
-      }
-      batting_options(search_options)
-      walks = event_search(
-        search_options,
-        params[:event_type],
-        'batter'
-      )
-
-      # Add hit by pitch events
-      search_options = {
-        bat_id: params[:bat_id],
-        event_cd: 16
-      }
-      batting_options(search_options)
-      hit_by_pitches = event_search(
-        search_options,
-        params[:event_type],
-        'batter'
-      )
-
-      # Add events with sacrifice hit flag (sh_fl) set to true
-      search_options = {
-        bat_id: params[:bat_id],
-        sh_fl: 'T'
-      }
-      batting_options(search_options)
-      sacrifice_hits = event_search(
-        search_options,
-        params[:event_type],
-        'batter'
-      )
-
-      # Add events with sacrifice fly flag (sf_fl) set to true
-      search_options = {
-        bat_id: params[:bat_id],
-        sf_fl: 'T'
-      }
-      batting_options(search_options)
-      sacrifice_flies = event_search(
-        search_options,
-        params[:event_type],
-        'batter'
-      )
-
-      @batter_events =
-        at_bats +
-        walks +
-        hit_by_pitches +
-        sacrifice_hits +
-        sacrifice_flies
-      @batter_events.sort_by! { |events| [events[:game_date], events[:id]] }
+    # elsif params[:event_type] == 'plate_appearances'
+    #   # Look for events with at bat flag (ab_fl) set to true
+    #   search_options = {
+    #     bat_id: params[:bat_id],
+    #     ab_fl: 'T'
+    #   }
+    #   batting_options(search_options)
+    #   at_bats = event_search(
+    #     search_options,
+    #     params[:event_type],
+    #     'batter'
+    #   )
+    #
+    #   # Add walks (14 are regular, 15 are intentional)
+    #   search_options = {
+    #     bat_id: params[:bat_id],
+    #     event_cd: [14, 15]
+    #   }
+    #   batting_options(search_options)
+    #   walks = event_search(
+    #     search_options,
+    #     params[:event_type],
+    #     'batter'
+    #   )
+    #
+    #   # Add hit by pitch events
+    #   search_options = {
+    #     bat_id: params[:bat_id],
+    #     event_cd: 16
+    #   }
+    #   batting_options(search_options)
+    #   hit_by_pitches = event_search(
+    #     search_options,
+    #     params[:event_type],
+    #     'batter'
+    #   )
+    #
+    #   # Add events with sacrifice hit flag (sh_fl) set to true
+    #   search_options = {
+    #     bat_id: params[:bat_id],
+    #     sh_fl: 'T'
+    #   }
+    #   batting_options(search_options)
+    #   sacrifice_hits = event_search(
+    #     search_options,
+    #     params[:event_type],
+    #     'batter'
+    #   )
+    #
+    #   # Add events with sacrifice fly flag (sf_fl) set to true
+    #   search_options = {
+    #     bat_id: params[:bat_id],
+    #     sf_fl: 'T'
+    #   }
+    #   batting_options(search_options)
+    #   sacrifice_flies = event_search(
+    #     search_options,
+    #     params[:event_type],
+    #     'batter'
+    #   )
+    #
+    #   @batter_events =
+    #     at_bats +
+    #     walks +
+    #     hit_by_pitches +
+    #     sacrifice_hits +
+    #     sacrifice_flies
+    #   @batter_events.sort_by! { |events| [events[:game_date], events[:id]] }
 
     # Return events with a RBI by specified batter
     elsif params[:event_type] == 'rbi'
@@ -620,7 +620,7 @@ class EventsController < ActionController::Base
       event_type = 'sacrifice_fly' if event_type == 'sacrifice_flies'
       event_type = 'hit_by_pitch' if event_type == 'hit_by_pitches'
 
-      Event.select("id, game_id, game_date, event_cd, #{batter_or_pitcher}_career_#{event_type.chomp('s')}, #{batter_or_pitcher}_season_#{event_type.chomp('s')}, #{batter_or_pitcher}_game_#{event_type.chomp('s')}")
+      Event.select("id, game_id, game_date, event_cd, #{batter_or_pitcher}_career_#{event_type.chomp('s')}, #{batter_or_pitcher}_season_#{event_type.chomp('s')}, #{batter_or_pitcher}_game_#{event_type.chomp('s')}, #{'rbi_ct' if event_type == 'rbi'}")
         .where(options)
         .order(:game_date, :id)
     end
