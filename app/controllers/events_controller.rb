@@ -192,6 +192,9 @@ class EventsController < ActionController::Base
     #   @batter_events.sort_by! { |events| [events[:game_date], events[:id]] }
 
     # Return events with a RBI by specified batter
+    # Number of events returned does not equal actual RBI
+    # because you can get between 1 and 4 RBI in one event.
+
     elsif params[:event_type] == 'rbi'
       search_options = {
         bat_id: params[:bat_id],
@@ -203,15 +206,6 @@ class EventsController < ActionController::Base
         params[:event_type],
         'batter'
       )
-
-    # Number of events returned does not equal actual RBI
-    # because you can get between 1 and 4 RBI in one event.
-    # Math to add up if RBI totals:
-    # @rbi_count = 0
-    # @batter_events.each {|event| @rbi_count += event[:rbi_ct]}
-    # p '*' * 50
-    # p @rbi_count
-    # p '*' * 50
 
     # Return events with stolen bases (second, third and home)
     # by a specified baserunner (using bat_id).
