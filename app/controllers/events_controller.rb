@@ -611,16 +611,28 @@ class EventsController < ActionController::Base
   private
 
   def event_search(options, event_type, batter_or_pitcher)
+    # Singularize tough plurals
+    event_type = 'sacrifice_fly' if event_type == 'sacrifice_flies'
+    event_type = 'hit_by_pitch' if event_type == 'hit_by_pitches'
+    # Singularize easy plurals
+    event_type = event_type.chomp('s')
+
+    # Tailor career/season/game stats to event type
+    career_string = "#{batter_or_pitcher}_career_#{event_type}"
+    season_string = "#{batter_or_pitcher}_season_#{event_type}"
+    game_string = "#{batter_or_pitcher}_game_#{event_type}"
+    rbi_string = "#{', rbi_ct' if event_type == 'rbi'}"
+
+    # Send back results with these keys instead of every key
+    event_select_string = "id, game_id, game_date, event_cd, #{career_string}, #{season_string}, #{game_string} #{rbi_string}"
+
     if options.key?(:year)
-      Event.select("id, game_id, game_date, event_cd, #{batter_or_pitcher}_career_#{event_type}")
+      Event.select(event_select_string)
         .by_year(options[:year])
         .where(options.except(:year))
         .order(:game_date, :id)
     else
-      event_type = 'sacrifice_fly' if event_type == 'sacrifice_flies'
-      event_type = 'hit_by_pitch' if event_type == 'hit_by_pitches'
-
-      Event.select("id, game_id, game_date, event_cd, #{batter_or_pitcher}_career_#{event_type.chomp('s')}, #{batter_or_pitcher}_season_#{event_type.chomp('s')}, #{batter_or_pitcher}_game_#{event_type.chomp('s')}, #{'rbi_ct' if event_type == 'rbi'}")
+      Event.select(event_select_string)
         .where(options)
         .order(:game_date, :id)
     end
