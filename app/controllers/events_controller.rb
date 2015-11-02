@@ -25,17 +25,17 @@ class EventsController < ActionController::Base
     # Build hash of events and corresponding codes to streamline search
     event_types = {
       'hits' => [20, 21, 22, 23],
-      # 'outs' => [2, 3],
-      # 'strikeouts' => 3,
       'walks' => [14, 15],
       'intentional_walks' => 15,
       'hit_by_pitches' => 16,
-      # 'errors' => 18,
       'fielders_choices' => 19,
       'singles' => 20,
       'doubles' => 21,
       'triples' => 22,
-      'home_runs' => 23
+      'home_runs' => 23,
+      # 'errors' => 18,
+      # 'outs' => [2, 3],
+      # 'strikeouts' => 3,
     }
 
     # Return events by searching hash for corresponding event code.
@@ -617,6 +617,9 @@ class EventsController < ActionController::Base
         .where(options.except(:year))
         .order(:game_date, :id)
     else
+      event_type = 'sacrifice_fly' if event_type == 'sacrifice_flies'
+      event_type = 'hit_by_pitch' if event_type == 'hit_by_pitches'
+
       Event.select("id, game_id, game_date, event_cd, #{batter_or_pitcher}_career_#{event_type.chomp('s')}, #{batter_or_pitcher}_season_#{event_type.chomp('s')}, #{batter_or_pitcher}_game_#{event_type.chomp('s')}")
         .where(options)
         .order(:game_date, :id)
