@@ -357,20 +357,20 @@ class EventsController < ActionController::Base
   def show_pitcher_events
     # Build hash of events and corresponding codes to streamline search
     event_types = {
-      'hits' => [20, 21, 22, 23],
-      'outs' => [2, 3],
       'strikeouts' => 3,
       'walks' => [14, 15],
       'intentional_walks' => 15,
       'hit_by_pitches' => 16,
-      'errors' => 18,
-      'fielders_choices' => 19,
       'singles' => 20,
       'doubles' => 21,
       'triples' => 22,
       'home_runs' => 23,
       'pick_offs' => 8,
       'balks' => 11
+      # 'hits' => [20, 21, 22, 23],
+      # 'errors' => 18,
+      # 'outs' => [2, 3],
+      # 'fielders_choices' => 19,
     }
 
     # Return pitcher events by searching hash for corresponding event code.
@@ -460,7 +460,7 @@ class EventsController < ActionController::Base
       @pitcher_events.sort_by! { |events| [events[:game_date], events[:id]] }
 
     # Return events where the pitcher allowed runs
-    elsif params[:event_type] == 'runs_allowed'
+    elsif params[:event_type] == 'allowed_runs'
       search_options = {
         resp_pit_id: params[:pit_id],
         bat_dest_id: [4, 5, 6]
@@ -515,75 +515,75 @@ class EventsController < ActionController::Base
     # Return events where pitcher faced batters.
     # Batters faced = at bats + walks + hit by pitches +
     # sacrifice hits + sacrifice flies.
-    elsif params[:event_type] == 'batters_faced'
-      # Look for events with at bat flag (ab_fl) set to true
-      search_options = {
-        pit_id: params[:pit_id],
-        ab_fl: 'T'
-      }
-      pitching_options(search_options)
-      at_bats = event_search(
-        search_options,
-        params[:event_type],
-        'pitcher'
-      )
-
-      # Add walks (14 are regular, 15 are intentional)
-      search_options = {
-        pit_id: params[:pit_id],
-        event_cd: [14, 15]
-      }
-      pitching_options(search_options)
-      walks = event_search(
-        search_options,
-        params[:event_type],
-        'pitcher'
-      )
-
-      # Add hit by pitch events
-      search_options = {
-        pit_id: params[:pit_id],
-        event_cd: 16
-      }
-      pitching_options(search_options)
-      hit_by_pitches = event_search(
-        search_options,
-        params[:event_type],
-        'pitcher'
-      )
-
-      # Add events with sacrifice hit flag (sh_fl) set to true
-      search_options = {
-        pit_id: params[:pit_id],
-        sh_fl: 'T'
-      }
-      pitching_options(search_options)
-      sacrifice_hits = event_search(
-        search_options,
-        params[:event_type],
-        'pitcher'
-      )
-
-      # Add events with sacrifice fly flag (sf_fl) set to true
-      search_options = {
-        pit_id: params[:pit_id],
-        sf_fl: 'T'
-      }
-      pitching_options(search_options)
-      sacrifice_flies = event_search(
-        search_options,
-        params[:event_type],
-        'pitcher'
-      )
-
-      @pitcher_events =
-        at_bats +
-        walks + hit_by_pitches +
-        sacrifice_hits +
-        sacrifice_flies
-      @pitcher_events.sort_by! do |events|
-        [events[:game_date], events[:id]]
-      end
+    # elsif params[:event_type] == 'faced_batters'
+    #   # Look for events with at bat flag (ab_fl) set to true
+    #   search_options = {
+    #     pit_id: params[:pit_id],
+    #     ab_fl: 'T'
+    #   }
+    #   pitching_options(search_options)
+    #   at_bats = event_search(
+    #     search_options,
+    #     params[:event_type],
+    #     'pitcher'
+    #   )
+    #
+    #   # Add walks (14 are regular, 15 are intentional)
+    #   search_options = {
+    #     pit_id: params[:pit_id],
+    #     event_cd: [14, 15]
+    #   }
+    #   pitching_options(search_options)
+    #   walks = event_search(
+    #     search_options,
+    #     params[:event_type],
+    #     'pitcher'
+    #   )
+    #
+    #   # Add hit by pitch events
+    #   search_options = {
+    #     pit_id: params[:pit_id],
+    #     event_cd: 16
+    #   }
+    #   pitching_options(search_options)
+    #   hit_by_pitches = event_search(
+    #     search_options,
+    #     params[:event_type],
+    #     'pitcher'
+    #   )
+    #
+    #   # Add events with sacrifice hit flag (sh_fl) set to true
+    #   search_options = {
+    #     pit_id: params[:pit_id],
+    #     sh_fl: 'T'
+    #   }
+    #   pitching_options(search_options)
+    #   sacrifice_hits = event_search(
+    #     search_options,
+    #     params[:event_type],
+    #     'pitcher'
+    #   )
+    #
+    #   # Add events with sacrifice fly flag (sf_fl) set to true
+    #   search_options = {
+    #     pit_id: params[:pit_id],
+    #     sf_fl: 'T'
+    #   }
+    #   pitching_options(search_options)
+    #   sacrifice_flies = event_search(
+    #     search_options,
+    #     params[:event_type],
+    #     'pitcher'
+    #   )
+    #
+    #   @pitcher_events =
+    #     at_bats +
+    #     walks + hit_by_pitches +
+    #     sacrifice_hits +
+    #     sacrifice_flies
+    #   @pitcher_events.sort_by! do |events|
+    #     [events[:game_date], events[:id]]
+    #   end
 
     # Return an error message if the event was not properly specified.
     else
@@ -604,6 +604,7 @@ class EventsController < ActionController::Base
     # Singularize tough plurals
     event_type = 'sacrifice_fly' if event_type == 'sacrifice_flies'
     event_type = 'hit_by_pitch' if event_type == 'hit_by_pitches'
+    event_type = 'wild_pitch' if event_type == 'wild_pitches'
     # Singularize easy plurals
     event_type = event_type.chomp('s')
 
