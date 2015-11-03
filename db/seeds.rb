@@ -7,7 +7,6 @@ require_relative 'resume_players'
 # require_relative 'add_pitcher_hit_by_pitches'
 # require_relative 'add_pitcher_homers'
 # require_relative 'add_pitcher_intentional_walks'
-# require_relative 'add_pitcher_outs'
 # require_relative 'add_pitcher_pick_offs'
 # require_relative 'add_pitcher_sacrifice_flies'
 # require_relative 'add_pitcher_sacrifice_hits'
@@ -28,3 +27,5 @@ require_relative 'add_batter_walks'
 
 # require_relative 'add_batter_rbi'
 # require_relative 'add_batter_runs'
+
+# require_relative 'add_pitcher_outs'

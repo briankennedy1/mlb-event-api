@@ -1,6 +1,6 @@
 PLAYERS.each do |player|
   all_outs = Event.find_by_sql("SELECT events.* FROM events WHERE
-    events.pit_id = '#{player}' AND events.event_cd = '2' ")
+    events.pit_id = '#{player}' AND events.event_cd = '[2,3]' ")
   all_outs.sort! { |x, y| [x.game_date, x.id] <=> [y.game_date, y.id] }
   pbar = ProgressBar.create(
     starting_at: 0,

@@ -11,16 +11,20 @@ PLAYERS.each do |player|
   )
 
   all_walks.each do |current_event|
+    season_group = all_walks.select do |walk|
+      walk.game_date.year == current_event.game_date.year
+    end
+
+    game_group = all_walks.select do |walk|
+      walk.game_id == current_event.game_id
+    end
+
     current_event.update_columns(
-      batter_career_walk: all_walks
-        .index(current_event) + 1,
-      batter_season_walk: all_walks
-        .by_year(current_event.game_date.year)
-        .index(current_event) + 1,
-      batter_game_walk: all_walks
-        .where(game_id: current_event.game_id)
-        .index(current_event) + 1
+      batter_career_walk: all_walks.index(current_event) + 1,
+      batter_season_walk: season_group.index(current_event) + 1,
+      batter_game_walk: game_group.index(current_event) + 1
     )
+
     pbar.increment
   end
 end
