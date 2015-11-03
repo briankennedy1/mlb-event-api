@@ -608,11 +608,27 @@ class EventsController < ActionController::Base
     # Singularize easy plurals
     event_type = event_type.chomp('s')
 
+    # Stolen bases are more complicated and require a detour
+    # Set prefix for specific runner
+    if options[:base1_run_id]
+      stolen_base_runner = 'runner1'
+    elsif options[:base2_run_id]
+      stolen_base_runner = 'runner2'
+    elsif options[:base3_run_id]
+      stolen_base_runner = 'runner3'
+    end
+
     # Tailor career/season/game stats to event type
-    career_string = "#{batter_or_pitcher}_career_#{event_type}"
-    season_string = "#{batter_or_pitcher}_season_#{event_type}"
-    game_string = "#{batter_or_pitcher}_game_#{event_type}"
-    rbi_string = "#{', rbi_ct' if event_type == 'rbi'}"
+    if stolen_base_runner
+      career_string = "#{stolen_base_runner}_career_#{event_type}"
+      season_string = "#{stolen_base_runner}_season_#{event_type}"
+      game_string = "#{stolen_base_runner}_game_#{event_type}"
+    else
+      career_string = "#{batter_or_pitcher}_career_#{event_type}"
+      season_string = "#{batter_or_pitcher}_season_#{event_type}"
+      game_string = "#{batter_or_pitcher}_game_#{event_type}"
+      rbi_string = "#{', rbi_ct' if event_type == 'rbi'}"
+    end
 
     # Send back results with these keys instead of every key
     event_select_string = "id, game_id, game_date, event_cd, #{career_string}, #{season_string}, #{game_string} #{rbi_string}"
