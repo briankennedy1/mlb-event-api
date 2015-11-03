@@ -248,53 +248,49 @@ class EventsController < ActionController::Base
 
     # Return events where the baserunner (using bat_id)
     # was caught stealing ( at second, third and home).
-    elsif params[:event_type] == 'caught_stealing'
-      search_options = {
-        base1_run_id: params[:bat_id],
-        run1_cs_fl: 'T'
-      }
-      batting_options(search_options)
-      caught_at_second = event_search(
-        search_options,
-        params[:event_type],
-        'batter'
-      )
-
-      search_options = {
-        base2_run_id: params[:bat_id],
-        run2_cs_fl: 'T'
-      }
-      batting_options(search_options)
-      caught_at_third = event_search(
-        search_options,
-        params[:event_type],
-        'batter'
-      )
-
-      search_options = {
-        base3_run_id: params[:bat_id],
-        run3_cs_fl: 'T'
-      }
-      batting_options(search_options)
-      caught_at_home = event_search(
-        search_options,
-        params[:event_type],
-        'batter'
-      )
-
-      @batter_events = caught_at_second + caught_at_third + caught_at_home
-      @batter_events.sort_by! { |events| [events[:game_date], events[:id]] }
+    # elsif params[:event_type] == 'caught_stealing'
+    #   search_options = {
+    #     base1_run_id: params[:bat_id],
+    #     run1_cs_fl: 'T'
+    #   }
+    #   batting_options(search_options)
+    #   caught_at_second = event_search(
+    #     search_options,
+    #     params[:event_type],
+    #     'batter'
+    #   )
+    #
+    #   search_options = {
+    #     base2_run_id: params[:bat_id],
+    #     run2_cs_fl: 'T'
+    #   }
+    #   batting_options(search_options)
+    #   caught_at_third = event_search(
+    #     search_options,
+    #     params[:event_type],
+    #     'batter'
+    #   )
+    #
+    #   search_options = {
+    #     base3_run_id: params[:bat_id],
+    #     run3_cs_fl: 'T'
+    #   }
+    #   batting_options(search_options)
+    #   caught_at_home = event_search(
+    #     search_options,
+    #     params[:event_type],
+    #     'batter'
+    #   )
+    #
+    #   @batter_events = caught_at_second + caught_at_third + caught_at_home
+    #   @batter_events.sort_by! { |events| [events[:game_date], events[:id]] }
 
     # Return events where the batter or baserunner
     # (using bat_id) scored on the play.
+    # Destination code 4, 5 and 6 all mean the runner scores.
     elsif params[:event_type] == 'runs'
       search_options = {
         bat_id: params[:bat_id],
-        # Destination code 4, 5 and 6 all mean the runner scores.
-        # 4 = runner scored
-        # 5 = runner scored, unearned
-        # 6 = runner scored, unearned to team, earned to pitcher
-        # Ref: http://chadwick.sourceforge.net/doc/cwevent.html#cwtools-cwevent-plays
         bat_dest_id: [4, 5, 6]
       }
       batting_options(search_options)
