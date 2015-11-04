@@ -28,11 +28,11 @@ class EventsController < ActionController::Base
       'walks' => [14, 15],
       'intentional_walks' => 15,
       'hit_by_pitches' => 16,
-      'fielders_choices' => 19,
       'singles' => 20,
       'doubles' => 21,
       'triples' => 22,
       'home_runs' => 23,
+      # 'fielders_choices' => 19,
       # 'errors' => 18,
       # 'outs' => [2, 3],
       # 'strikeouts' => 3,
@@ -65,33 +65,33 @@ class EventsController < ActionController::Base
     #     'batter'
     #   )
 
-    # elsif params[:event_type] == 'sacrifices'
-    #   # Add events with sacrifice fly flag (sf_fl) or sacrifice hit flag
-    #   # (sh_fl) set to true
-    #   search_options = {
-    #     bat_id: params[:bat_id],
-    #     sf_fl: 'T'
-    #   }
-    #   batting_options(search_options)
-    #   sacrifice_hits = event_search(
-    #     search_options,
-    #     params[:event_type],
-    #     'batter'
-    #   )
-    #
-    #   search_options = {
-    #     bat_id: params[:bat_id],
-    #     sh_fl: 'T'
-    #   }
-    #   batting_options(search_options)
-    #   sacrifice_flies = event_search(
-    #     search_options,
-    #     params[:event_type],
-    #     'batter'
-    #   )
-    #
-    #   @batter_events = sacrifice_hits + sacrifice_flies
-    #   @batter_events.sort_by! { |events| [events[:game_date], events[:id]] }
+    elsif params[:event_type] == 'sacrifices'
+      # Add events with sacrifice fly flag (sf_fl) or sacrifice hit flag
+      # (sh_fl) set to true
+      search_options = {
+        bat_id: params[:bat_id],
+        sf_fl: 'T'
+      }
+      batting_options(search_options)
+      sacrifice_hits = event_search(
+        search_options,
+        params[:event_type],
+        'batter'
+      )
+
+      search_options = {
+        bat_id: params[:bat_id],
+        sh_fl: 'T'
+      }
+      batting_options(search_options)
+      sacrifice_flies = event_search(
+        search_options,
+        params[:event_type],
+        'batter'
+      )
+
+      @batter_events = sacrifice_hits + sacrifice_flies
+      @batter_events.sort_by! { |events| [events[:game_date], events[:id]] }
 
     elsif params[:event_type] == 'sacrifice_hits'
       # Add events with sacrifice hit flag (sh_fl) set to true

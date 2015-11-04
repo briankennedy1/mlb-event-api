@@ -1,3 +1,7 @@
+p '%' * 50
+p 'Starting add_batter_sacrifice_hits'
+p '%' * 50
+
 PLAYERS.each do |player|
   all_shs = Event.find_by_sql("SELECT events.* FROM events WHERE
     events.bat_id = '#{player}' AND events.sh_fl = 'T' ")
