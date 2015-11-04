@@ -357,6 +357,7 @@ class EventsController < ActionController::Base
   def show_pitcher_events
     # Build hash of events and corresponding codes to streamline search
     event_types = {
+      'outs' => [2, 3],
       'strikeouts' => 3,
       'walks' => [14, 15],
       'intentional_walks' => 15,
@@ -369,7 +370,6 @@ class EventsController < ActionController::Base
       'balks' => 11
       # 'hits' => [20, 21, 22, 23],
       # 'errors' => 18,
-      # 'outs' => [2, 3],
       # 'fielders_choices' => 19,
     }
 

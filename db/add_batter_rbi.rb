@@ -1,3 +1,7 @@
+p '%' * 50
+p 'Starting add_batter_rbi'
+p '%' * 50
+
 PLAYERS.each do |player|
   all_rbi = Event.where(
     bat_id: player,

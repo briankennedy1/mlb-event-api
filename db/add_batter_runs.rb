@@ -1,17 +1,10 @@
-PLAYERS.each do |player|
-  scored_batting = Event.find_by_sql("SELECT events.* FROM events WHERE
-    events.bat_id = '#{player}' AND events.bat_dest_id = [4, 5, 6] ")
-  scored_from_first = Event.find_by_sql("SELECT events.* FROM events WHERE
-    events.base1_run_id = '#{player}' AND events.run1_dest_id = [4, 5, 6] ")
-  scored_from_second = Event.find_by_sql("SELECT events.* FROM events WHERE
-    events.base2_run_id = '#{player}' AND events.run2_dest_id = [4, 5, 6] ")
-  scored_from_third = Event.find_by_sql("SELECT events.* FROM events WHERE
-    events.base3_run_id = '#{player}' AND events.run3_dest_id = [4, 5, 6] ")
+p '%' * 50
+p 'Starting add_batter_runs'
+p '%' * 50
 
-  all_runs = scored_batting +
-             scored_from_first +
-             scored_from_second +
-             scored_from_third
+PLAYERS.each do |player|
+  all_runs = Event.find_by_sql("SELECT events.* FROM events WHERE
+    events.bat_id = '#{player}' AND events.bat_dest_id = 4 OR events.bat_id = '#{player}' AND events.bat_dest_id = 5 OR events.bat_id = '#{player}' AND events.bat_dest_id = 6 OR events.base1_run_id = '#{player}' AND events.run1_dest_id = 4 OR events.base1_run_id = '#{player}' AND events.run1_dest_id = 5 OR events.base1_run_id = '#{player}' AND events.run1_dest_id = 6 OR events.base2_run_id = '#{player}' AND events.run2_dest_id = 4 OR events.base2_run_id = '#{player}' AND events.run2_dest_id = 5 OR events.base2_run_id = '#{player}' AND events.run2_dest_id = 6 OR events.base3_run_id = '#{player}' AND events.run3_dest_id = 4 OR events.base3_run_id = '#{player}' AND events.run3_dest_id = 5 OR events.base3_run_id = '#{player}' AND events.run3_dest_id = 6 ")
 
   all_runs.sort! { |x, y| [x.game_date, x.id] <=> [y.game_date, y.id] }
   pbar = ProgressBar.create(
