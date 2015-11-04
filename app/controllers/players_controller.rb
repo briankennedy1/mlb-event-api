@@ -1,7 +1,7 @@
 class PlayersController < ApplicationController
   def index
     @players = Player.select(
-      'id, player_id, full_name, debut'
+      'id, player_id, full_name, debut, debut_year'
     ).where(
       'debut_year >= ?', 1974
     )
