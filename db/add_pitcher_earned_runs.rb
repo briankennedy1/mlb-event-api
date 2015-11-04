@@ -1,3 +1,7 @@
+p '%' * 50
+p 'Starting add_pitcher_earned_runs'
+p '%' * 50
+
 PLAYERS.each do |player|
   all_earned_runs = Event.find_by_sql("SELECT events.* FROM events WHERE
     events.resp_pit_id = '#{player}' AND events.bat_dest_id = [4,6]

@@ -1,3 +1,7 @@
+p '%' * 50
+p 'Starting add_batter_hit_by_pitches'
+p '%' * 50
+
 PLAYERS.each do |player|
   all_hpbs = Event.find_by_sql("SELECT events.* FROM events WHERE
     events.pit_id = '#{player}' AND events.event_cd = '16' ")

@@ -1,3 +1,7 @@
+p '%' * 50
+p 'Starting add_batter_fielders_choices'
+p '%' * 50
+
 PLAYERS.each do |player|
   all_fcs = Event.where(
     bat_id: player,
