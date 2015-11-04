@@ -25,5 +25,7 @@ require_relative 'players'
 # require_relative 'add_batter_fielders_choices'
 require_relative 'add_pitcher_outs'
 require_relative 'add_batter_runs'
+require_relative 'add_pitcher_earned_runs'
+require_relative 'add_pitcher_allowed_runs'
 
 # require_relative 'add_batter_rbi'

@@ -1,10 +1,10 @@
 p '%' * 50
-p 'Starting add_pitcher_earned_runs'
+p 'Starting add_pitcher_allowed_runs'
 p '%' * 50
 
 PLAYERS.each do |player|
   all_earned_runs = Event.find_by_sql("SELECT events.* FROM events WHERE
-    events.resp_pit_id = '#{player}' AND events.bat_dest_id = 4 OR events.resp_pit_id = '#{player}' AND events.bat_dest_id = 6 OR events.run1_resp_pit_id = '#{player}' AND events.run1_dest_id = 4 OR events.run1_resp_pit_id = '#{player}' AND events.run1_dest_id = 6 OR events.run2_resp_pit_id = '#{player}' AND events.run2_dest_id = 4 OR events.run2_resp_pit_id = '#{player}' AND events.run2_dest_id = 6 OR events.run3_resp_pit_id = '#{player}' AND events.run3_dest_id = 4 OR events.run3_resp_pit_id = '#{player}' AND events.run3_dest_id = 6
+    events.resp_pit_id = '#{player}' AND events.bat_dest_id = 4 OR events.resp_pit_id = '#{player}' AND events.bat_dest_id = 5 OR events.resp_pit_id = '#{player}' AND events.bat_dest_id = 6 OR events.run1_resp_pit_id = '#{player}' AND events.run1_dest_id = 4 OR events.run1_resp_pit_id = '#{player}' AND events.run1_dest_id = 5 OR events.run1_resp_pit_id = '#{player}' AND events.run1_dest_id = 6 OR events.run2_resp_pit_id = '#{player}' AND events.run2_dest_id = 4 OR events.run2_resp_pit_id = '#{player}' AND events.run2_dest_id = 5 OR events.run2_resp_pit_id = '#{player}' AND events.run2_dest_id = 6 OR events.run3_resp_pit_id = '#{player}' AND events.run3_dest_id = 4 OR events.run3_resp_pit_id = '#{player}' AND events.run3_dest_id = 5 OR events.run3_resp_pit_id = '#{player}' AND events.run3_dest_id = 6
     ")
   all_earned_runs.sort! { |x, y| [x.game_date, x.id] <=> [y.game_date, y.id] }
 
