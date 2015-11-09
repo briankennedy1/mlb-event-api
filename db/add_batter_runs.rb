@@ -13,59 +13,57 @@ PLAYERS.each do |player|
     format: "Current player: #{player} %a %e %P% Processed: %c from %C"
   )
 
-  # Set counts of all stats to 0
-  CAREER_COUNT = 0
-  SEASON_COUNT = 0
-  GAME_COUNT = 0
-  # Set a marker on the groups that will be updated as we go through events
-  SEASON_MARKER = all_runs.first.game_date.year || nil
-  GAME_MARKER = all_runs.first.game_id || nil
-
-  if SEASON_MARKER.nil?
-    p 'No runs found'
+  if all_runs.empty?
+    next
   else
+    # Set counts of all stats to 0
+    career_count = 0
+    season_count = 0
+    game_count = 0
+    # Set a marker on the groups that will be updated as we go through events
+    season_marker = all_runs.first.game_date.year
+    game_marker = all_runs.first.game_id
+
     all_runs.each do |current_event|
-      if SEASON_MARKER != current_event.game_date.year
-        SEASON_MARKER = current_event.game_date.year
-        SEASON_COUNT = 0
+      if season_marker != current_event.game_date.year
+        season_marker = current_event.game_date.year
+        season_count = 0
       end
 
-      p "SEASON_MARKER: #{SEASON_MARKER}"
-      p "SEASON_COUNT: #{SEASON_COUNT}"
-
-      if GAME_MARKER != current_event.game_id
-        GAME_MARKER = current_event.game_id
-        GAME_COUNT = 0
+      if game_marker != current_event.game_id
+        game_marker = current_event.game_id
+        game_count = 0
       end
 
-      p "GAME_MARKER: #{GAME_MARKER}"
-      p "GAME_COUNT: #{GAME_COUNT}"
+      career_count += 1
+      season_count += 1
+      game_count += 1
 
-      # if player == current_event.bat_id
-      #   current_event.update_columns(
-      #     batter_career_run: CAREER_COUNT + 1,
-      #     batter_season_run: SEASON_COUNT + 1,
-      #     batter_game_run: GAME_COUNT + 1
-      #   )
-      # elsif player == current_event.base1_run_id
-      #   current_event.update_columns(
-      #     runner1_career_run: CAREER_COUNT + 1,
-      #     runner1_season_run: SEASON_COUNT + 1,
-      #     runner1_game_run: GAME_COUNT + 1
-      #   )
-      # elsif player == current_event.base2_run_id
-      #   current_event.update_columns(
-      #     runner2_career_run: CAREER_COUNT + 1,
-      #     runner2_season_run: SEASON_COUNT + 1,
-      #     runner2_game_run: GAME_COUNT + 1
-      #   )
-      # elsif player == current_event.base3_run_id
-      #   current_event.update_columns(
-      #     runner3_career_run: CAREER_COUNT + 1,
-      #     runner3_season_run: SEASON_COUNT + 1,
-      #     runner3_game_run: GAME_COUNT + 1
-      #   )
-      # end
+      if player == current_event.bat_id
+        current_event.update_columns(
+          batter_career_run: career_count,
+          batter_season_run: season_count,
+          batter_game_run: game_count
+        )
+      elsif player == current_event.base1_run_id
+        current_event.update_columns(
+          runner1_career_run: career_count,
+          runner1_season_run: season_count,
+          runner1_game_run: game_count
+        )
+      elsif player == current_event.base2_run_id
+        current_event.update_columns(
+          runner2_career_run: career_count,
+          runner2_season_run: season_count,
+          runner2_game_run: game_count
+        )
+      elsif player == current_event.base3_run_id
+        current_event.update_columns(
+          runner3_career_run: career_count,
+          runner3_season_run: season_count,
+          runner3_game_run: game_count
+        )
+      end
 
       pbar.increment
     end
