@@ -1,5 +1,6 @@
 require 'ruby-progressbar'
-require_relative 'players'
+# require_relative 'players'
+require_relative 'resume_players'
 
 # require_relative 'add_pitcher_balks'
 # require_relative 'add_pitcher_doubles'
@@ -24,11 +25,12 @@ require_relative 'players'
 # require_relative 'add_batter_hit_by_pitches'
 # require_relative 'add_batter_fielders_choices'
 require_relative 'add_pitcher_outs'
+require_relative 'testing'
 # require_relative 'add_batter_runs'
 # require_relative 'add_pitcher_earned_runs'
 # require_relative 'add_pitcher_allowed_runs'
 # require_relative 'add_batter_sacrifice_fly'
 # require_relative 'add_batter_sacrifice_hit'
 # require_relative 'add_batter_sacrifices'
-#
+
 # require_relative 'add_batter_rbi'
