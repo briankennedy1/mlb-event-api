@@ -12,24 +12,55 @@ PLAYERS.each do |player|
     format: "Current player: #{player} %a %e %P% Processed: %c from %C"
   )
 
-  all_outs.each do |current_event|
-    season_group = all_outs.select do |out|
-      out.game_date.year == current_event.game_date.year
+  if all_outs.empty?
+    next
+  else
+    career_count = 0
+    season_count = 0
+    game_count = 0
+    # Set a marker on the groups that will be updated as we go through events
+    season_marker = all_outs.first.game_date.year
+    game_marker = all_outs.first.game_id
+
+    all_outs.each do |current_event|
+      if season_marker != current_event.game_date.year
+        season_marker = current_event.game_date.year
+        season_count = 0
+      end
+
+      if game_marker != current_event.game_id
+        game_marker = current_event.game_id
+        game_count = 0
+      end
+
+      career_count += 1
+      season_count += 1
+      game_count += 1
+
+      current_event.update_columns(
+        pitcher_career_out: career_count,
+        pitcher_season_out: season_count,
+        pitcher_game_out: game_count
+      )
+
+      # Old code
+      # season_group = all_outs.select do |out|
+      #   out.game_date.year == current_event.game_date.year
+      # end
+      #
+      # game_group = all_outs.select do |out|
+      #   out.game_id == current_event.game_id
+      # end
+      #
+      # current_event.update_columns(
+      #   pitcher_career_out: all_outs
+      #     .index(current_event) + 1,
+      #   pitcher_season_out:
+      #     season_group.index(current_event) + 1,
+      #   pitcher_game_out:
+      #     game_group.index(current_event) + 1
+      # )
+      pbar.increment
     end
-
-    game_group = all_outs.select do |out|
-      out.game_id == current_event.game_id
-    end
-
-    current_event.update_columns(
-      pitcher_career_out: all_outs
-        .index(current_event) + 1,
-      pitcher_season_out:
-        season_group.index(current_event) + 1,
-      pitcher_game_out:
-        game_group.index(current_event) + 1
-    )
-
-    pbar.increment
   end
 end
