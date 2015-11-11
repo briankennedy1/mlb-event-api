@@ -401,116 +401,117 @@ class EventsController < ActionController::Base
       )
 
     # Return events where the pitcher allowed earned runs
-    elsif params[:event_type] == 'earned_runs'
-      # This method returns multiple copies of an event if more than one
-      # run was scored in that event.
-      # For example: a two-run home run would return one event for the
-      # batter scoring and the same event for the runner scoring.
-      # Although this is just one event, I want it to be represented
-      # multiple times, one for each person it 'belongs' to.
-      search_options = {
-        resp_pit_id: params[:pit_id],
-        bat_dest_id: [4, 6]
-      }
-      pitching_options(search_options)
-      scored_batting = event_search(
-        search_options,
-        params[:event_type],
-        'pitcher'
-      )
-
-      search_options = {
-        run1_resp_pit_id: params[:pit_id],
-        run1_dest_id: [4, 6]
-      }
-      pitching_options(search_options)
-      scored_from_first = event_search(
-        search_options,
-        params[:event_type],
-        'pitcher'
-      )
-
-      search_options = {
-        run2_resp_pit_id: params[:pit_id],
-        run2_dest_id: [4, 6]
-      }
-      pitching_options(search_options)
-      scored_from_second = event_search(
-        search_options,
-        params[:event_type],
-        'pitcher'
-      )
-
-      search_options = {
-        run3_resp_pit_id: params[:pit_id],
-        run3_dest_id: [4, 6]
-      }
-      pitching_options(search_options)
-      scored_from_third = event_search(
-        search_options,
-        params[:event_type],
-        'pitcher'
-      )
-
-      @pitcher_events =
-        scored_batting +
-        scored_from_first +
-        scored_from_second +
-        scored_from_third
-      @pitcher_events.sort_by! { |events| [events[:game_date], events[:id]] }
-
-    # Return events where the pitcher allowed runs
-    elsif params[:event_type] == 'allowed_runs'
-      search_options = {
-        resp_pit_id: params[:pit_id],
-        bat_dest_id: [4, 5, 6]
-      }
-      pitching_options(search_options)
-      scored_batting = event_search(
-        search_options,
-        params[:event_type],
-        'pitcher'
-      )
-
-      search_options = {
-        run1_resp_pit_id: params[:pit_id],
-        run1_dest_id: [4, 5, 6]
-      }
-      pitching_options(search_options)
-      scored_from_first = event_search(
-        search_options,
-        params[:event_type],
-        'pitcher'
-      )
-
-      search_options = {
-        run2_resp_pit_id: params[:pit_id],
-        run2_dest_id: [4, 5, 6]
-      }
-      pitching_options(search_options)
-      scored_from_second = event_search(
-        search_options,
-        params[:event_type],
-        'pitcher'
-      )
-
-      search_options = {
-        run3_resp_pit_id: params[:pit_id],
-        run3_dest_id: [4, 5, 6]
-      }
-      pitching_options(search_options)
-      scored_from_third = event_search(
-        search_options,
-        params[:event_type],
-        'pitcher'
-      )
-
-      @pitcher_events =
-        scored_batting +
-        scored_from_first +
-        scored_from_second +
-        scored_from_third
-      @pitcher_events.sort_by! { |events| [events[:game_date], events[:id]] }
+    # elsif params[:event_type] == 'earned_runs'
+    #   # This method returns multiple copies of an event if more than one
+    #   # run was scored in that event.
+    #   # For example: a two-run home run would return one event for the
+    #   # batter scoring and the same event for the runner scoring.
+    #   # Although this is just one event, I want it to be represented
+    #   # multiple times, one for each person it 'belongs' to.
+    #   search_options = {
+    #     resp_pit_id: params[:pit_id],
+    #     bat_dest_id: [4, 6]
+    #   }
+    #   pitching_options(search_options)
+    #   scored_batting = event_search(
+    #     search_options,
+    #     params[:event_type],
+    #     'pitcher'
+    #   )
+    #
+    #   search_options = {
+    #     run1_resp_pit_id: params[:pit_id],
+    #     run1_dest_id: [4, 6]
+    #   }
+    #   pitching_options(search_options)
+    #   scored_from_first = event_search(
+    #     search_options,
+    #     params[:event_type],
+    #     'pitcher'
+    #   )
+    #
+    #   search_options = {
+    #     run2_resp_pit_id: params[:pit_id],
+    #     run2_dest_id: [4, 6]
+    #   }
+    #   pitching_options(search_options)
+    #   scored_from_second = event_search(
+    #     search_options,
+    #     params[:event_type],
+    #     'pitcher'
+    #   )
+    #
+    #   search_options = {
+    #     run3_resp_pit_id: params[:pit_id],
+    #     run3_dest_id: [4, 6]
+    #   }
+    #   pitching_options(search_options)
+    #   scored_from_third = event_search(
+    #     search_options,
+    #     params[:event_type],
+    #     'pitcher'
+    #   )
+    #
+    #   @pitcher_events =
+    #     scored_batting +
+    #     scored_from_first +
+    #     scored_from_second +
+    #     scored_from_third
+    #   @pitcher_events.sort_by! { |events| [events[:game_date], events[:id]] }
+    #   @pitcher_events.uniq!
+    #
+    # # Return events where the pitcher allowed runs
+    # elsif params[:event_type] == 'allowed_runs'
+    #   search_options = {
+    #     resp_pit_id: params[:pit_id],
+    #     bat_dest_id: [4, 5, 6]
+    #   }
+    #   pitching_options(search_options)
+    #   scored_batting = event_search(
+    #     search_options,
+    #     params[:event_type],
+    #     'pitcher'
+    #   )
+    #
+    #   search_options = {
+    #     run1_resp_pit_id: params[:pit_id],
+    #     run1_dest_id: [4, 5, 6]
+    #   }
+    #   pitching_options(search_options)
+    #   scored_from_first = event_search(
+    #     search_options,
+    #     params[:event_type],
+    #     'pitcher'
+    #   )
+    #
+    #   search_options = {
+    #     run2_resp_pit_id: params[:pit_id],
+    #     run2_dest_id: [4, 5, 6]
+    #   }
+    #   pitching_options(search_options)
+    #   scored_from_second = event_search(
+    #     search_options,
+    #     params[:event_type],
+    #     'pitcher'
+    #   )
+    #
+    #   search_options = {
+    #     run3_resp_pit_id: params[:pit_id],
+    #     run3_dest_id: [4, 5, 6]
+    #   }
+    #   pitching_options(search_options)
+    #   scored_from_third = event_search(
+    #     search_options,
+    #     params[:event_type],
+    #     'pitcher'
+    #   )
+    #
+    #   @pitcher_events =
+    #     scored_batting +
+    #     scored_from_first +
+    #     scored_from_second +
+    #     scored_from_third
+    #   @pitcher_events.sort_by! { |events| [events[:game_date], events[:id]] }
 
     # Return events where pitcher faced batters.
     # Batters faced = at bats + walks + hit by pitches +
@@ -628,10 +629,11 @@ class EventsController < ActionController::Base
       season_string = "#{batter_or_pitcher}_season_#{event_type}"
       game_string = "#{batter_or_pitcher}_game_#{event_type}"
       rbi_string = "#{', rbi_ct' if event_type == 'rbi'}"
+      er_string = "#{', event_runs_ct' if event_type == 'earned_run'}"
     end
 
     # Send back results with these keys instead of every key
-    event_select_string = "id, game_id, game_date, event_cd, #{career_string}, #{season_string}, #{game_string} #{rbi_string}"
+    event_select_string = "id, game_id, game_date, event_cd, #{career_string}, #{season_string}, #{game_string} #{rbi_string} #{er_string}"
 
     if options.key?(:year)
       Event.select(event_select_string)

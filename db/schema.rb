@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151104232742) do
+ActiveRecord::Schema.define(version: 20151111231443) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -276,12 +276,6 @@ ActiveRecord::Schema.define(version: 20151104232742) do
     t.integer  "batter_career_run"
     t.integer  "batter_season_run"
     t.integer  "batter_game_run"
-    t.integer  "pitcher_career_earned_run"
-    t.integer  "pitcher_season_earned_run"
-    t.integer  "pitcher_game_earned_run"
-    t.integer  "pitcher_career_allowed_run"
-    t.integer  "pitcher_season_allowed_run"
-    t.integer  "pitcher_game_allowed_run"
     t.integer  "runner1_career_run"
     t.integer  "runner1_season_run"
     t.integer  "runner1_game_run"
