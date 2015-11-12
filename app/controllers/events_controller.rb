@@ -629,11 +629,12 @@ class EventsController < ActionController::Base
       season_string = "#{batter_or_pitcher}_season_#{event_type}"
       game_string = "#{batter_or_pitcher}_game_#{event_type}"
       rbi_string = "#{', rbi_ct' if event_type == 'rbi'}"
-      er_string = "#{', event_runs_ct' if event_type == 'earned_run'}"
+      sf_string = "#{', sf_fl' if event_type == 'sacrifice'}"
+      sh_string = "#{', sh_fl' if event_type == 'sacrifice'}"
     end
 
     # Send back results with these keys instead of every key
-    event_select_string = "id, game_id, game_date, event_cd, #{career_string}, #{season_string}, #{game_string} #{rbi_string} #{er_string}"
+    event_select_string = "id, game_id, game_date, event_cd, #{career_string}, #{season_string}, #{game_string} #{rbi_string} #{sf_string} #{sh_string}"
 
     if options.key?(:year)
       Event.select(event_select_string)

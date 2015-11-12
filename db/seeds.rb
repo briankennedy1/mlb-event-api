@@ -30,8 +30,9 @@ require_relative 'players'
 # require_relative 'add_batter_runs'
 # require_relative 'add_pitcher_earned_runs'
 # require_relative 'add_pitcher_allowed_runs'
-require_relative 'add_batter_sacrifice_fly'
-require_relative 'add_batter_sacrifice_hit'
+
+# require_relative 'add_batter_sacrifice_fly'
+# require_relative 'add_batter_sacrifice_hit'
 require_relative 'add_batter_sacrifices'
 
 # require_relative 'add_batter_rbi'
