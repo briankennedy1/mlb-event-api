@@ -9,7 +9,7 @@ PLAYERS.each do |player|
   pbar = ProgressBar.create(
     starting_at: 0,
     total: all_shs.length,
-    format: "Current player: #{player} %a %e %P% Processed: %c from %C"
+    format: "#{PLAYERS.index(player) + 1}/#{PLAYERS.length}: #{player} %a %e %P% Processed: %c from %C"
   )
 
   all_shs.each do |current_event|
