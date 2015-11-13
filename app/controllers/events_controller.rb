@@ -368,7 +368,7 @@ class EventsController < ActionController::Base
       'home_runs' => 23,
       'pick_offs' => 8,
       'balks' => 11
-      # 'hits' => [20, 21, 22, 23],
+      'hits' => [20, 21, 22, 23],
       # 'errors' => 18,
       # 'fielders_choices' => 19,
     }
