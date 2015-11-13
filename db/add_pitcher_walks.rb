@@ -1,11 +1,17 @@
+p '%' * 50
+p 'Starting add_pitcher_walks'
+p '%' * 50
+
 PLAYERS.each do |player|
   all_bbs = Event.find_by_sql("SELECT events.* FROM events WHERE
-    events.pit_id = '#{player}' AND events.event_cd = '14' ")
+    events.pit_id = '#{player}' AND events.event_cd = '14' Or
+    events.pit_id = '#{player}' AND events.event_cd = '15'
+   ")
   all_bbs.sort! { |x, y| [x.game_date, x.id] <=> [y.game_date, y.id] }
   pbar = ProgressBar.create(
     starting_at: 0,
     total: all_bbs.length,
-    format: "Current player: #{player} %a %e %P% Processed: %c from %C"
+    format: "#{PLAYERS.index(player) + 1}/#{PLAYERS.length}: #{player} %a %e %P% Processed: %c from %C"
   )
 
   all_bbs.each do |current_event|
