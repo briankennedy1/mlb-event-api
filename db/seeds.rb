@@ -35,4 +35,5 @@ require_relative 'add_pitcher_walks'
 # require_relative 'add_batter_sacrifice_hit'
 # require_relative 'add_batter_sacrifices'
 
+require_relative 'add_pitcher_hits'
 # require_relative 'add_batter_rbi'
