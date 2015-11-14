@@ -7,7 +7,7 @@ PLAYERS.each do |player|
     events.pit_id = '#{player}' AND events.event_cd = '20' OR
     events.pit_id = '#{player}' AND events.event_cd = '21' OR
     events.pit_id = '#{player}' AND events.event_cd = '22' OR
-    events.pit_id = '#{player}' AND events.event_cd = '23' OR
+    events.pit_id = '#{player}' AND events.event_cd = '23'
   ")
   all_hits.sort! { |x, y| [x.game_date, x.id] <=> [y.game_date, y.id] }
   pbar = ProgressBar.create(
