@@ -629,8 +629,8 @@ class EventsController < ActionController::Base
       season_string = "#{batter_or_pitcher}_season_#{event_type}"
       game_string = "#{batter_or_pitcher}_game_#{event_type}"
       rbi_string = "#{', rbi_ct' if event_type == 'rbi'}"
-      sf_string = "#{', sf_fl' if event_type == 'sacrifice'}"
-      sh_string = "#{', sh_fl' if event_type == 'sacrifice'}"
+      sf_string = "#{', sf_fl' if event_type == 'sacrifice' || 'run'}"
+      sh_string = "#{', sh_fl' if event_type == 'sacrifice' || 'run'}"
     end
 
     # Send back results with these keys instead of every key
