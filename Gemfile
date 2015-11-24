@@ -21,6 +21,7 @@ gem 'rails_12factor', group: :production
 # gem 'memcachier'
 # gem 'connection_pool'
 gem 'devise_token_auth'
+gem 'omniauth'
 
 group :test, :development do
   gem 'rspec-rails'
