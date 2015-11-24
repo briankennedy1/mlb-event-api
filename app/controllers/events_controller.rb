@@ -1,4 +1,4 @@
-class EventsController < ActionController::Base
+class EventsController < ApplicationController
   before_action :set_event, only: [:show, :update, :destroy]
 
   # Return the first 250 events if no event is specified.
