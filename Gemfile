@@ -12,14 +12,15 @@ gem 'activerecord-import'
 gem 'by_star'
 gem 'smarter_csv'
 gem 'parallel'
-gem 'rack-cors', :require => 'rack/cors'
-gem 'dotenv-rails', :groups => [:development, :test]
+gem 'rack-cors', require: 'rack/cors'
+gem 'dotenv-rails', groups: [:development, :test]
 gem 'rails_12factor', group: :production
 # gem 'rack-cache'
 # gem 'dalli'
 # gem 'kgio'
 # gem 'memcachier'
 # gem 'connection_pool'
+gem 'devise_token_auth'
 
 group :test, :development do
   gem 'rspec-rails'

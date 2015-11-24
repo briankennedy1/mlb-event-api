@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  mount_devise_token_auth_for 'User', at: 'auth'
   scope '/v1' do
     resources :events, except: [:new, :edit]
     get 'games' => 'games#all_games'
