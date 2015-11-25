@@ -5,14 +5,18 @@ class EventsController < ApplicationController
   # There are too many events to return them all.
   # Maybe include some kind of pagination in the future?
   def index
-    @events = Event.select(
-      'id, game_id'
-    ).first(250)
+    if user_signed_in?
+      @events = Event.select(
+        'id, game_id'
+      ).first(250)
 
-    render json: {
-      message: 'First 250 events in database.',
-      data: @events
-    }, status: 200
+      render json: {
+        message: 'First 250 events in database.',
+        data: @events
+      }, status: 200
+    else
+      please_log_in
+    end
   end
 
   # Return the specified event
@@ -678,6 +682,13 @@ class EventsController < ApplicationController
   def event_params
     params.require(:event)
       .permit(:game_id, :pit_id, :bat_id, :event_tx, :event_cd)
+  end
+
+  def please_log_in
+    render json: {
+      error: 'Invalid credentials',
+      message: 'Please log in. Check the API documentation for help: http://docs.mlbevents.apiary.io'
+    }, status: 401
   end
 
   def event_not_found
