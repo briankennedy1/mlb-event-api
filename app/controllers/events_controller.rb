@@ -1,22 +1,23 @@
 class EventsController < ApplicationController
   before_action :set_event, only: [:show, :update, :destroy]
+  before_action :auth_check
+
+  def auth_check
+    please_log_in unless user_signed_in?
+  end
 
   # Return the first 250 events if no event is specified.
   # There are too many events to return them all.
   # Maybe include some kind of pagination in the future?
   def index
-    if user_signed_in?
-      @events = Event.select(
-        'id, game_id'
-      ).first(250)
+    @events = Event.select(
+      'id, game_id'
+    ).first(250)
 
-      render json: {
-        message: 'First 250 events in database.',
-        data: @events
-      }, status: 200
-    else
-      please_log_in
-    end
+    render json: {
+      message: 'First 250 events in database.',
+      data: @events
+    }, status: 200
   end
 
   # Return the specified event
