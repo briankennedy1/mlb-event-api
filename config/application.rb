@@ -8,15 +8,26 @@ Bundler.require(*Rails.groups)
 
 module MlbEventApi
   class Application < Rails::Application
-    # config.cache_store = :dalli_store
-    # config.action_controller.page_cache_directory = "#{Rails.root.to_s}/public/deploy"
-
     config.middleware.insert_before 0, "Rack::Cors" do
       allow do
-        origins '*'
-        resource '*', header: :any, methods: [:get, :post], expose: ['access-token']
+        origins 'localhost:8080'
+
+        resource '*',
+          :headers => :any,
+          :methods => [:get, :post, :delete, :put, :options, :head, :patch],
+          :expose  => ['access-token', 'expiry', 'token-type', 'uid', 'client'],
+          :max_age => 0
       end
     end
+    # config.middleware.use Rack::Cors do
+    #   allow do
+    #     origins '*'
+    #     resource '*',
+    #       :headers => :any,
+    #       :expose  => ['access-token', 'expiry', 'token-type', 'uid', 'client'],
+    #       :methods => [:get, :post, :options, :delete, :put]
+    #   end
+    # end
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.

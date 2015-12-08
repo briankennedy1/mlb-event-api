@@ -3,6 +3,11 @@ class EventsController < ApplicationController
   before_action :auth_check
 
   def auth_check
+    p "Access-token: #{request.headers['access-token']}"
+    p "Client: #{request.headers['client']}"
+    p "Expiry: #{request.headers['expiry']}"
+    p "UID: #{request.headers['uid']}"
+    p "Token type: #{request.headers['token-type']}"
     please_log_in unless user_signed_in?
   end
 
