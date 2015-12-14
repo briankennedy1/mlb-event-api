@@ -20,7 +20,7 @@ gem 'rails_12factor', group: :production
 # gem 'kgio'
 # gem 'memcachier'
 # gem 'connection_pool'
-gem 'devise_token_auth'
+gem 'devise_token_auth', git: 'git://github.com/lynndylanhurley/devise_token_auth.git'
 gem 'omniauth'
 
 group :test, :development do

@@ -1,6 +1,6 @@
 class EventsController < ApplicationController
   before_action :set_event, only: [:show, :update, :destroy]
-  before_action :auth_check
+  before_action :authenticate_user!
 
   def auth_check
     p "Access-token: #{request.headers['access-token']}"
@@ -8,7 +8,7 @@ class EventsController < ApplicationController
     p "Expiry: #{request.headers['expiry']}"
     p "UID: #{request.headers['uid']}"
     p "Token type: #{request.headers['token-type']}"
-    please_log_in unless user_signed_in?
+    please_log_in unless authenticate_user!
   end
 
   # Return the first 250 events if no event is specified.
